@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35913.81 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GridToVector_NETFramework", "GridToVector_NETFramework.csproj", "{69CB81A6-F1FB-4EBD-8B59-AE0A3681922B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{69CB81A6-F1FB-4EBD-8B59-AE0A3681922B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69CB81A6-F1FB-4EBD-8B59-AE0A3681922B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69CB81A6-F1FB-4EBD-8B59-AE0A3681922B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69CB81A6-F1FB-4EBD-8B59-AE0A3681922B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FD127AB9-3964-4EC2-9A20-AFC0A1A414E6}
+	EndGlobalSection
+EndGlobal

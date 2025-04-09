@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Management" Version="4.7.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="4.7.1" />
+        <PackageReference Include="TatukGIS.DK.NET.Windows" Version="100.0.37457" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="TatukGIS_DK11">
+      <HintPath>..\..\..\Lib\net45\TatukGIS_DK11.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

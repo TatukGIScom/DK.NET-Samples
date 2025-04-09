@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35913.81 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GPSSimple_NETFramework", "GPSSimple_NETFramework.csproj", "{CBFC3D54-9D8F-4167-B4E1-084FD829F82F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CBFC3D54-9D8F-4167-B4E1-084FD829F82F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBFC3D54-9D8F-4167-B4E1-084FD829F82F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBFC3D54-9D8F-4167-B4E1-084FD829F82F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBFC3D54-9D8F-4167-B4E1-084FD829F82F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {64CCF202-1A24-49D9-B411-FF0D562B9A21}
+	EndGlobalSection
+EndGlobal

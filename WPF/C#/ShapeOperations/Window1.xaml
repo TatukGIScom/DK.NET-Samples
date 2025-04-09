@@ -1,0 +1,15 @@
+<Window x:Class="ShowOperations.Window1"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:WPF="clr-namespace:TatukGIS.NDK.WPF;assembly=TatukGIS_DK_Win" 
+    Title="TatukGIS Samples - ShowOperations" Height="600" Width="800" BorderThickness="0" Icon="App.ico" Loaded="Window_Loaded">
+    <Grid Background="#FFEAE7E7" Margin="0,0,0,0">
+        <RadioButton x:Name="rbMove" Content="Move" HorizontalAlignment="Left" Margin="12,7,0,0" VerticalAlignment="Top" Click="rbMove_Click"/>
+        <RadioButton x:Name="rbRotate" Content="Rotate" HorizontalAlignment="Left" Margin="71,7,0,0" VerticalAlignment="Top" Click="rbRotate_Click"/>
+        <RadioButton x:Name="rbScale" Content="Scale" HorizontalAlignment="Left" Margin="133,7,0,0" VerticalAlignment="Top" Click="rbScale_Click"/>
+        <Label x:Name="lbHint" Content="" HorizontalAlignment="Left" Margin="197,1,0,0" VerticalAlignment="Top"/>
+        <WPF:TGIS_ViewerWnd x:Name="GIS" Margin="0,33,0,0" TapLongEvent="GIS_TapLongEvent" MouseMove="GIS_MouseMove" MouseUp="GIS_MouseUp" ManipulationDelta="GIS_ManipulationDelta" ManipulationCompleted="GIS_ManipulationCompleted"/>
+        <Button x:Name="btnMode" Content="Mode: Select" HorizontalAlignment="Left" Margin="490,7,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="checkBox" Content="IsManipulationEnabled" HorizontalAlignment="Left" Margin="625,10,0,0" VerticalAlignment="Top" Width="140" IsEnabled="False"/>
+    </Grid>
+</Window>

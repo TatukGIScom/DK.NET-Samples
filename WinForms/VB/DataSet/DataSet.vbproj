@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="My Project\**" />
+    <EmbeddedResource Remove="My Project\**" />
+    <None Remove="My Project\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="AssemblyInfo.vb" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="AssemblyInfo.vb" />
+    <None Include="My Project\Application.myapp" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="TatukGIS.DK.NET.Windows" Version="100.0.37457" />
+  </ItemGroup>
+
+</Project>

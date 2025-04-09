@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35913.81 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "View3D_NETFramework", "View3D_NETFramework.csproj", "{37C39739-B87F-4F7A-87AE-1192AC6E5685}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{37C39739-B87F-4F7A-87AE-1192AC6E5685}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37C39739-B87F-4F7A-87AE-1192AC6E5685}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37C39739-B87F-4F7A-87AE-1192AC6E5685}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37C39739-B87F-4F7A-87AE-1192AC6E5685}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A395BB0E-760B-41B5-9ECE-DE4F0856E7BB}
+	EndGlobalSection
+EndGlobal
