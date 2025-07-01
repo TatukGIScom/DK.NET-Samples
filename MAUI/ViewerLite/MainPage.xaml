@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:TatukGIS.NDK.Maui;assembly=TatukGIS_DK_Maui"
+             x:Class="ViewerLite.MainPage">
+
+    <Grid x:Name="grid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <FlexLayout 
+            Grid.Row="0" 
+            Grid.ColumnSpan="2" >
+            <Button 
+                CornerRadius="0"
+                BorderColor="Black"
+                BorderWidth="1"
+                BackgroundColor="Gray"
+                Text="Open" 
+                Clicked="btnOpenClick"
+                x:Name="btnOpen"/>
+            <Button 
+                CornerRadius="0"
+                BorderColor="Black"
+                BorderWidth="1"
+                BackgroundColor="Gray"
+                Text="Close" 
+                Clicked="btnCloseClick"
+                x:Name="btnClose"/>
+            <Button 
+                CornerRadius="0"
+                BorderColor="Black"
+                BorderWidth="1"
+                BackgroundColor="Gray"
+                Text="Full extent" 
+                Clicked="btnFullExtentClick"
+                x:Name="btnFullExtent"/>
+            <Button 
+                CornerRadius="0"
+                BorderColor="Black"
+                BorderWidth="1"
+                BackgroundColor="Gray"
+                Text="CS" 
+                Clicked="btnCSClick"
+                x:Name="btnCS"/>
+            <Button 
+                CornerRadius="0"
+                BorderColor="Black"
+                BorderWidth="1"
+                BackgroundColor="Gray"
+                Text="Open dataset" 
+                Clicked="btnOpenDSClick"
+                x:Name="btnOpenDS"/>
+            <Button 
+                CornerRadius="0"
+                BorderColor="Black"
+                BorderWidth="1"
+                BackgroundColor="Gray"
+                Text="Select" 
+                Clicked="btnSelectMode"
+                x:Name="btnSelect"/>
+            <Button 
+                CornerRadius="0"
+                BorderColor="Black"
+                BorderWidth="1"
+                BackgroundColor="Gray"
+                Text="Drag" 
+                Clicked="btnDragMode"
+                x:Name="btnDrag"/>
+            <Button 
+                CornerRadius="0"
+                BorderColor="Black"
+                BorderWidth="1"
+                BackgroundColor="Gray"
+                Text="Zoom" 
+                Clicked="btnZoomMode" 
+                x:Name="btnZoom" />
+            <Button 
+                CornerRadius="0"
+                BorderColor="Black"
+                BorderWidth="1"
+                BackgroundColor="Gray"
+                Text="ZoomEx" 
+                Clicked="btnZoomExMode"
+                x:Name="btnZoomEx"/>
+            <Button 
+                CornerRadius="0"
+                BorderColor="Black"
+                BorderWidth="1"
+                BackgroundColor="Gray"
+                Text="High Res" 
+                Clicked="btnHighResClicked" 
+                x:Name="btnHighRes"/>
+            <Button 
+                CornerRadius="0"
+                BorderColor="Black"
+                BorderWidth="1"
+                BackgroundColor="Gray"
+                Text="Show Info" 
+                Clicked="btnShowInfoClicked"
+                x:Name="btnShowInfo"/>
+        </FlexLayout>
+        <controls:TGIS_ControlLegend 
+            Grid.Row="1"
+            Grid.Column="0"
+                WidthRequest="NaN"
+                HeightRequest="NaN"
+            x:Name="legend"/>
+        <AbsoluteLayout 
+            Grid.Row="1"
+            Grid.Column="1"
+            x:Name="container_viewer">
+            <controls:TGIS_ViewerWnd 
+                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                AbsoluteLayout.LayoutFlags="All"
+                WidthRequest="NaN"
+                HeightRequest="NaN"
+                x:Name="GIS" />
+            <controls:TGIS_ControlNorthArrow 
+                AbsoluteLayout.LayoutBounds="0.99,0.01,150,150"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                WidthRequest="NaN"
+                HeightRequest="NaN"
+                x:Name="arrow" />
+            <controls:TGIS_ControlScale
+                AbsoluteLayout.LayoutBounds="0.99,0.99,300,50"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                WidthRequest="NaN"
+                HeightRequest="NaN"
+                x:Name="scale" />
+        </AbsoluteLayout>
+    </Grid>
+</ContentPage>

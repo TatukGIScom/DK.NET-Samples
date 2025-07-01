@@ -53,8 +53,8 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="TatukGIS_DK_Win, Version=11.100.0.37457, Culture=neutral, PublicKeyToken=8141ae6524a801a2, processorArchitecture=MSIL">
-      <HintPath>packages\TatukGIS.DK.NET.Windows.100.0.37457\lib\net45\TatukGIS_DK_Win.dll</HintPath>
+    <Reference Include="TatukGIS_DK_Win, Version=11.102.0.37987, Culture=neutral, PublicKeyToken=8141ae6524a801a2, processorArchitecture=MSIL">
+      <HintPath>packages\TatukGIS.DK.NET.Windows.102.0.37987\lib\net45\TatukGIS_DK_Win.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
