@@ -2,7 +2,8 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:controls="clr-namespace:TatukGIS.NDK.Maui;assembly=TatukGIS_DK_Maui"
-             x:Class="ViewerLite.MainPage">
+             x:Class="ViewerLite.MainPage"
+             Shell.NavBarIsVisible="false">
 
     <Grid x:Name="grid">
         <Grid.RowDefinitions>
@@ -93,14 +94,6 @@
                 BorderColor="Black"
                 BorderWidth="1"
                 BackgroundColor="Gray"
-                Text="High Res" 
-                Clicked="btnHighResClicked" 
-                x:Name="btnHighRes"/>
-            <Button 
-                CornerRadius="0"
-                BorderColor="Black"
-                BorderWidth="1"
-                BackgroundColor="Gray"
                 Text="Show Info" 
                 Clicked="btnShowInfoClicked"
                 x:Name="btnShowInfo"/>
@@ -120,6 +113,7 @@
                 AbsoluteLayout.LayoutFlags="All"
                 WidthRequest="NaN"
                 HeightRequest="NaN"
+                TapSimpleEvent="GISTapSimpleEvent"
                 x:Name="GIS" />
             <controls:TGIS_ControlNorthArrow 
                 AbsoluteLayout.LayoutBounds="0.99,0.01,150,150"

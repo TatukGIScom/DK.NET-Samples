@@ -555,8 +555,8 @@ namespace AddLayer
                 classifier.Method = TGIS_ClassificationMethod.GeometricalInterval;
                 classifier.Band = "1";
                 classifier.NumClasses = 5;
-                classifier.ColorRamp = TGIS_Utils.GisColorRampList.ByName("Bathymetry2")
-                  .RealizeColorMap(TGIS_ColorMapMode.Continuous, 0, true);
+                classifier.ColorRamp = TGIS_Utils.GisColorRampList.ByName("Bathymetry2");
+                classifier.ColorRamp.DefaultReverse = true;
 
                 classifier.Classify();
                 flowacc.Params.Pixel.ShowLegend = true;
@@ -657,6 +657,7 @@ namespace AddLayer
                 classifier.Band = "Value";
                 classifier.ShowLegend = false;
                 classifier.ColorRampName = "UniquePastel";
+                classifier.ColorRamp.DefaultColorMapMode = TGIS_ColorMapMode.Discrete;
                 
                 classifier.Classify();
             }
@@ -736,6 +737,7 @@ namespace AddLayer
                 classifier.Field = HYDRO_FIELD_BASIN;
                 classifier.ShowLegend = false;
                 classifier.ColorRampName = "Unique";
+                classifier.ColorRamp.DefaultColorMapMode = TGIS_ColorMapMode.Discrete;
                 
                 classifier.Classify();
             }

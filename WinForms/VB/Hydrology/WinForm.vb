@@ -507,6 +507,7 @@ Namespace AddLayer
                 classifier.Band = "1"
                 classifier.NumClasses = 5
                 classifier.ColorRampName = "Bathymetry2"
+                classifier.ColorRamp.DefaultReverse = True
                 classifier.Classify()
                 flowacc.Params.Pixel.ShowLegend = True
             Finally
@@ -590,6 +591,7 @@ Namespace AddLayer
                 classifier.Band = "Value"
                 classifier.ShowLegend = False
                 classifier.ColorRampName = "UniquePastel"
+                classifier.ColorRamp.DefaultColorMapMode = TGIS_ColorMapMode.Discrete
                 classifier.Classify()
             Finally
                 classifier = Nothing
@@ -655,6 +657,7 @@ Namespace AddLayer
                 classifier.Field = HYDRO_FIELD_BASIN
                 classifier.ShowLegend = False
                 classifier.ColorRampName = "Unique"
+                classifier.ColorRamp.DefaultColorMapMode = TGIS_ColorMapMode.Discrete
                 classifier.Classify()
             Finally
                 classifier = Nothing

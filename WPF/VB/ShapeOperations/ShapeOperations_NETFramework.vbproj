@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -103,8 +103,8 @@
     <Import Include="System.Windows.Media" />
     <Import Include="System.Windows.Media.Imaging" />
     <Import Include="System.Windows.Navigation" />
-    <Reference Include="TatukGIS_DK_Win, Version=11.102.0.37987, Culture=neutral, PublicKeyToken=8141ae6524a801a2, processorArchitecture=MSIL">
-      <HintPath>packages\TatukGIS.DK.NET.Windows.102.0.37987\lib\net45\TatukGIS_DK_Win.dll</HintPath>
+    <Reference Include="TatukGIS_DK_Win, Version=11.105.0.38678, Culture=neutral, PublicKeyToken=8141ae6524a801a2, processorArchitecture=MSIL">
+      <HintPath>packages\TatukGIS.DK.NET.Windows.105.0.38678\lib\net45\TatukGIS_DK_Win.dll</HintPath>
     </Reference>    
   </ItemGroup>
   <ItemGroup>

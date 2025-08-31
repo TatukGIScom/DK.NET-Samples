@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Data;
 using TatukGIS.NDK;
 using TatukGIS.NDK.WinForms;
+using TatukGIS.NDK.Common;
 
 namespace Classification
 {
@@ -22,9 +23,7 @@ namespace Classification
         private Label lblMethod;
         private Label lblField;
         private Button btnOpen;
-        private Panel panel1;
-        private ComboBox cbColorRamp;
-        private CheckBox chkColorRamp;
+        private Panel pColor;
         private CheckBox chkShowInLegend;
         private TextBox tbStartSize;
         private TextBox tbClassIdField;
@@ -73,10 +72,16 @@ namespace Classification
         private TextBox tbInterval;
         private ComboBox cbInterval;
         private Label lblInterval;
-        private CheckBox chkColorRampName;
         private Panel pnlClasses;
         private ComboBox cbClasses;
         private Label lblClasses;
+        private Panel pRamps;
+        private CheckBox chkColorRampName;
+        private ComboBox cbColorRamp;
+        private CheckBox chkColorRamp;
+        private ComboBox cbColorMapMode;
+        private Label lblColorMapMode;
+        private CheckBox chkReverse;
 
         /// <summary>
         /// Required designer variable.
@@ -117,557 +122,570 @@ namespace Classification
         /// </summary>
         private void InitializeComponent()
         {
-            TatukGIS.NDK.TGIS_ControlLegendDialogOptions tgiS_ControlLegendDialogOptions1 = new TatukGIS.NDK.TGIS_ControlLegendDialogOptions();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WinForm));
-            this.pClassification = new System.Windows.Forms.Panel();
-            this.pnlClasses = new System.Windows.Forms.Panel();
-            this.cbClasses = new System.Windows.Forms.ComboBox();
-            this.lblClasses = new System.Windows.Forms.Label();
-            this.pnlInterval = new System.Windows.Forms.Panel();
-            this.tbInterval = new System.Windows.Forms.TextBox();
-            this.cbInterval = new System.Windows.Forms.ComboBox();
-            this.lblInterval = new System.Windows.Forms.Label();
-            this.pnlManual = new System.Windows.Forms.Panel();
-            this.btnAddManualBreak = new System.Windows.Forms.Button();
-            this.edtManualBreaks = new System.Windows.Forms.TextBox();
-            this.lblManual = new System.Windows.Forms.Label();
-            this.chkForceStatisticsCalculation = new System.Windows.Forms.CheckBox();
-            this.cbRenderBy = new System.Windows.Forms.ComboBox();
-            this.cbMethod = new System.Windows.Forms.ComboBox();
-            this.cbField = new System.Windows.Forms.ComboBox();
-            this.lblRenderBy = new System.Windows.Forms.Label();
-            this.lblMethod = new System.Windows.Forms.Label();
-            this.lblField = new System.Windows.Forms.Label();
-            this.btnOpen = new System.Windows.Forms.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.chkColorRampName = new System.Windows.Forms.CheckBox();
-            this.tbEndSize = new System.Windows.Forms.TextBox();
-            this.cbColorRamp = new System.Windows.Forms.ComboBox();
-            this.chkColorRamp = new System.Windows.Forms.CheckBox();
-            this.chkShowInLegend = new System.Windows.Forms.CheckBox();
-            this.tbStartSize = new System.Windows.Forms.TextBox();
-            this.tbClassIdField = new System.Windows.Forms.TextBox();
-            this.lblClassIdField = new System.Windows.Forms.Label();
-            this.lblEndSize = new System.Windows.Forms.Label();
-            this.lblStartSize = new System.Windows.Forms.Label();
-            this.pEndColor = new System.Windows.Forms.Panel();
-            this.lblEndColor = new System.Windows.Forms.Label();
-            this.pStartColor = new System.Windows.Forms.Panel();
-            this.lblStartColor = new System.Windows.Forms.Label();
-            this.GISLegend = new TatukGIS.NDK.WinForms.TGIS_ControlLegend();
-            this.GIS = new TatukGIS.NDK.WinForms.TGIS_ViewerWnd();
-            this.dlgColor = new System.Windows.Forms.ColorDialog();
-            this.dlgOpen = new System.Windows.Forms.OpenFileDialog();
-            this.pClassification.SuspendLayout();
-            this.pnlClasses.SuspendLayout();
-            this.pnlInterval.SuspendLayout();
-            this.pnlManual.SuspendLayout();
-            this.panel1.SuspendLayout();
-            this.SuspendLayout();
+            TGIS_ControlLegendDialogOptions tgiS_ControlLegendDialogOptions1 = new TGIS_ControlLegendDialogOptions();
+            ComponentResourceManager resources = new ComponentResourceManager(typeof(WinForm));
+            pClassification=new Panel();
+            pnlClasses=new Panel();
+            cbClasses=new ComboBox();
+            lblClasses=new Label();
+            pnlInterval=new Panel();
+            tbInterval=new TextBox();
+            cbInterval=new ComboBox();
+            lblInterval=new Label();
+            pnlManual=new Panel();
+            btnAddManualBreak=new Button();
+            edtManualBreaks=new TextBox();
+            lblManual=new Label();
+            chkForceStatisticsCalculation=new CheckBox();
+            cbRenderBy=new ComboBox();
+            cbMethod=new ComboBox();
+            cbField=new ComboBox();
+            lblRenderBy=new Label();
+            lblMethod=new Label();
+            lblField=new Label();
+            btnOpen=new Button();
+            pColor=new Panel();
+            tbEndSize=new TextBox();
+            chkShowInLegend=new CheckBox();
+            tbStartSize=new TextBox();
+            tbClassIdField=new TextBox();
+            lblClassIdField=new Label();
+            lblEndSize=new Label();
+            lblStartSize=new Label();
+            pEndColor=new Panel();
+            lblEndColor=new Label();
+            pStartColor=new Panel();
+            lblStartColor=new Label();
+            GISLegend=new TGIS_ControlLegend();
+            GIS=new TGIS_ViewerWnd();
+            dlgColor=new ColorDialog();
+            dlgOpen=new OpenFileDialog();
+            pRamps=new Panel();
+            chkReverse=new CheckBox();
+            cbColorMapMode=new ComboBox();
+            lblColorMapMode=new Label();
+            chkColorRamp=new CheckBox();
+            chkColorRampName=new CheckBox();
+            cbColorRamp=new ComboBox();
+            pClassification.SuspendLayout();
+            pnlClasses.SuspendLayout();
+            pnlInterval.SuspendLayout();
+            pnlManual.SuspendLayout();
+            pColor.SuspendLayout();
+            pRamps.SuspendLayout();
+            SuspendLayout();
             // 
             // pClassification
             // 
-            this.pClassification.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pClassification.Controls.Add(this.pnlClasses);
-            this.pClassification.Controls.Add(this.pnlInterval);
-            this.pClassification.Controls.Add(this.pnlManual);
-            this.pClassification.Controls.Add(this.chkForceStatisticsCalculation);
-            this.pClassification.Controls.Add(this.cbRenderBy);
-            this.pClassification.Controls.Add(this.cbMethod);
-            this.pClassification.Controls.Add(this.cbField);
-            this.pClassification.Controls.Add(this.lblRenderBy);
-            this.pClassification.Controls.Add(this.lblMethod);
-            this.pClassification.Controls.Add(this.lblField);
-            this.pClassification.Controls.Add(this.btnOpen);
-            this.pClassification.Location = new System.Drawing.Point(9, 9);
-            this.pClassification.Margin = new System.Windows.Forms.Padding(2);
-            this.pClassification.Name = "pClassification";
-            this.pClassification.Size = new System.Drawing.Size(1364, 34);
-            this.pClassification.TabIndex = 0;
+            pClassification.Anchor=AnchorStyles.Top|AnchorStyles.Left|AnchorStyles.Right;
+            pClassification.Controls.Add(pnlClasses);
+            pClassification.Controls.Add(pnlInterval);
+            pClassification.Controls.Add(pnlManual);
+            pClassification.Controls.Add(chkForceStatisticsCalculation);
+            pClassification.Controls.Add(cbRenderBy);
+            pClassification.Controls.Add(cbMethod);
+            pClassification.Controls.Add(cbField);
+            pClassification.Controls.Add(lblRenderBy);
+            pClassification.Controls.Add(lblMethod);
+            pClassification.Controls.Add(lblField);
+            pClassification.Controls.Add(btnOpen);
+            pClassification.Location=new Point(9, 9);
+            pClassification.Margin=new Padding(2);
+            pClassification.Name="pClassification";
+            pClassification.Size=new Size(1364, 34);
+            pClassification.TabIndex=0;
             // 
             // pnlClasses
             // 
-            this.pnlClasses.Controls.Add(this.cbClasses);
-            this.pnlClasses.Controls.Add(this.lblClasses);
-            this.pnlClasses.Location = new System.Drawing.Point(745, 0);
-            this.pnlClasses.Margin = new System.Windows.Forms.Padding(2);
-            this.pnlClasses.Name = "pnlClasses";
-            this.pnlClasses.Size = new System.Drawing.Size(200, 34);
-            this.pnlClasses.TabIndex = 16;
-            this.pnlClasses.Visible = false;
+            pnlClasses.Controls.Add(cbClasses);
+            pnlClasses.Controls.Add(lblClasses);
+            pnlClasses.Location=new Point(745, 0);
+            pnlClasses.Margin=new Padding(2);
+            pnlClasses.Name="pnlClasses";
+            pnlClasses.Size=new Size(200, 34);
+            pnlClasses.TabIndex=16;
+            pnlClasses.Visible=false;
             // 
             // cbClasses
             // 
-            this.cbClasses.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbClasses.FormattingEnabled = true;
-            this.cbClasses.Items.AddRange(new object[] {
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9"});
-            this.cbClasses.Location = new System.Drawing.Point(57, 7);
-            this.cbClasses.Margin = new System.Windows.Forms.Padding(2);
-            this.cbClasses.Name = "cbClasses";
-            this.cbClasses.Size = new System.Drawing.Size(50, 21);
-            this.cbClasses.TabIndex = 11;
+            cbClasses.DropDownStyle=ComboBoxStyle.DropDownList;
+            cbClasses.FormattingEnabled=true;
+            cbClasses.Items.AddRange(new object[] { "1", "2", "3", "4", "5", "6", "7", "8", "9" });
+            cbClasses.Location=new Point(57, 7);
+            cbClasses.Margin=new Padding(2);
+            cbClasses.Name="cbClasses";
+            cbClasses.Size=new Size(50, 23);
+            cbClasses.TabIndex=11;
+            cbClasses.SelectedIndexChanged+=cbClasses_SelectedIndexChanged_2;
             // 
             // lblClasses
             // 
-            this.lblClasses.AutoSize = true;
-            this.lblClasses.Location = new System.Drawing.Point(7, 10);
-            this.lblClasses.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblClasses.Name = "lblClasses";
-            this.lblClasses.Size = new System.Drawing.Size(46, 13);
-            this.lblClasses.TabIndex = 10;
-            this.lblClasses.Text = "Classes:";
+            lblClasses.AutoSize=true;
+            lblClasses.Location=new Point(7, 10);
+            lblClasses.Margin=new Padding(2, 0, 2, 0);
+            lblClasses.Name="lblClasses";
+            lblClasses.Size=new Size(48, 15);
+            lblClasses.TabIndex=10;
+            lblClasses.Text="Classes:";
             // 
             // pnlInterval
             // 
-            this.pnlInterval.Controls.Add(this.tbInterval);
-            this.pnlInterval.Controls.Add(this.cbInterval);
-            this.pnlInterval.Controls.Add(this.lblInterval);
-            this.pnlInterval.Location = new System.Drawing.Point(949, 0);
-            this.pnlInterval.Margin = new System.Windows.Forms.Padding(2);
-            this.pnlInterval.Name = "pnlInterval";
-            this.pnlInterval.Size = new System.Drawing.Size(200, 34);
-            this.pnlInterval.TabIndex = 14;
+            pnlInterval.Controls.Add(tbInterval);
+            pnlInterval.Controls.Add(cbInterval);
+            pnlInterval.Controls.Add(lblInterval);
+            pnlInterval.Location=new Point(949, 0);
+            pnlInterval.Margin=new Padding(2);
+            pnlInterval.Name="pnlInterval";
+            pnlInterval.Size=new Size(200, 34);
+            pnlInterval.TabIndex=14;
             // 
             // tbInterval
             // 
-            this.tbInterval.Location = new System.Drawing.Point(58, 7);
-            this.tbInterval.Margin = new System.Windows.Forms.Padding(2);
-            this.tbInterval.Name = "tbInterval";
-            this.tbInterval.Size = new System.Drawing.Size(114, 20);
-            this.tbInterval.TabIndex = 14;
-            this.tbInterval.Text = "100";
-            this.tbInterval.Visible = false;
-            this.tbInterval.TextChanged += new System.EventHandler(this.tbInterval_TextChanged);
+            tbInterval.Location=new Point(58, 7);
+            tbInterval.Margin=new Padding(2);
+            tbInterval.Name="tbInterval";
+            tbInterval.Size=new Size(114, 23);
+            tbInterval.TabIndex=14;
+            tbInterval.Text="100";
+            tbInterval.Visible=false;
+            tbInterval.TextChanged+=tbInterval_TextChanged;
             // 
             // cbInterval
             // 
-            this.cbInterval.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbInterval.FormattingEnabled = true;
-            this.cbInterval.Items.AddRange(new object[] {
-            "1 STDEV",
-            "1/2 STDEV",
-            "1/3 STDEV",
-            "1/4 STDEV"});
-            this.cbInterval.Location = new System.Drawing.Point(58, 7);
-            this.cbInterval.Margin = new System.Windows.Forms.Padding(2);
-            this.cbInterval.Name = "cbInterval";
-            this.cbInterval.Size = new System.Drawing.Size(140, 21);
-            this.cbInterval.TabIndex = 13;
-            this.cbInterval.SelectedIndexChanged += new System.EventHandler(this.cbInterval_SelectedIndexChanged_1);
+            cbInterval.DropDownStyle=ComboBoxStyle.DropDownList;
+            cbInterval.FormattingEnabled=true;
+            cbInterval.Items.AddRange(new object[] { "1 STDEV", "1/2 STDEV", "1/3 STDEV", "1/4 STDEV" });
+            cbInterval.Location=new Point(58, 7);
+            cbInterval.Margin=new Padding(2);
+            cbInterval.Name="cbInterval";
+            cbInterval.Size=new Size(140, 23);
+            cbInterval.TabIndex=13;
+            cbInterval.SelectedIndexChanged+=cbInterval_SelectedIndexChanged_1;
             // 
             // lblInterval
             // 
-            this.lblInterval.AutoSize = true;
-            this.lblInterval.Location = new System.Drawing.Point(9, 10);
-            this.lblInterval.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblInterval.Name = "lblInterval";
-            this.lblInterval.Size = new System.Drawing.Size(45, 13);
-            this.lblInterval.TabIndex = 12;
-            this.lblInterval.Text = "Interval:";
+            lblInterval.AutoSize=true;
+            lblInterval.Location=new Point(9, 10);
+            lblInterval.Margin=new Padding(2, 0, 2, 0);
+            lblInterval.Name="lblInterval";
+            lblInterval.Size=new Size(49, 15);
+            lblInterval.TabIndex=12;
+            lblInterval.Text="Interval:";
             // 
             // pnlManual
             // 
-            this.pnlManual.Controls.Add(this.btnAddManualBreak);
-            this.pnlManual.Controls.Add(this.edtManualBreaks);
-            this.pnlManual.Controls.Add(this.lblManual);
-            this.pnlManual.Location = new System.Drawing.Point(1153, 0);
-            this.pnlManual.Margin = new System.Windows.Forms.Padding(2);
-            this.pnlManual.Name = "pnlManual";
-            this.pnlManual.Size = new System.Drawing.Size(200, 34);
-            this.pnlManual.TabIndex = 13;
-            this.pnlManual.Visible = false;
+            pnlManual.Controls.Add(btnAddManualBreak);
+            pnlManual.Controls.Add(edtManualBreaks);
+            pnlManual.Controls.Add(lblManual);
+            pnlManual.Location=new Point(1153, 0);
+            pnlManual.Margin=new Padding(2);
+            pnlManual.Name="pnlManual";
+            pnlManual.Size=new Size(200, 34);
+            pnlManual.TabIndex=13;
+            pnlManual.Visible=false;
             // 
             // btnAddManualBreak
             // 
-            this.btnAddManualBreak.Location = new System.Drawing.Point(160, 6);
-            this.btnAddManualBreak.Margin = new System.Windows.Forms.Padding(2);
-            this.btnAddManualBreak.Name = "btnAddManualBreak";
-            this.btnAddManualBreak.Size = new System.Drawing.Size(40, 22);
-            this.btnAddManualBreak.TabIndex = 13;
-            this.btnAddManualBreak.Text = "Add";
-            this.btnAddManualBreak.UseVisualStyleBackColor = true;
-            this.btnAddManualBreak.Click += new System.EventHandler(this.btnAddManualBreak_Click);
+            btnAddManualBreak.Location=new Point(160, 6);
+            btnAddManualBreak.Margin=new Padding(2);
+            btnAddManualBreak.Name="btnAddManualBreak";
+            btnAddManualBreak.Size=new Size(40, 22);
+            btnAddManualBreak.TabIndex=13;
+            btnAddManualBreak.Text="Add";
+            btnAddManualBreak.UseVisualStyleBackColor=true;
+            btnAddManualBreak.Click+=btnAddManualBreak_Click;
             // 
             // edtManualBreaks
             // 
-            this.edtManualBreaks.Location = new System.Drawing.Point(51, 7);
-            this.edtManualBreaks.Margin = new System.Windows.Forms.Padding(2);
-            this.edtManualBreaks.Name = "edtManualBreaks";
-            this.edtManualBreaks.Size = new System.Drawing.Size(102, 20);
-            this.edtManualBreaks.TabIndex = 12;
-            this.edtManualBreaks.Text = "0,10.5,20,50";
+            edtManualBreaks.Location=new Point(51, 7);
+            edtManualBreaks.Margin=new Padding(2);
+            edtManualBreaks.Name="edtManualBreaks";
+            edtManualBreaks.Size=new Size(102, 23);
+            edtManualBreaks.TabIndex=12;
+            edtManualBreaks.Text="0,10.5,20,50";
             // 
             // lblManual
             // 
-            this.lblManual.AutoSize = true;
-            this.lblManual.Location = new System.Drawing.Point(2, 10);
-            this.lblManual.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblManual.Name = "lblManual";
-            this.lblManual.Size = new System.Drawing.Size(45, 13);
-            this.lblManual.TabIndex = 6;
-            this.lblManual.Text = "Manual:";
+            lblManual.AutoSize=true;
+            lblManual.Location=new Point(2, 10);
+            lblManual.Margin=new Padding(2, 0, 2, 0);
+            lblManual.Name="lblManual";
+            lblManual.Size=new Size(50, 15);
+            lblManual.TabIndex=6;
+            lblManual.Text="Manual:";
             // 
             // chkForceStatisticsCalculation
             // 
-            this.chkForceStatisticsCalculation.AutoSize = true;
-            this.chkForceStatisticsCalculation.Checked = true;
-            this.chkForceStatisticsCalculation.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkForceStatisticsCalculation.Location = new System.Drawing.Point(436, 9);
-            this.chkForceStatisticsCalculation.Margin = new System.Windows.Forms.Padding(2);
-            this.chkForceStatisticsCalculation.Name = "chkForceStatisticsCalculation";
-            this.chkForceStatisticsCalculation.Size = new System.Drawing.Size(153, 17);
-            this.chkForceStatisticsCalculation.TabIndex = 12;
-            this.chkForceStatisticsCalculation.Text = "Force Statistics Calculation";
-            this.chkForceStatisticsCalculation.UseVisualStyleBackColor = true;
+            chkForceStatisticsCalculation.AutoSize=true;
+            chkForceStatisticsCalculation.Checked=true;
+            chkForceStatisticsCalculation.CheckState=CheckState.Checked;
+            chkForceStatisticsCalculation.Location=new Point(436, 9);
+            chkForceStatisticsCalculation.Margin=new Padding(2);
+            chkForceStatisticsCalculation.Name="chkForceStatisticsCalculation";
+            chkForceStatisticsCalculation.Size=new Size(167, 19);
+            chkForceStatisticsCalculation.TabIndex=12;
+            chkForceStatisticsCalculation.Text="Force Statistics Calculation";
+            chkForceStatisticsCalculation.UseVisualStyleBackColor=true;
+            chkForceStatisticsCalculation.CheckedChanged+=chkForceStatisticsCalculation_CheckedChanged;
             // 
             // cbRenderBy
             // 
-            this.cbRenderBy.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbRenderBy.FormattingEnabled = true;
-            this.cbRenderBy.Items.AddRange(new object[] {
-            "Size / Width",
-            "Color",
-            "Outline width",
-            "Outline color"});
-            this.cbRenderBy.Location = new System.Drawing.Point(656, 7);
-            this.cbRenderBy.Margin = new System.Windows.Forms.Padding(2);
-            this.cbRenderBy.Name = "cbRenderBy";
-            this.cbRenderBy.Size = new System.Drawing.Size(86, 21);
-            this.cbRenderBy.TabIndex = 8;
-            this.cbRenderBy.SelectedIndexChanged += new System.EventHandler(this.cbRenderBy_SelectedIndexChanged);
+            cbRenderBy.DropDownStyle=ComboBoxStyle.DropDownList;
+            cbRenderBy.FormattingEnabled=true;
+            cbRenderBy.Items.AddRange(new object[] { "Size / Width", "Color", "Outline width", "Outline color" });
+            cbRenderBy.Location=new Point(656, 7);
+            cbRenderBy.Margin=new Padding(2);
+            cbRenderBy.Name="cbRenderBy";
+            cbRenderBy.Size=new Size(86, 23);
+            cbRenderBy.TabIndex=8;
+            cbRenderBy.SelectedIndexChanged+=cbRenderBy_SelectedIndexChanged;
             // 
             // cbMethod
             // 
-            this.cbMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbMethod.FormattingEnabled = true;
-            this.cbMethod.Items.AddRange(new object[] {
-            "Select ...",
-            "Defined Interval",
-            "Equal Interval",
-            "Geometrical Interval",
-            "Manual",
-            "Natural Breaks",
-            "K-Means",
-            "K-Means Spatial",
-            "Quantile",
-            "Quartile",
-            "Standard Deviation",
-            "Standard Deviation with Central",
-            "Unique"});
-            this.cbMethod.Location = new System.Drawing.Point(304, 7);
-            this.cbMethod.Margin = new System.Windows.Forms.Padding(2);
-            this.cbMethod.Name = "cbMethod";
-            this.cbMethod.Size = new System.Drawing.Size(122, 21);
-            this.cbMethod.TabIndex = 7;
-            this.cbMethod.SelectedIndexChanged += new System.EventHandler(this.cbMethod_SelectedIndexChanged);
+            cbMethod.DropDownStyle=ComboBoxStyle.DropDownList;
+            cbMethod.FormattingEnabled=true;
+            cbMethod.Items.AddRange(new object[] { "Select ...", "Defined Interval", "Equal Interval", "Geometrical Interval", "Manual", "Natural Breaks", "K-Means", "K-Means Spatial", "Quantile", "Quartile", "Standard Deviation", "Standard Deviation with Central", "Unique" });
+            cbMethod.Location=new Point(304, 7);
+            cbMethod.Margin=new Padding(2);
+            cbMethod.Name="cbMethod";
+            cbMethod.Size=new Size(122, 23);
+            cbMethod.TabIndex=7;
+            cbMethod.SelectedIndexChanged+=cbMethod_SelectedIndexChanged;
             // 
             // cbField
             // 
-            this.cbField.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbField.FormattingEnabled = true;
-            this.cbField.Location = new System.Drawing.Point(118, 7);
-            this.cbField.Margin = new System.Windows.Forms.Padding(2);
-            this.cbField.Name = "cbField";
-            this.cbField.Size = new System.Drawing.Size(136, 21);
-            this.cbField.TabIndex = 6;
-            this.cbField.SelectedIndexChanged += new System.EventHandler(this.cbField_SelectedIndexChanged);
+            cbField.DropDownStyle=ComboBoxStyle.DropDownList;
+            cbField.FormattingEnabled=true;
+            cbField.Location=new Point(118, 7);
+            cbField.Margin=new Padding(2);
+            cbField.Name="cbField";
+            cbField.Size=new Size(136, 23);
+            cbField.TabIndex=6;
+            cbField.SelectedIndexChanged+=cbField_SelectedIndexChanged;
             // 
             // lblRenderBy
             // 
-            this.lblRenderBy.AutoSize = true;
-            this.lblRenderBy.Location = new System.Drawing.Point(593, 10);
-            this.lblRenderBy.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblRenderBy.Name = "lblRenderBy";
-            this.lblRenderBy.Size = new System.Drawing.Size(59, 13);
-            this.lblRenderBy.TabIndex = 3;
-            this.lblRenderBy.Text = "Render by:";
+            lblRenderBy.AutoSize=true;
+            lblRenderBy.Location=new Point(593, 10);
+            lblRenderBy.Margin=new Padding(2, 0, 2, 0);
+            lblRenderBy.Name="lblRenderBy";
+            lblRenderBy.Size=new Size(63, 15);
+            lblRenderBy.TabIndex=3;
+            lblRenderBy.Text="Render by:";
             // 
             // lblMethod
             // 
-            this.lblMethod.AutoSize = true;
-            this.lblMethod.Location = new System.Drawing.Point(259, 10);
-            this.lblMethod.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblMethod.Name = "lblMethod";
-            this.lblMethod.Size = new System.Drawing.Size(49, 13);
-            this.lblMethod.TabIndex = 2;
-            this.lblMethod.Text = "Method: ";
+            lblMethod.AutoSize=true;
+            lblMethod.Location=new Point(259, 10);
+            lblMethod.Margin=new Padding(2, 0, 2, 0);
+            lblMethod.Name="lblMethod";
+            lblMethod.Size=new Size(55, 15);
+            lblMethod.TabIndex=2;
+            lblMethod.Text="Method: ";
             // 
             // lblField
             // 
-            this.lblField.AutoSize = true;
-            this.lblField.Location = new System.Drawing.Point(82, 10);
-            this.lblField.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblField.Name = "lblField";
-            this.lblField.Size = new System.Drawing.Size(32, 13);
-            this.lblField.TabIndex = 1;
-            this.lblField.Text = "Field:";
+            lblField.AutoSize=true;
+            lblField.Location=new Point(82, 10);
+            lblField.Margin=new Padding(2, 0, 2, 0);
+            lblField.Name="lblField";
+            lblField.Size=new Size(35, 15);
+            lblField.TabIndex=1;
+            lblField.Text="Field:";
             // 
             // btnOpen
             // 
-            this.btnOpen.Location = new System.Drawing.Point(2, 6);
-            this.btnOpen.Margin = new System.Windows.Forms.Padding(2);
-            this.btnOpen.Name = "btnOpen";
-            this.btnOpen.Size = new System.Drawing.Size(74, 22);
-            this.btnOpen.TabIndex = 0;
-            this.btnOpen.Text = "Open...";
-            this.btnOpen.UseVisualStyleBackColor = true;
-            this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
+            btnOpen.Location=new Point(2, 6);
+            btnOpen.Margin=new Padding(2);
+            btnOpen.Name="btnOpen";
+            btnOpen.Size=new Size(74, 22);
+            btnOpen.TabIndex=0;
+            btnOpen.Text="Open...";
+            btnOpen.UseVisualStyleBackColor=true;
+            btnOpen.Click+=btnOpen_Click;
             // 
-            // panel1
+            // pColor
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel1.Controls.Add(this.chkColorRampName);
-            this.panel1.Controls.Add(this.tbEndSize);
-            this.panel1.Controls.Add(this.cbColorRamp);
-            this.panel1.Controls.Add(this.chkColorRamp);
-            this.panel1.Controls.Add(this.chkShowInLegend);
-            this.panel1.Controls.Add(this.tbStartSize);
-            this.panel1.Controls.Add(this.tbClassIdField);
-            this.panel1.Controls.Add(this.lblClassIdField);
-            this.panel1.Controls.Add(this.lblEndSize);
-            this.panel1.Controls.Add(this.lblStartSize);
-            this.panel1.Controls.Add(this.pEndColor);
-            this.panel1.Controls.Add(this.lblEndColor);
-            this.panel1.Controls.Add(this.pStartColor);
-            this.panel1.Controls.Add(this.lblStartColor);
-            this.panel1.Location = new System.Drawing.Point(9, 47);
-            this.panel1.Margin = new System.Windows.Forms.Padding(2);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1364, 34);
-            this.panel1.TabIndex = 1;
-            // 
-            // chkColorRampName
-            // 
-            this.chkColorRampName.AutoSize = true;
-            this.chkColorRampName.Checked = true;
-            this.chkColorRampName.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkColorRampName.Location = new System.Drawing.Point(701, 10);
-            this.chkColorRampName.Margin = new System.Windows.Forms.Padding(2);
-            this.chkColorRampName.Name = "chkColorRampName";
-            this.chkColorRampName.Size = new System.Drawing.Size(128, 17);
-            this.chkColorRampName.TabIndex = 15;
-            this.chkColorRampName.Text = "Use ColorRampName";
-            this.chkColorRampName.UseVisualStyleBackColor = true;
-            this.chkColorRampName.CheckedChanged += new System.EventHandler(this.chkColorRampName_CheckedChanged);
+            pColor.Anchor=AnchorStyles.Top|AnchorStyles.Left|AnchorStyles.Right;
+            pColor.Controls.Add(tbEndSize);
+            pColor.Controls.Add(chkShowInLegend);
+            pColor.Controls.Add(tbStartSize);
+            pColor.Controls.Add(tbClassIdField);
+            pColor.Controls.Add(lblClassIdField);
+            pColor.Controls.Add(lblEndSize);
+            pColor.Controls.Add(lblStartSize);
+            pColor.Controls.Add(pEndColor);
+            pColor.Controls.Add(lblEndColor);
+            pColor.Controls.Add(pStartColor);
+            pColor.Controls.Add(lblStartColor);
+            pColor.Location=new Point(9, 47);
+            pColor.Margin=new Padding(2);
+            pColor.Name="pColor";
+            pColor.Size=new Size(1364, 34);
+            pColor.TabIndex=1;
             // 
             // tbEndSize
             // 
-            this.tbEndSize.Location = new System.Drawing.Point(355, 8);
-            this.tbEndSize.Margin = new System.Windows.Forms.Padding(2);
-            this.tbEndSize.Name = "tbEndSize";
-            this.tbEndSize.Size = new System.Drawing.Size(48, 20);
-            this.tbEndSize.TabIndex = 14;
-            this.tbEndSize.Text = "100";
-            this.tbEndSize.TextChanged += new System.EventHandler(this.validateEdit);
-            // 
-            // cbColorRamp
-            // 
-            this.cbColorRamp.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbColorRamp.FormattingEnabled = true;
-            this.cbColorRamp.Location = new System.Drawing.Point(934, 8);
-            this.cbColorRamp.Margin = new System.Windows.Forms.Padding(2);
-            this.cbColorRamp.Name = "cbColorRamp";
-            this.cbColorRamp.Size = new System.Drawing.Size(215, 21);
-            this.cbColorRamp.TabIndex = 13;
-            this.cbColorRamp.SelectedIndexChanged += new System.EventHandler(this.cbColorRamp_SelectedIndexChanged);
-            // 
-            // chkColorRamp
-            // 
-            this.chkColorRamp.AutoSize = true;
-            this.chkColorRamp.Checked = true;
-            this.chkColorRamp.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkColorRamp.Location = new System.Drawing.Point(833, 10);
-            this.chkColorRamp.Margin = new System.Windows.Forms.Padding(2);
-            this.chkColorRamp.Name = "chkColorRamp";
-            this.chkColorRamp.Size = new System.Drawing.Size(100, 17);
-            this.chkColorRamp.TabIndex = 12;
-            this.chkColorRamp.Text = "Use ColorRamp";
-            this.chkColorRamp.UseVisualStyleBackColor = true;
-            this.chkColorRamp.CheckedChanged += new System.EventHandler(this.chkUseColorRamp_CheckedChanged);
+            tbEndSize.Location=new Point(355, 8);
+            tbEndSize.Margin=new Padding(2);
+            tbEndSize.Name="tbEndSize";
+            tbEndSize.Size=new Size(48, 23);
+            tbEndSize.TabIndex=14;
+            tbEndSize.Text="100";
+            tbEndSize.TextChanged+=validateEdit;
             // 
             // chkShowInLegend
             // 
-            this.chkShowInLegend.AutoSize = true;
-            this.chkShowInLegend.Checked = true;
-            this.chkShowInLegend.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkShowInLegend.Location = new System.Drawing.Point(595, 10);
-            this.chkShowInLegend.Margin = new System.Windows.Forms.Padding(2);
-            this.chkShowInLegend.Name = "chkShowInLegend";
-            this.chkShowInLegend.Size = new System.Drawing.Size(99, 17);
-            this.chkShowInLegend.TabIndex = 11;
-            this.chkShowInLegend.Text = "Show in legend";
-            this.chkShowInLegend.UseVisualStyleBackColor = true;
-            this.chkShowInLegend.CheckedChanged += new System.EventHandler(this.chkShowInLegend_CheckedChanged);
+            chkShowInLegend.AutoSize=true;
+            chkShowInLegend.Checked=true;
+            chkShowInLegend.CheckState=CheckState.Checked;
+            chkShowInLegend.Location=new Point(595, 10);
+            chkShowInLegend.Margin=new Padding(2);
+            chkShowInLegend.Name="chkShowInLegend";
+            chkShowInLegend.Size=new Size(107, 19);
+            chkShowInLegend.TabIndex=11;
+            chkShowInLegend.Text="Show in legend";
+            chkShowInLegend.UseVisualStyleBackColor=true;
+            chkShowInLegend.CheckedChanged+=chkShowInLegend_CheckedChanged;
             // 
             // tbStartSize
             // 
-            this.tbStartSize.Location = new System.Drawing.Point(246, 8);
-            this.tbStartSize.Margin = new System.Windows.Forms.Padding(2);
-            this.tbStartSize.Name = "tbStartSize";
-            this.tbStartSize.Size = new System.Drawing.Size(48, 20);
-            this.tbStartSize.TabIndex = 9;
-            this.tbStartSize.Text = "1";
-            this.tbStartSize.TextChanged += new System.EventHandler(this.validateEdit);
+            tbStartSize.Location=new Point(246, 8);
+            tbStartSize.Margin=new Padding(2);
+            tbStartSize.Name="tbStartSize";
+            tbStartSize.Size=new Size(48, 23);
+            tbStartSize.TabIndex=9;
+            tbStartSize.Text="1";
+            tbStartSize.TextChanged+=validateEdit;
             // 
             // tbClassIdField
             // 
-            this.tbClassIdField.Location = new System.Drawing.Point(486, 8);
-            this.tbClassIdField.Margin = new System.Windows.Forms.Padding(2);
-            this.tbClassIdField.Name = "tbClassIdField";
-            this.tbClassIdField.Size = new System.Drawing.Size(100, 20);
-            this.tbClassIdField.TabIndex = 8;
-            this.tbClassIdField.TextChanged += new System.EventHandler(this.validateEdit);
+            tbClassIdField.Location=new Point(486, 8);
+            tbClassIdField.Margin=new Padding(2);
+            tbClassIdField.Name="tbClassIdField";
+            tbClassIdField.Size=new Size(100, 23);
+            tbClassIdField.TabIndex=8;
+            tbClassIdField.TextChanged+=validateEdit;
             // 
             // lblClassIdField
             // 
-            this.lblClassIdField.AutoSize = true;
-            this.lblClassIdField.Location = new System.Drawing.Point(411, 11);
-            this.lblClassIdField.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblClassIdField.Name = "lblClassIdField";
-            this.lblClassIdField.Size = new System.Drawing.Size(71, 13);
-            this.lblClassIdField.TabIndex = 5;
-            this.lblClassIdField.Text = "Class ID field:";
+            lblClassIdField.AutoSize=true;
+            lblClassIdField.Location=new Point(411, 11);
+            lblClassIdField.Margin=new Padding(2, 0, 2, 0);
+            lblClassIdField.Name="lblClassIdField";
+            lblClassIdField.Size=new Size(77, 15);
+            lblClassIdField.TabIndex=5;
+            lblClassIdField.Text="Class ID field:";
             // 
             // lblEndSize
             // 
-            this.lblEndSize.AutoSize = true;
-            this.lblEndSize.Location = new System.Drawing.Point(301, 11);
-            this.lblEndSize.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblEndSize.Name = "lblEndSize";
-            this.lblEndSize.Size = new System.Drawing.Size(50, 13);
-            this.lblEndSize.TabIndex = 4;
-            this.lblEndSize.Text = "End size:";
+            lblEndSize.AutoSize=true;
+            lblEndSize.Location=new Point(301, 11);
+            lblEndSize.Margin=new Padding(2, 0, 2, 0);
+            lblEndSize.Name="lblEndSize";
+            lblEndSize.Size=new Size(52, 15);
+            lblEndSize.TabIndex=4;
+            lblEndSize.Text="End size:";
             // 
             // lblStartSize
             // 
-            this.lblStartSize.AutoSize = true;
-            this.lblStartSize.Location = new System.Drawing.Point(186, 11);
-            this.lblStartSize.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblStartSize.Name = "lblStartSize";
-            this.lblStartSize.Size = new System.Drawing.Size(53, 13);
-            this.lblStartSize.TabIndex = 3;
-            this.lblStartSize.Text = "Start size:";
+            lblStartSize.AutoSize=true;
+            lblStartSize.Location=new Point(186, 11);
+            lblStartSize.Margin=new Padding(2, 0, 2, 0);
+            lblStartSize.Name="lblStartSize";
+            lblStartSize.Size=new Size(56, 15);
+            lblStartSize.TabIndex=3;
+            lblStartSize.Text="Start size:";
             // 
             // pEndColor
             // 
-            this.pEndColor.BackColor = System.Drawing.Color.Green;
-            this.pEndColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pEndColor.Location = new System.Drawing.Point(158, 8);
-            this.pEndColor.Margin = new System.Windows.Forms.Padding(2);
-            this.pEndColor.Name = "pEndColor";
-            this.pEndColor.Size = new System.Drawing.Size(24, 20);
-            this.pEndColor.TabIndex = 2;
-            this.pEndColor.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pEndColor_MouseClick);
+            pEndColor.BackColor=Color.Green;
+            pEndColor.BorderStyle=BorderStyle.FixedSingle;
+            pEndColor.Location=new Point(158, 8);
+            pEndColor.Margin=new Padding(2);
+            pEndColor.Name="pEndColor";
+            pEndColor.Size=new Size(24, 20);
+            pEndColor.TabIndex=2;
+            pEndColor.MouseClick+=pEndColor_MouseClick;
             // 
             // lblEndColor
             // 
-            this.lblEndColor.AutoSize = true;
-            this.lblEndColor.Location = new System.Drawing.Point(97, 11);
-            this.lblEndColor.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblEndColor.Name = "lblEndColor";
-            this.lblEndColor.Size = new System.Drawing.Size(55, 13);
-            this.lblEndColor.TabIndex = 2;
-            this.lblEndColor.Text = "End color:";
+            lblEndColor.AutoSize=true;
+            lblEndColor.Location=new Point(97, 11);
+            lblEndColor.Margin=new Padding(2, 0, 2, 0);
+            lblEndColor.Name="lblEndColor";
+            lblEndColor.Size=new Size(60, 15);
+            lblEndColor.TabIndex=2;
+            lblEndColor.Text="End color:";
             // 
             // pStartColor
             // 
-            this.pStartColor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(233)))), ((int)(((byte)(248)))), ((int)(((byte)(237)))));
-            this.pStartColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pStartColor.Location = new System.Drawing.Point(69, 8);
-            this.pStartColor.Margin = new System.Windows.Forms.Padding(2);
-            this.pStartColor.Name = "pStartColor";
-            this.pStartColor.Size = new System.Drawing.Size(24, 20);
-            this.pStartColor.TabIndex = 1;
-            this.pStartColor.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pStartColor_MouseClick);
+            pStartColor.BackColor=Color.FromArgb(233, 248, 237);
+            pStartColor.BorderStyle=BorderStyle.FixedSingle;
+            pStartColor.Location=new Point(69, 8);
+            pStartColor.Margin=new Padding(2);
+            pStartColor.Name="pStartColor";
+            pStartColor.Size=new Size(24, 20);
+            pStartColor.TabIndex=1;
+            pStartColor.MouseClick+=pStartColor_MouseClick;
             // 
             // lblStartColor
             // 
-            this.lblStartColor.AutoSize = true;
-            this.lblStartColor.Location = new System.Drawing.Point(7, 11);
-            this.lblStartColor.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblStartColor.Name = "lblStartColor";
-            this.lblStartColor.Size = new System.Drawing.Size(58, 13);
-            this.lblStartColor.TabIndex = 0;
-            this.lblStartColor.Text = "Start color:";
+            lblStartColor.AutoSize=true;
+            lblStartColor.Location=new Point(7, 11);
+            lblStartColor.Margin=new Padding(2, 0, 2, 0);
+            lblStartColor.Name="lblStartColor";
+            lblStartColor.Size=new Size(64, 15);
+            lblStartColor.TabIndex=0;
+            lblStartColor.Text="Start color:";
             // 
             // GISLegend
             // 
-            this.GISLegend.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            tgiS_ControlLegendDialogOptions1.VectorWizardUniqueLimit = 256;
-            tgiS_ControlLegendDialogOptions1.VectorWizardUniqueSearchLimit = 16384;
-            this.GISLegend.DialogOptions = tgiS_ControlLegendDialogOptions1;
-            this.GISLegend.GIS_Viewer = this.GIS;
-            this.GISLegend.Location = new System.Drawing.Point(9, 86);
-            this.GISLegend.Margin = new System.Windows.Forms.Padding(2);
-            this.GISLegend.Name = "GISLegend";
-            this.GISLegend.Options = ((TatukGIS.NDK.TGIS_ControlLegendOption)(((((((TatukGIS.NDK.TGIS_ControlLegendOption.AllowMove | TatukGIS.NDK.TGIS_ControlLegendOption.AllowActive) 
-            | TatukGIS.NDK.TGIS_ControlLegendOption.AllowExpand) 
-            | TatukGIS.NDK.TGIS_ControlLegendOption.AllowParams) 
-            | TatukGIS.NDK.TGIS_ControlLegendOption.AllowSelect) 
-            | TatukGIS.NDK.TGIS_ControlLegendOption.ShowSubLayers) 
-            | TatukGIS.NDK.TGIS_ControlLegendOption.AllowParamsVisible)));
-            this.GISLegend.Size = new System.Drawing.Size(215, 667);
-            this.GISLegend.TabIndex = 2;
+            GISLegend.Anchor=AnchorStyles.Top|AnchorStyles.Bottom|AnchorStyles.Left;
+            tgiS_ControlLegendDialogOptions1.VectorWizardUniqueLimit=256;
+            tgiS_ControlLegendDialogOptions1.VectorWizardUniqueSearchLimit=16384;
+            GISLegend.DialogOptions=tgiS_ControlLegendDialogOptions1;
+            GISLegend.GIS_Viewer=GIS;
+            GISLegend.Location=new Point(9, 123);
+            GISLegend.Margin=new Padding(2);
+            GISLegend.Name="GISLegend";
+            GISLegend.Options=TGIS_ControlLegendOption.AllowMove|TGIS_ControlLegendOption.AllowActive|TGIS_ControlLegendOption.AllowExpand|TGIS_ControlLegendOption.AllowParams|TGIS_ControlLegendOption.AllowSelect|TGIS_ControlLegendOption.ShowSubLayers|TGIS_ControlLegendOption.AllowParamsVisible;
+            GISLegend.Size=new Size(215, 630);
+            GISLegend.TabIndex=2;
             // 
             // GIS
             // 
-            this.GIS.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.GIS.AutoStyle = true;
-            this.GIS.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.GIS.Level = 28.140189979287609D;
-            this.GIS.Location = new System.Drawing.Point(230, 86);
-            this.GIS.Margin = new System.Windows.Forms.Padding(2);
-            this.GIS.Name = "GIS";
-            this.GIS.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.GIS.Size = new System.Drawing.Size(1143, 665);
-            this.GIS.TabIndex = 3;
+            GIS.Anchor=AnchorStyles.Top|AnchorStyles.Bottom|AnchorStyles.Left|AnchorStyles.Right;
+            GIS.AutoStyle=true;
+            GIS.BackColor=Color.FromArgb(255, 255, 255);
+            GIS.Level=1D;
+            GIS.Location=new Point(230, 123);
+            GIS.Margin=new Padding(2);
+            GIS.Name="GIS";
+            GIS.SelectionColor=Color.FromArgb(255, 0, 0);
+            GIS.Size=new Size(1143, 628);
+            GIS.TabIndex=3;
+            GIS.TiledPaint=false;
             // 
             // dlgOpen
             // 
-            this.dlgOpen.FileName = "openFileDialog1";
+            dlgOpen.FileName="openFileDialog1";
+            // 
+            // pRamps
+            // 
+            pRamps.Anchor=AnchorStyles.Top|AnchorStyles.Left|AnchorStyles.Right;
+            pRamps.Controls.Add(chkReverse);
+            pRamps.Controls.Add(cbColorMapMode);
+            pRamps.Controls.Add(lblColorMapMode);
+            pRamps.Controls.Add(chkColorRamp);
+            pRamps.Controls.Add(chkColorRampName);
+            pRamps.Controls.Add(cbColorRamp);
+            pRamps.Location=new Point(9, 85);
+            pRamps.Margin=new Padding(2);
+            pRamps.Name="pRamps";
+            pRamps.Size=new Size(1364, 34);
+            pRamps.TabIndex=16;
+            // 
+            // chkReverse
+            // 
+            chkReverse.AutoSize=true;
+            chkReverse.Location=new Point(755, 6);
+            chkReverse.Name="chkReverse";
+            chkReverse.Size=new Size(66, 19);
+            chkReverse.TabIndex=19;
+            chkReverse.Text="Reverse";
+            chkReverse.UseVisualStyleBackColor=true;
+            chkReverse.CheckedChanged+=chkReverse_CheckedChanged;
+            // 
+            // cbColorMapMode
+            // 
+            cbColorMapMode.FormattingEnabled=true;
+            cbColorMapMode.Items.AddRange(new object[] { "Continuous", "Discrete" });
+            cbColorMapMode.Location=new Point(628, 4);
+            cbColorMapMode.Name="cbColorMapMode";
+            cbColorMapMode.Size=new Size(121, 23);
+            cbColorMapMode.TabIndex=18;
+            cbColorMapMode.Text="Continous";
+            cbColorMapMode.SelectedIndexChanged+=cbColorMapMode_SelectedIndexChanged;
+            // 
+            // lblColorMapMode
+            // 
+            lblColorMapMode.AutoSize=true;
+            lblColorMapMode.Location=new Point(515, 9);
+            lblColorMapMode.Name="lblColorMapMode";
+            lblColorMapMode.Size=new Size(97, 15);
+            lblColorMapMode.TabIndex=17;
+            lblColorMapMode.Text="Colormap Mode:";
+            // 
+            // chkColorRamp
+            // 
+            chkColorRamp.AutoSize=true;
+            chkColorRamp.Checked=true;
+            chkColorRamp.CheckState=CheckState.Checked;
+            chkColorRamp.Location=new Point(4, 8);
+            chkColorRamp.Margin=new Padding(2);
+            chkColorRamp.Name="chkColorRamp";
+            chkColorRamp.Size=new Size(108, 19);
+            chkColorRamp.TabIndex=16;
+            chkColorRamp.Text="Use ColorRamp";
+            chkColorRamp.UseVisualStyleBackColor=true;
+            chkColorRamp.CheckedChanged+=chkColorRamp_CheckedChanged;
+            // 
+            // chkColorRampName
+            // 
+            chkColorRampName.AutoSize=true;
+            chkColorRampName.Checked=true;
+            chkColorRampName.CheckState=CheckState.Checked;
+            chkColorRampName.Location=new Point(131, 8);
+            chkColorRampName.Margin=new Padding(2);
+            chkColorRampName.Name="chkColorRampName";
+            chkColorRampName.Size=new Size(140, 19);
+            chkColorRampName.TabIndex=15;
+            chkColorRampName.Text="Use ColorRampName";
+            chkColorRampName.UseVisualStyleBackColor=true;
+            chkColorRampName.CheckedChanged+=chkColorRampName_CheckedChanged;
+            // 
+            // cbColorRamp
+            // 
+            cbColorRamp.DropDownStyle=ComboBoxStyle.DropDownList;
+            cbColorRamp.FormattingEnabled=true;
+            cbColorRamp.Location=new Point(295, 6);
+            cbColorRamp.Margin=new Padding(2);
+            cbColorRamp.Name="cbColorRamp";
+            cbColorRamp.Size=new Size(215, 23);
+            cbColorRamp.TabIndex=13;
+            cbColorRamp.SelectedIndexChanged+=cbColorRamp_SelectedIndexChanged_1;
             // 
             // WinForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(1384, 761);
-            this.Controls.Add(this.GIS);
-            this.Controls.Add(this.GISLegend);
-            this.Controls.Add(this.panel1);
-            this.Controls.Add(this.pClassification);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Location = new System.Drawing.Point(200, 120);
-            this.Margin = new System.Windows.Forms.Padding(2);
-            this.Name = "WinForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "TatukGIS Samples - Classification";
-            this.Load += new System.EventHandler(this.WinForm_Load);
-            this.pClassification.ResumeLayout(false);
-            this.pClassification.PerformLayout();
-            this.pnlClasses.ResumeLayout(false);
-            this.pnlClasses.PerformLayout();
-            this.pnlInterval.ResumeLayout(false);
-            this.pnlInterval.PerformLayout();
-            this.pnlManual.ResumeLayout(false);
-            this.pnlManual.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions=new SizeF(96F, 96F);
+            AutoScaleMode=AutoScaleMode.Dpi;
+            ClientSize=new Size(1384, 761);
+            Controls.Add(pRamps);
+            Controls.Add(GIS);
+            Controls.Add(GISLegend);
+            Controls.Add(pColor);
+            Controls.Add(pClassification);
+            Icon=(Icon)resources.GetObject("$this.Icon");
+            Location=new Point(200, 120);
+            Margin=new Padding(2);
+            Name="WinForm";
+            StartPosition=FormStartPosition.CenterScreen;
+            Text="TatukGIS Samples - Classification";
+            Load+=WinForm_Load;
+            pClassification.ResumeLayout(false);
+            pClassification.PerformLayout();
+            pnlClasses.ResumeLayout(false);
+            pnlClasses.PerformLayout();
+            pnlInterval.ResumeLayout(false);
+            pnlInterval.PerformLayout();
+            pnlManual.ResumeLayout(false);
+            pnlManual.PerformLayout();
+            pColor.ResumeLayout(false);
+            pColor.PerformLayout();
+            pRamps.ResumeLayout(false);
+            pRamps.PerformLayout();
+            ResumeLayout(false);
         }
         #endregion
 
@@ -747,7 +765,8 @@ namespace Classification
                         case TGIS_FieldType.Float: cbField.Items.Add(field.Name); break;
                     }
                 }
-            } else if (lyr is TGIS_LayerPixel)
+            }
+            else if (lyr is TGIS_LayerPixel)
             {
                 lp = lyr as TGIS_LayerPixel;
                 for (int i = 1; i <= lp.BandsCount; i++)
@@ -757,6 +776,14 @@ namespace Classification
             }
 
             cbField.SelectedIndex = 0;
+        }
+
+        private void setColorRampControlEnabled(Boolean _enabled)
+        {
+            cbColorRamp.Enabled = _enabled;
+            chkColorRampName.Enabled = _enabled;
+            cbColorMapMode.Enabled = _enabled;
+            chkReverse.Enabled = _enabled;
         }
 
         private void fillCbColorRamps()
@@ -782,6 +809,69 @@ namespace Classification
                 res = GIS.Items[0] as TGIS_Layer;
 
             return res;
+        }
+        private void setInterval(Boolean _val)
+        {
+            tbInterval.Visible = _val;
+            lblInterval.Visible = _val;
+        }
+
+        private void showInterval()
+        {
+            setInterval(true);
+        }
+
+        private void hideInterval()
+        {
+            setInterval(false);
+        }
+        private void setStdDev(Boolean _val)
+        {
+            cbInterval.Visible = _val;
+            lblInterval.Visible = _val;
+        }
+
+        private void showStdDev()
+        {
+            setStdDev(true);
+        }
+
+        private void hideStdDev()
+        {
+            setStdDev(false);
+        }
+
+        private void setClasses(Boolean _val)
+        {
+            cbClasses.Visible = _val;
+            lblClasses.Visible = _val;
+        }
+
+        private void showClasses()
+        {
+            setClasses(true);
+        }
+
+        private void hideClasses()
+        {
+            setClasses(false);
+        }
+
+        private void setManual(Boolean _val)
+        {
+            edtManualBreaks.Visible = _val;
+            lblManual.Visible = _val;
+            btnAddManualBreak.Visible = _val;
+        }
+
+        private void showManual()
+        {
+            setManual(true);
+        }
+
+        private void hideManual()
+        {
+            setManual(false);
         }
 
         private void validateEdit(object sender, EventArgs e)
@@ -834,51 +924,72 @@ namespace Classification
             }
 
             cbColorRamp.SelectedIndex = cbColorRamp.Items.IndexOf("GreenBlue");
+            cbColorMapMode.SelectedItem = TatukGIS.NDK.__Global.GIS_COLORMAPMODE_CONTINUOUS;
 
             method = cbMethod.SelectedItem.ToString();
-            if (method.Equals(GIS_CLASSIFY_METHOD_DI))
+            // no selection
+            if (cbMethod.SelectedIndex == 0)
             {
-                pnlInterval.Visible = true;
-                pnlClasses.Visible = false;
-                pnlManual.Visible = false;
+                hideInterval();
+                hideStdDev();
+                hideClasses();
+                hideManual();
+            }
+            else if (method.Equals(GIS_CLASSIFY_METHOD_DI))
+            {
+                hideStdDev();
+                hideClasses();
+                hideManual();
 
-                tbInterval.Visible = true;
-                cbInterval.Visible = false;
+                showInterval();
             }
             else if (method.Equals(GIS_CLASSIFY_METHOD_MN))
             {
-                pnlInterval.Visible = false;
-                pnlClasses.Visible = false;
-                pnlManual.Visible = true;
+                hideInterval();
+                hideStdDev();
+                hideClasses();
+
+                showManual();
             }
             else if (method.Equals(GIS_CLASSIFY_METHOD_QR))
             {
-                pnlClasses.Visible = false;
-                pnlInterval.Visible = false;
-                pnlManual.Visible = false;
-            }
-            else if (method.Equals(GIS_CLASSIFY_METHOD_SD) || method.Equals(GIS_CLASSIFY_METHOD_SDC))
-            {
-                pnlClasses.Visible = false;
-                pnlInterval.Visible = true;
-                pnlManual.Visible = false;
+                hideInterval();
+                hideStdDev();
+                hideClasses();
+                hideManual();
 
-                tbInterval.Visible = false;
-                cbInterval.Visible = true;
+                cbColorMapMode.SelectedItem = TatukGIS.NDK.TGIS_ColorRampNames.BrownGreen;
+            }
+            else if ((method.Equals(GIS_CLASSIFY_METHOD_SD)) ||
+                    (method.Equals(GIS_CLASSIFY_METHOD_SDC)))
+            {
+                hideInterval();
+                hideClasses();
+                hideManual();
+
+                showStdDev();
+
+                cbColorMapMode.SelectedItem = TatukGIS.NDK.TGIS_ColorRampNames.BrownGreen;
             }
             else if (method.Equals(GIS_CLASSIFY_METHOD_UNQ))
             {
-                pnlClasses.Visible = false;
-                pnlInterval.Visible = false;
-                pnlManual.Visible = false;
+                hideInterval();
+                hideClasses();
+                hideStdDev();
+                hideManual();
 
-                cbColorRamp.SelectedIndex = cbColorRamp.Items.IndexOf("Unique");
+                setColorRampControlEnabled(true);
+
+                chkColorRamp.Checked = true;
+                cbColorRamp.SelectedItem = TGIS_ColorRampNames.Unique;
+                cbColorMapMode.SelectedItem = TatukGIS.NDK.__Global.GIS_COLORMAPMODE_DISCRETE;
             }
             else
             {
-                pnlClasses.Visible = true;
-                pnlInterval.Visible = false;
-                pnlManual.Visible = false;
+                hideInterval();
+                hideStdDev();
+                hideManual();
+                showClasses();
             }
 
             doClassify(sender, e);
@@ -890,6 +1001,7 @@ namespace Classification
             TGIS_Layer lyr;
             TGIS_LayerVector lv = null;
             String method;
+            String ramp_name;
             String render_type;
             String interval;
             String class_id_field = "";
@@ -914,7 +1026,8 @@ namespace Classification
                 create_field = class_id_field.Length > 0;
                 if (create_field && (lv.FindField(class_id_field) < 0))
                     lv.AddField(class_id_field, TGIS_FieldType.Number, 3, 0);
-            } else if (!(lyr is TGIS_LayerPixel))
+            }
+            else if (!(lyr is TGIS_LayerPixel))
             {
                 MessageBox.Show(String.Format("Layer %s is not supported", (lyr as TGIS_LayerPixel).Name));
             }
@@ -995,7 +1108,7 @@ namespace Classification
 
             if (chkColorRampName.Checked)
             {
-                if(cbColorRamp.Text.Equals("None"))
+                if (cbColorRamp.Text.Equals("None"))
                 {
                     classifier.ColorRampName = "";
                 }
@@ -1004,21 +1117,36 @@ namespace Classification
                     classifier.ColorRampName = TGIS_Utils.GisColorRampList[cbColorRamp.SelectedIndex].Name;
                 }
             }
-      
+
             // NumClasses property is automatically calculated for methods:
             // DefinedInterval, Quartile, StandardDeviation(s)
             if (chkColorRamp.Checked)
             {
-                if (method == GIS_CLASSIFY_METHOD_UNQ) colormap_mode = TGIS_ColorMapMode.Discrete;
-                else colormap_mode = TGIS_ColorMapMode.Continuous;
+                // colormap mode
+                switch (cbColorMapMode.SelectedItem)
+                {
+                    case TatukGIS.NDK.__Global.GIS_COLORMAPMODE_CONTINUOUS:
+                        colormap_mode = TGIS_ColorMapMode.Continuous;
+                        break;
+                    default:
+                        colormap_mode = TGIS_ColorMapMode.Discrete;
+                        break;
+                }
 
-                classifier.EstimateNumClasses();
-                classifier.ColorRamp = TGIS_Utils.GisColorRampList[cbColorRamp.SelectedIndex].RealizeColorMap(
-                    colormap_mode,
-                    classifier.NumClasses,
-                    false
-                );
-            } else
+                // ramp can be assigned directly (ColorRamp) or by name (ColorRampName)
+                ramp_name = cbColorRamp.SelectedItem.ToString();
+                if (chkColorRampName.Checked)
+                {
+                    classifier.ColorRampName = ramp_name;
+                }
+                else
+                {
+                    classifier.ColorRamp = TatukGIS.NDK.__Global.GisColorRampList().ByName(ramp_name);
+                }
+                classifier.ColorRamp.DefaultColorMapMode = colormap_mode;
+                classifier.ColorRamp.DefaultReverse = chkReverse.Checked;
+            }
+            else
             {
                 classifier.ColorRamp = null;
             }
@@ -1036,16 +1164,20 @@ namespace Classification
                 if (render_type.Equals(RENDER_TYPE_SIZE))
                 {
                     classifier_vec.RenderType = TGIS_ClassificationRenderType.Size;
-                } else if (render_type.Equals(RENDER_TYPE_COLOR))
+                }
+                else if (render_type.Equals(RENDER_TYPE_COLOR))
                 {
                     classifier_vec.RenderType = TGIS_ClassificationRenderType.Color;
-                } else if (render_type.Equals(RENDER_TYPE_OUTLINE_WIDTH))
+                }
+                else if (render_type.Equals(RENDER_TYPE_OUTLINE_WIDTH))
                 {
                     classifier_vec.RenderType = TGIS_ClassificationRenderType.OutlineWidth;
-                } else if (render_type.Equals(RENDER_TYPE_OUTLINE_COLOR))
+                }
+                else if (render_type.Equals(RENDER_TYPE_OUTLINE_COLOR))
                 {
                     classifier_vec.RenderType = TGIS_ClassificationRenderType.OutlineColor;
-                } else
+                }
+                else
                 {
                     classifier_vec.RenderType = TGIS_ClassificationRenderType.Color;
                 }
@@ -1066,7 +1198,8 @@ namespace Classification
                 if (res.Equals(DialogResult.OK))
                 {
                     lyr.Statistics.Calculate();
-                } else
+                }
+                else
                 {
                     lyr.Statistics.ResetModified();
                     return;
@@ -1100,39 +1233,12 @@ namespace Classification
             doClassify(sender, e);
         }
 
-        private void cbInterval_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            doClassify(sender, e);
-        }
-
-        private void chkUseColorRamp_CheckedChanged(object sender, EventArgs e)
-        {
-            cbColorRamp.Enabled = chkColorRampName.Checked || chkColorRamp.Checked;
-
-            doClassify(sender, e);
-        }
-
         private void chkShowInLegend_CheckedChanged(object sender, EventArgs e)
         {
             doClassify(sender, e);
         }
 
-        private void cbClasses_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            doClassify(sender, e);
-        }
-
-        private void cbColorRamp_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            doClassify(sender, e);
-        }
-
         private void tbInterval_TextChanged(object sender, EventArgs e)
-        {
-            doClassify(sender, e);
-        }
-
-        private void cbClasses_SelectedIndexChanged_1(object sender, EventArgs e)
         {
             doClassify(sender, e);
         }
@@ -1151,6 +1257,36 @@ namespace Classification
         {
             cbColorRamp.Enabled = chkColorRampName.Checked || chkColorRamp.Checked;
 
+            doClassify(sender, e);
+        }
+
+        private void cbColorMapMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            doClassify(sender, e);
+        }
+
+        private void chkForceStatisticsCalculation_CheckedChanged(object sender, EventArgs e)
+        {
+            doClassify(sender, e);
+        }
+
+        private void chkReverse_CheckedChanged(object sender, EventArgs e)
+        {
+            doClassify(sender, e);
+        }
+
+        private void cbColorRamp_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+            doClassify(sender, e);
+        }
+
+        private void chkColorRamp_CheckedChanged(object sender, EventArgs e)
+        {
+            setColorRampControlEnabled(chkColorRamp.Checked);
+        }
+
+        private void cbClasses_SelectedIndexChanged_2(object sender, EventArgs e)
+        {
             doClassify(sender, e);
         }
     }

@@ -66,7 +66,7 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.80" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
-		<PackageReference Include="TatukGIS.DK.NET.Maui" Version="103.0.38312" />
+		<PackageReference Include="SkiaSharp.HarfBuzz" Version="3.119.0" />
+		<PackageReference Include="TatukGIS.DK.NET.Maui" Version="105.0.38678" />
 	</ItemGroup>
-
 </Project>
