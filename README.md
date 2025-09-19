@@ -5,7 +5,7 @@
 For more information about DK.NET, visit [Documentation](https://docs.tatukgis.com/dk) and [Web site](https://www.tatukgis.com).
 
 ## Installation
-Samples can be opened directly from GIT hub. Required libreay will be downloaded from the NuGet.
+Samples can be opened directly from GitHub. Required library will be downloaded from the NuGet.
 
 ## Usage
 Project naming:
