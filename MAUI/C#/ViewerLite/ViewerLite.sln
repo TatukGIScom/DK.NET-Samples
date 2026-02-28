@@ -1,54 +1,26 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36202.13
+VisualStudioVersion = 17.14.36908.2 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewerLite", "ViewerLite.csproj", "{B8F667C8-8767-4B01-BC7D-7D17882D6F92}"
-	ProjectSection(ProjectDependencies) = postProject
-		{B7ADDDDE-B066-48CF-9748-9081475AC1A5} = {B7ADDDDE-B066-48CF-9748-9081475AC1A5}
-	EndProjectSection
-EndProject
-Project("{656346D9-4656-40DA-A068-22D5425D4639}") = "NDK_NET9_Maui", "..\..\..\Projects\NDK_NET9_Maui.elements", "{B7ADDDDE-B066-48CF-9748-9081475AC1A5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewerLite", "ViewerLite.csproj", "{CBD7E0EE-200C-660D-F371-A5AFC5D6C5FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Android|Any CPU = Android|Any CPU
 		Debug|Any CPU = Debug|Any CPU
-		iOS|Any CPU = iOS|Any CPU
-		MacCatalyst|Any CPU = MacCatalyst|Any CPU
 		Release|Any CPU = Release|Any CPU
-		Windows|Any CPU = Windows|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B8F667C8-8767-4B01-BC7D-7D17882D6F92}.Android|Any CPU.ActiveCfg = Release|Any CPU
-		{B8F667C8-8767-4B01-BC7D-7D17882D6F92}.Android|Any CPU.Build.0 = Release|Any CPU
-		{B8F667C8-8767-4B01-BC7D-7D17882D6F92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B8F667C8-8767-4B01-BC7D-7D17882D6F92}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B8F667C8-8767-4B01-BC7D-7D17882D6F92}.iOS|Any CPU.ActiveCfg = Release|Any CPU
-		{B8F667C8-8767-4B01-BC7D-7D17882D6F92}.iOS|Any CPU.Build.0 = Release|Any CPU
-		{B8F667C8-8767-4B01-BC7D-7D17882D6F92}.MacCatalyst|Any CPU.ActiveCfg = Debug|Any CPU
-		{B8F667C8-8767-4B01-BC7D-7D17882D6F92}.MacCatalyst|Any CPU.Build.0 = Debug|Any CPU
-		{B8F667C8-8767-4B01-BC7D-7D17882D6F92}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B8F667C8-8767-4B01-BC7D-7D17882D6F92}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B8F667C8-8767-4B01-BC7D-7D17882D6F92}.Windows|Any CPU.ActiveCfg = Release|Any CPU
-		{B8F667C8-8767-4B01-BC7D-7D17882D6F92}.Windows|Any CPU.Build.0 = Release|Any CPU
-		{B7ADDDDE-B066-48CF-9748-9081475AC1A5}.Android|Any CPU.ActiveCfg = Android
-		{B7ADDDDE-B066-48CF-9748-9081475AC1A5}.Android|Any CPU.Build.0 = Android
-		{B7ADDDDE-B066-48CF-9748-9081475AC1A5}.Debug|Any CPU.ActiveCfg = Debug
-		{B7ADDDDE-B066-48CF-9748-9081475AC1A5}.Debug|Any CPU.Build.0 = Debug
-		{B7ADDDDE-B066-48CF-9748-9081475AC1A5}.iOS|Any CPU.ActiveCfg = iOS
-		{B7ADDDDE-B066-48CF-9748-9081475AC1A5}.iOS|Any CPU.Build.0 = iOS
-		{B7ADDDDE-B066-48CF-9748-9081475AC1A5}.MacCatalyst|Any CPU.ActiveCfg = MacCatalyst
-		{B7ADDDDE-B066-48CF-9748-9081475AC1A5}.MacCatalyst|Any CPU.Build.0 = MacCatalyst
-		{B7ADDDDE-B066-48CF-9748-9081475AC1A5}.Release|Any CPU.ActiveCfg = Android
-		{B7ADDDDE-B066-48CF-9748-9081475AC1A5}.Release|Any CPU.Build.0 = Android
-		{B7ADDDDE-B066-48CF-9748-9081475AC1A5}.Windows|Any CPU.ActiveCfg = Windows
-		{B7ADDDDE-B066-48CF-9748-9081475AC1A5}.Windows|Any CPU.Build.0 = Windows
+		{CBD7E0EE-200C-660D-F371-A5AFC5D6C5FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBD7E0EE-200C-660D-F371-A5AFC5D6C5FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBD7E0EE-200C-660D-F371-A5AFC5D6C5FA}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{CBD7E0EE-200C-660D-F371-A5AFC5D6C5FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBD7E0EE-200C-660D-F371-A5AFC5D6C5FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {7BA4CF24-DAD8-436F-9710-4B41A36D07E8}
+		SolutionGuid = {963D1293-4771-492F-87E6-FE3482E5DE6A}
 	EndGlobalSection
 EndGlobal

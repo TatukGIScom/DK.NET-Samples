@@ -73,117 +73,111 @@ Namespace WMTSManager
 #Region "Windows Form Designer generated code"
 
         Private Sub InitializeComponent()
-            Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(WMTSForm))
-            Me.lServers = New System.Windows.Forms.Label()
-            Me.cbxServers = New System.Windows.Forms.ComboBox()
-            Me.btnConnect = New System.Windows.Forms.Button()
-            Me.lLayers = New System.Windows.Forms.Label()
-            Me.cbxLayers = New System.Windows.Forms.ComboBox()
-            Me.cbInvertAxis = New System.Windows.Forms.CheckBox()
-            Me.btnAdd = New System.Windows.Forms.Button()
-            Me.SuspendLayout()
-            '
-            'lServers
-            '
-            Me.lServers.AutoSize = True
-            Me.lServers.Location = New System.Drawing.Point(12, 9)
-            Me.lServers.Name = "lServers"
-            Me.lServers.Size = New System.Drawing.Size(43, 13)
-            Me.lServers.TabIndex = 0
-            Me.lServers.Text = "Servers"
-            '
-            'cbxServers
-            '
-            Me.cbxServers.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-            Me.cbxServers.FormattingEnabled = True
-            Me.cbxServers.Items.AddRange(New Object() {"http://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/wmt" &
-                "s", "http://garden.gis.vt.edu/arcgis/rest/services/VBMP2011/VBMP2011_Infrared_WGS/MapS" &
-                "erver/WMTS/1.0.0/WMTSCapabilities.xml", "http://geodata.nationaalgeoregister.nl/tiles/service/wmts/bgtstandaard?VERSION=1." &
-                "0.0&request=GetCapabilities", "http://geodata.nationaalgeoregister.nl/tiles/service/wmts/brtachtergrondkaart?REQ" &
-                "UEST=getcapabilities&amp;VERSION=1.0.0", "http://gis.oregonmetro.gov/services/wmts/1.0.0/WMTSGetCapabilities.xml", "http://hazards.fema.gov/gis/nfhl/rest/services/MapSearch/MapSearch_DFIRM_Tiles/Ma" &
-                "pServer/WMTS", "http://kortforsyningen.kms.dk/orto_foraar?SERVICE=WMTS&request=GetCapabilities", "http://kortforsyningen.kms.dk/orto_foraar?VERSION=1.0.0&LAYER=orto_foraar&request" &
-                "=GetCapabilities&SERVICE=WMTS&login=qgistest&password=qgistestpw", "http://maps.columbus.gov/arcgis/rest/services/Imagery/Imagery2013/MapServer/WMTS/" &
-                "1.0.0/WMTSCapabilities.xml", "http://maps.edc.uri.edu/arcgis/rest/services/Atlas_elevation/Hillshade/MapServer/" &
-                "WMTS/1.0.0/WMTSCapabilities.xml", "http://maps.warwickshire.gov.uk/gs/gwc/service/wmts?REQUEST=GetCapabilities", "http://maps.wien.gv.at/wmts/1.0.0/WMTSCapabilities.xml?request=GetCapabilities", "http://opencache.statkart.no/gatekeeper/gk/gk.open_wmts?Version=1.0.0&service=wmt" &
-                "s&request=getcapabilities", "http://s1-mdc.cloud.eaglegis.co.nz/arcgis/rest/services/Cache/TopographicMaps/Map" &
-                "Server/WMTS", "http://sdi.provinz.bz.it/geoserver/gwc/service/wmts?REQUEST=getcapabilities", "http://suite.opengeo.org/geoserver/gwc/service/wmts/?request=GetCapabilities", "http://tileserver.maptiler.com/wmts", "http://tryitlive.arcgis.com/arcgis/rest/services/ImageryHybrid/MapServer/WMTS/1.0" &
-                ".0/WMTSCapabilities.xml", "http://webgis.arpa.piemonte.it/ags101free/rest/services/topografia_dati_di_base/S" &
-                "fumo_Europa_WM/MapServer/WMTS", "http://www.basemap.at/wmts/1.0.0/WMTSCapabilities.xml", "http://www.wien.gv.at/wmts/1.0.0/WMTSCapabilities.xml"})
-            Me.cbxServers.Location = New System.Drawing.Point(15, 25)
-            Me.cbxServers.Name = "cbxServers"
-            Me.cbxServers.Size = New System.Drawing.Size(737, 21)
-            Me.cbxServers.TabIndex = 1
-            '
-            'btnConnect
-            '
-            Me.btnConnect.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-            Me.btnConnect.Location = New System.Drawing.Point(758, 23)
-            Me.btnConnect.Name = "btnConnect"
-            Me.btnConnect.Size = New System.Drawing.Size(75, 23)
-            Me.btnConnect.TabIndex = 2
-            Me.btnConnect.Text = "Connect"
-            Me.btnConnect.UseVisualStyleBackColor = True
-            '
-            'lLayers
-            '
-            Me.lLayers.AutoSize = True
-            Me.lLayers.Location = New System.Drawing.Point(12, 49)
-            Me.lLayers.Name = "lLayers"
-            Me.lLayers.Size = New System.Drawing.Size(38, 13)
-            Me.lLayers.TabIndex = 3
-            Me.lLayers.Text = "Layers"
-            '
-            'cbxLayers
-            '
-            Me.cbxLayers.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-            Me.cbxLayers.FormattingEnabled = True
-            Me.cbxLayers.Location = New System.Drawing.Point(15, 65)
-            Me.cbxLayers.Name = "cbxLayers"
-            Me.cbxLayers.Size = New System.Drawing.Size(651, 21)
-            Me.cbxLayers.TabIndex = 4
-            '
-            'cbInvertAxis
-            '
-            Me.cbInvertAxis.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-            Me.cbInvertAxis.AutoSize = True
-            Me.cbInvertAxis.Location = New System.Drawing.Point(672, 67)
-            Me.cbInvertAxis.Name = "cbInvertAxis"
-            Me.cbInvertAxis.Size = New System.Drawing.Size(74, 17)
-            Me.cbInvertAxis.TabIndex = 5
-            Me.cbInvertAxis.Text = "Invert axis"
-            Me.cbInvertAxis.UseVisualStyleBackColor = True
-            '
-            'btnAdd
-            '
-            Me.btnAdd.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-            Me.btnAdd.Location = New System.Drawing.Point(758, 63)
-            Me.btnAdd.Name = "btnAdd"
-            Me.btnAdd.Size = New System.Drawing.Size(75, 23)
-            Me.btnAdd.TabIndex = 6
-            Me.btnAdd.Text = "Add"
-            Me.btnAdd.UseVisualStyleBackColor = True
-            '
-            'WMTSForm
-            '
-            Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
-            Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
-            Me.ClientSize = New System.Drawing.Size(857, 110)
-            Me.Controls.Add(Me.btnAdd)
-            Me.Controls.Add(Me.cbInvertAxis)
-            Me.Controls.Add(Me.cbxLayers)
-            Me.Controls.Add(Me.lLayers)
-            Me.Controls.Add(Me.btnConnect)
-            Me.Controls.Add(Me.cbxServers)
-            Me.Controls.Add(Me.lServers)
-            Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
-            Me.Location = New System.Drawing.Point(200, 120)
-            Me.Name = "WMTSForm"
-            Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-            Me.Text = "TatukGIS Samples"
-            Me.ResumeLayout(False)
-            Me.PerformLayout()
+            Dim resources As ComponentResourceManager = New ComponentResourceManager(GetType(WMTSForm))
+            lServers = New Label()
+            cbxServers = New ComboBox()
+            btnConnect = New Button()
+            lLayers = New Label()
+            cbxLayers = New ComboBox()
+            cbInvertAxis = New CheckBox()
+            btnAdd = New Button()
+            SuspendLayout()
+            ' 
+            ' lServers
+            ' 
+            lServers.AutoSize = True
+            lServers.Location = New Point(18, 14)
+            lServers.Margin = New Padding(4, 0, 4, 0)
+            lServers.Name = "lServers"
+            lServers.Size = New Size(69, 25)
+            lServers.TabIndex = 0
+            lServers.Text = "Servers"
+            ' 
+            ' cbxServers
+            ' 
+            cbxServers.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
+            cbxServers.FormattingEnabled = True
+            cbxServers.Items.AddRange(New Object() {"http://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/wmts", "http://garden.gis.vt.edu/arcgis/rest/services/VBMP2011/VBMP2011_Infrared_WGS/MapServer/WMTS/1.0.0/WMTSCapabilities.xml", "http://gis.oregonmetro.gov/services/wmts/1.0.0/WMTSGetCapabilities.xml", "http://maps.columbus.gov/arcgis/rest/services/Imagery/Imagery2013/MapServer/WMTS/1.0.0/WMTSCapabilities.xml", "https://mapy.geoportal.gov.pl/wss/service/PZGIK/ORTO/WMTS/StandardResolution"})
+            cbxServers.Location = New Point(22, 38)
+            cbxServers.Margin = New Padding(4, 4, 4, 4)
+            cbxServers.Name = "cbxServers"
+            cbxServers.Size = New Size(1104, 33)
+            cbxServers.TabIndex = 1
+            ' 
+            ' btnConnect
+            ' 
+            btnConnect.Anchor = AnchorStyles.Top Or AnchorStyles.Right
+            btnConnect.Location = New Point(1137, 34)
+            btnConnect.Margin = New Padding(4, 4, 4, 4)
+            btnConnect.Name = "btnConnect"
+            btnConnect.Size = New Size(112, 34)
+            btnConnect.TabIndex = 2
+            btnConnect.Text = "Connect"
+            btnConnect.UseVisualStyleBackColor = True
+            ' 
+            ' lLayers
+            ' 
+            lLayers.AutoSize = True
+            lLayers.Location = New Point(18, 74)
+            lLayers.Margin = New Padding(4, 0, 4, 0)
+            lLayers.Name = "lLayers"
+            lLayers.Size = New Size(61, 25)
+            lLayers.TabIndex = 3
+            lLayers.Text = "Layers"
+            ' 
+            ' cbxLayers
+            ' 
+            cbxLayers.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
+            cbxLayers.FormattingEnabled = True
+            cbxLayers.Location = New Point(22, 98)
+            cbxLayers.Margin = New Padding(4, 4, 4, 4)
+            cbxLayers.Name = "cbxLayers"
+            cbxLayers.Size = New Size(974, 33)
+            cbxLayers.TabIndex = 4
+            ' 
+            ' cbInvertAxis
+            ' 
+            cbInvertAxis.Anchor = AnchorStyles.Top Or AnchorStyles.Right
+            cbInvertAxis.AutoSize = True
+            cbInvertAxis.Location = New Point(1002, 100)
+            cbInvertAxis.Margin = New Padding(4, 4, 4, 4)
+            cbInvertAxis.Name = "cbInvertAxis"
+            cbInvertAxis.Size = New Size(117, 29)
+            cbInvertAxis.TabIndex = 5
+            cbInvertAxis.Text = "Invert axis"
+            cbInvertAxis.UseVisualStyleBackColor = True
+            ' 
+            ' btnAdd
+            ' 
+            btnAdd.Anchor = AnchorStyles.Top Or AnchorStyles.Right
+            btnAdd.Location = New Point(1137, 94)
+            btnAdd.Margin = New Padding(4, 4, 4, 4)
+            btnAdd.Name = "btnAdd"
+            btnAdd.Size = New Size(112, 34)
+            btnAdd.TabIndex = 6
+            btnAdd.Text = "Add"
+            btnAdd.UseVisualStyleBackColor = True
+            ' 
+            ' WMTSForm
+            ' 
+            AutoScaleDimensions = New SizeF(144.0F, 144.0F)
+            AutoScaleMode = AutoScaleMode.Dpi
+            ClientSize = New Size(1286, 165)
+            Controls.Add(btnAdd)
+            Controls.Add(cbInvertAxis)
+            Controls.Add(cbxLayers)
+            Controls.Add(lLayers)
+            Controls.Add(btnConnect)
+            Controls.Add(cbxServers)
+            Controls.Add(lServers)
+            Icon = CType(resources.GetObject("$this.Icon"), Icon)
+            Location = New Point(200, 120)
+            Margin = New Padding(4, 4, 4, 4)
+            Name = "WMTSForm"
+            StartPosition = FormStartPosition.CenterScreen
+            Text = "TatukGIS Samples"
+            ResumeLayout(False)
+            PerformLayout()
 
         End Sub
 #End Region
