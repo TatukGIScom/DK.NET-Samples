@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35913.81 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SplitbyArc", "SplitbyArc.csproj", "{95673ED4-C18E-8E52-AB64-D0FDC21734F8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{95673ED4-C18E-8E52-AB64-D0FDC21734F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95673ED4-C18E-8E52-AB64-D0FDC21734F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95673ED4-C18E-8E52-AB64-D0FDC21734F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95673ED4-C18E-8E52-AB64-D0FDC21734F8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7F5AF686-D5EF-457F-A8BE-1FE638C966E8}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35919.96
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "JoinAndChart", "JoinAndChart.vbproj", "{5C66FE58-1CAE-2C4F-6F0A-67A094D338AD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5C66FE58-1CAE-2C4F-6F0A-67A094D338AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C66FE58-1CAE-2C4F-6F0A-67A094D338AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C66FE58-1CAE-2C4F-6F0A-67A094D338AD}.Debug|x86.ActiveCfg = Debug|x86
+		{5C66FE58-1CAE-2C4F-6F0A-67A094D338AD}.Debug|x86.Build.0 = Debug|x86
+		{5C66FE58-1CAE-2C4F-6F0A-67A094D338AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C66FE58-1CAE-2C4F-6F0A-67A094D338AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C66FE58-1CAE-2C4F-6F0A-67A094D338AD}.Release|x86.ActiveCfg = Release|x86
+		{5C66FE58-1CAE-2C4F-6F0A-67A094D338AD}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AB95E0EF-843C-4156-83EC-8BC364D87C34}
+	EndGlobalSection
+EndGlobal

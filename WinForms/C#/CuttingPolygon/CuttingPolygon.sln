@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35913.81 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CuttingPolygon", "CuttingPolygon.csproj", "{63B11CBD-2613-0E2C-CAC1-9615B852A76E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{63B11CBD-2613-0E2C-CAC1-9615B852A76E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63B11CBD-2613-0E2C-CAC1-9615B852A76E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63B11CBD-2613-0E2C-CAC1-9615B852A76E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63B11CBD-2613-0E2C-CAC1-9615B852A76E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {23B7EC91-49B1-4D1A-B45D-0E4D66F22D00}
+	EndGlobalSection
+EndGlobal

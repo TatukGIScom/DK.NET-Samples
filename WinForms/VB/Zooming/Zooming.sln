@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35919.96 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Zooming", "Zooming.vbproj", "{3FDE8633-FEB2-99E1-E355-04648AD8A69B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3FDE8633-FEB2-99E1-E355-04648AD8A69B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FDE8633-FEB2-99E1-E355-04648AD8A69B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FDE8633-FEB2-99E1-E355-04648AD8A69B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FDE8633-FEB2-99E1-E355-04648AD8A69B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A7A616E3-5FE9-462C-90A5-8BD916E428AE}
+	EndGlobalSection
+EndGlobal

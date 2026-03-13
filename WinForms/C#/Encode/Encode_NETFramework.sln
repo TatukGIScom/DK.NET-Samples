@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35913.81 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Encode_NETFramework", "Encode_NETFramework.csproj", "{285CCE24-9FB6-4AFF-8A63-7007DADE629A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{285CCE24-9FB6-4AFF-8A63-7007DADE629A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{285CCE24-9FB6-4AFF-8A63-7007DADE629A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{285CCE24-9FB6-4AFF-8A63-7007DADE629A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{285CCE24-9FB6-4AFF-8A63-7007DADE629A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6416B348-986E-47BB-8CA5-9D5B7BA83C4F}
+	EndGlobalSection
+EndGlobal
