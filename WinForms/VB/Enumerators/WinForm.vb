@@ -233,7 +233,7 @@ Namespace Enumerators
 
         Private Sub frmMain_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
             ' add states layer
-            GIS.Add(TGIS_Utils.GisCreateLayer("world", TGIS_Utils.GisSamplesDataDirDownload() & "\World\Countries\USA\States\California\tl_2008_06_county.shp"))
+            GIS.Add(TGIS_Utils.GisCreateLayer("world", TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\tl_2008_06_county.shp"))
             GIS.FullExtent()
         End Sub
 

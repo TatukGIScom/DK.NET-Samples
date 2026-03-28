@@ -371,14 +371,14 @@ namespace MiniMap
             GIS.Lock();
             GISm.Lock();
 
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\Poland\DCW\poland.ttkproject");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\Poland\DCW\poland.ttkproject");
 
             GIS.SetCSByEPSG(2180);
 
             llm = (TGIS_LayerVector)
                       (TGIS_Utils.GisCreateLayer(
                           "country",
-                          TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\Poland\DCW\country.shp"
+                          TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\Poland\DCW\country.shp"
                           )
                        );
             llm.UseConfig = false;

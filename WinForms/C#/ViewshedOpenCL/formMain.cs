@@ -181,7 +181,7 @@ namespace OCL_Viewshed
                 TGIS_Utils.GisOpenCLEngine().Enabled = true;
 
             GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + 
-                @"\World\Countries\USA\States\California\San Bernardino\NED\w001001.adf");
+                @"World\Countries\USA\States\California\San Bernardino\NED\w001001.adf");
 
             cl_proc = false;
         }

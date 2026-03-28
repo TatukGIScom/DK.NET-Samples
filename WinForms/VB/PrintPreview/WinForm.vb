@@ -313,7 +313,7 @@ Namespace PrintPreview
         End Sub
 
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
-            GIS.Open((TGIS_Utils.GisSamplesDataDir + "\World\Countries\Poland\DCW\poland.ttkproject"))
+            GIS.Open((TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\Poland\DCW\poland.ttkproject"))
             printManager = New TGIS_PrintManager
             printManager.Title = edPrintTitle.Text
             printManager.Subtitle = edPrintSubTitle.Text

@@ -37,7 +37,7 @@ Public Class Form1
     Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Dim ll As TGIS_LayerVector
 
-        GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\World\Countries\USA\States\California\tl_2008_06_county.shp")
+        GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\tl_2008_06_county.shp")
         ll = CType(GIS.Items(0), TGIS_LayerVector)
         ll.Params.Labels.Field = "GIS_UID"
         GIS_DataSet.Open(ll, GIS.Extent)

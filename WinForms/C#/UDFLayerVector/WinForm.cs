@@ -335,7 +335,7 @@ namespace UDFLayerVector
 
         private void frmMain_Load(object sender, EventArgs e)
         {
-            FUDF = new TGIS_BufferedFileStream(TGIS_Utils.GisSamplesDataDirDownload() + "\\Samples\\UDF\\places.txt",
+            FUDF = new TGIS_BufferedFileStream(TGIS_Utils.GisSamplesDataDirDownload() + @"Samples\UDF\places.txt",
                                                 TGIS_StreamMode.Read);
             tkn = new TGIS_Tokenizer();
 

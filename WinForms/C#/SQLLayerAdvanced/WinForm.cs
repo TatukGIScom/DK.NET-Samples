@@ -501,7 +501,7 @@ namespace SQLLayerAdvanced
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\Poland\DCW\poland.ttkproject");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\Poland\DCW\poland.ttkproject");
             GIS.InvalidateWholeMap();
         }
 

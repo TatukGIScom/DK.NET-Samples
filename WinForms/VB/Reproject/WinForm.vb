@@ -150,7 +150,7 @@ Namespace Reproject
             Next
 
             cbxSrcProjection.SelectedIndex = 0
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\World\Countries\Poland\DCW\country.shp")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\Poland\DCW\country.shp")
         End Sub
 
         Private Sub button1_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles button1.Click

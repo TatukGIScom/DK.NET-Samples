@@ -355,7 +355,7 @@ Namespace ExportToImage
         End Sub
 
         Private Sub WinForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + "\World\VisibleEarth\world_8km.jpg")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\VisibleEarth\world_8km.jpg")
         End Sub
 
         Public Class T_capability
@@ -367,7 +367,7 @@ Namespace ExportToImage
         End Class
 
         Private Sub rbImage_CheckedChanged(ByVal sender As Object, ByVal e As EventArgs) Handles rbImage.CheckedChanged
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + "\World\VisibleEarth\world_8km.jpg")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\VisibleEarth\world_8km.jpg")
             tbPath.Clear()
             cbFormat.ResetText()
             cbFormat.Items.Clear()
@@ -376,7 +376,7 @@ Namespace ExportToImage
         End Sub
 
         Private Sub rbGrid_CheckedChanged(sender As Object, e As EventArgs) Handles rbGrid.CheckedChanged
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + "\World\Countries\USA\States\California\San Bernardino\NED\hdr.adf")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\San Bernardino\NED\hdr.adf")
             tbPath.Clear()
             cbFormat.ResetText()
             cbFormat.Items.Clear()

@@ -236,7 +236,7 @@ namespace HelloNetCore
 
         private void WinForm_Load(object sender, System.EventArgs e)
         {
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\Poland\DCW\poland.ttkproject");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\Poland\DCW\poland.ttkproject");
         }
     
     }

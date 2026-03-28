@@ -564,7 +564,7 @@ Namespace DemOperations
 
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
             dlgOpen.Filter = TGIS_Utils.GisSupportedFiles(TGIS_FileType.All, False)
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + "\World\Countries\USA\States\California\San Bernardino\NED\w001001.adf")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\San Bernardino\NED\w001001.adf")
             GIS.FullExtent()
         End Sub
 

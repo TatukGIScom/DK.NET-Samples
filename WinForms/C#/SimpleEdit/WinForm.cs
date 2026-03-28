@@ -589,7 +589,7 @@ namespace SimpleEdit
             int i;
 
             stripBar1.Items[3].Text = "See: www.tatukgis.com";
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\samples\SimpleEdit\simpleedit.ttkproject");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"Samples\SimpleEdit\simpleedit.ttkproject");
 
             oEditorHelper = new TGIS_EditorHelper(GIS);
 

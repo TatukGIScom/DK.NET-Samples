@@ -651,7 +651,7 @@ Namespace OnlineServices
             If (b) Then GIS.Delete(LOCAL_LAYER_TILES)
 
             Dim lwt As TGIS_LayerWebTiles = New TGIS_LayerWebTiles()
-            Dim path As String = TGIS_Utils.GisSamplesDataDirDownload() + "\Samples\WebServices\"
+            Dim path As String = TGIS_Utils.GisSamplesDataDirDownload() & "Samples\WebServices\"
             Select Case _style
                 Case MapStyle.International
                     path += "TatukGIS OpenStreetMap Tiles.ttkwp"

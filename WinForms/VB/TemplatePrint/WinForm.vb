@@ -339,11 +339,11 @@ Namespace TemplatePrint
             Dim tpl_path As String
 
             ' open a file
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\World\Countries\Poland\DCW\poland.ttkproject")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\Poland\DCW\poland.ttkproject")
 
             ' copy template file to the current directory as .ttktemplate
-            src_path = TGIS_Utils.GisSamplesDataDirDownload() + "Samples\PrintTemplate\printtemplate.tpl"
-            tpl_path = System.IO.Directory.GetCurrentDirectory() + "\\printtemplate.ttktemplate"
+            src_path = TGIS_Utils.GisSamplesDataDirDownload() & "Samples\PrintTemplate\printtemplate.tpl"
+            tpl_path = System.IO.Directory.GetCurrentDirectory() & "\printtemplate.ttktemplate"
             TGIS_TemplatePrintBuilder.CopyTemplateFile(src_path, tpl_path, False)
 
             ' prepare template for printing

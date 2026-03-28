@@ -176,7 +176,7 @@ namespace Transform
 
         private void WinForm_Load(object sender, System.EventArgs e)
         {
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\Samples\Rectify\satellite.jpg");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"Samples\Rectify\satellite.jpg");
         }
 
         private void btnTransform_Click(object sender, EventArgs e)

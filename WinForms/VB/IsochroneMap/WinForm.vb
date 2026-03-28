@@ -343,7 +343,7 @@ Namespace IsochroneMap
         Private Sub WinForm_Load(sender As Object, e As System.EventArgs) Handles Me.Load
             GIS.Lock()
             Try
-                GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + "World\Countries\USA\States\California\San Bernardino\TIGER\tl_2008_06071_edges_trunc.SHP")
+                GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\San Bernardino\TIGER\tl_2008_06071_edges_trunc.shp")
                 layerSrc = DirectCast(GIS.[Get]("tl_2008_06071_edges_trunc"), TGIS_LayerVector)
 
                 If layerSrc Is Nothing Then

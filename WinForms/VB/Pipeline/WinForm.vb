@@ -260,7 +260,7 @@ Namespace Pipeline
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
             Dim i As Integer
 
-            readFromFile(TGIS_Utils.GisSamplesDataDir + "/Samples/Pipeline/contouring.ttkpipeline")
+            readFromFile(TGIS_Utils.GisSamplesDataDirDownload() & "Samples\Pipeline\contouring.ttkpipeline")
 
             progressBarList = New List(Of ProgressBar)
             nameLabelList = New List(Of Label)

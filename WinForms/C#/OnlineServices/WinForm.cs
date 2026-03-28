@@ -688,7 +688,7 @@ namespace OnlineServices
             if (b) GIS.Delete(LOCAL_LAYER_TILES);
 
             TGIS_LayerWebTiles lwt = new TGIS_LayerWebTiles();
-            string path = TGIS_Utils.GisSamplesDataDirDownload() + @"\Samples\WebServices\";
+            string path = TGIS_Utils.GisSamplesDataDirDownload() + @"Samples\WebServices\";
             switch (_style)
             {
                 case MapStyle.International :

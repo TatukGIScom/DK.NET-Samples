@@ -311,7 +311,7 @@ namespace Grid
         private void WinForm_Load(object sender, System.EventArgs e)
         {
             // open a file
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\USA\States\California\San Bernardino\NED\w001001.adf");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\USA\States\California\San Bernardino\NED\w001001.adf");
         }
 
         private void toolStrip1_ButtonClick(object sender, System.EventArgs e)
@@ -363,7 +363,7 @@ namespace Grid
             TGIS_LayerPixel ll;
 
             ll = (TGIS_LayerPixel)(GIS.Items[0]);
-            ll.ConfigName = TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\USA\States\California\San Bernardino\NED\w001001.adf";
+            ll.ConfigName = TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\USA\States\California\San Bernardino\NED\w001001.adf";
             ll.RereadConfig();
             GIS.InvalidateWholeMap();
         }
@@ -413,7 +413,7 @@ namespace Grid
             TGIS_LayerPixel ll;
 
             ll = (TGIS_LayerPixel)(GIS.Items[0]);
-            ll.ConfigName = TGIS_Utils.GisSamplesDataDirDownload() + @"\Samples\Projects\dem_ned.ini";
+            ll.ConfigName = TGIS_Utils.GisSamplesDataDirDownload() + @"Samples\Projects\dem_ned.ini";
             ll.RereadConfig();
             GIS.InvalidateWholeMap();
         }

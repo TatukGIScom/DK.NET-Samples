@@ -292,7 +292,7 @@ Namespace BitmapFill
 
             ' add states layer
             ll = New TGIS_LayerSHP()
-            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() & "\World\Countries\USA\States\California\Counties.SHP"
+            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\Counties.shp"
             ll.UseConfig = False
             ll.Name = "counties"
 

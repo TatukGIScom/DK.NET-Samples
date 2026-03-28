@@ -21,7 +21,7 @@ namespace DataSet
         {
             TGIS_LayerVector ll;
 
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\USA\States\California\tl_2008_06_county.shp");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\USA\States\California\tl_2008_06_county.shp");
             ll = (TGIS_LayerVector)GIS.Items[0];
             ll.Params.Labels.Field = "GIS_UID";
             GIS_DataSet.Open((TGIS_LayerVector)GIS.Items[0], GIS.Extent);

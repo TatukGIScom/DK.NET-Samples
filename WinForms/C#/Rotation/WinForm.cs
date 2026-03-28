@@ -351,7 +351,7 @@ namespace Rotation
             // clear rotation angle
             GIS.RotationAngle = 0;
 
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\Poland\DCW\poland.ttkproject");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\Poland\DCW\poland.ttkproject");
 
             // show layers in the viewer and set a rotation point in central point of extent
             GIS.FullExtent();

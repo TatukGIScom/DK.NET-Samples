@@ -172,7 +172,7 @@ namespace Snap
 
             // lets open streets
             GIS.Lock();
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\USA\States\California\San Bernardino\TIGER\tl_2008_06071_edges_trunc.SHP");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\USA\States\California\San Bernardino\TIGER\tl_2008_06071_edges_trunc.shp");
             GIS.Zoom = GIS.Zoom * 5;
             GIS.CenterViewport(TGIS_Utils.GisPoint(-117.0208, 34.0629));
 
@@ -186,7 +186,7 @@ namespace Snap
             // and attach to it our test police-car point
             shpPolice = ll.CreateShape(TGIS_ShapeType.Point);
             shpPolice.Params.Marker.Symbol =
-                TGIS_Utils.SymbolList.Prepare(TGIS_Utils.GisSamplesDataDirDownload() + @"\Symbols\police.bmp?TRUE");
+                TGIS_Utils.SymbolList.Prepare(TGIS_Utils.GisSamplesDataDirDownload() + @"Symbols\police.bmp?TRUE");
             shpPolice.Params.Marker.Size = -13;
             shpPolice.Params.Labels.OutlineWidth = 0;
             shpPolice.Params.Labels.Pattern = TGIS_BrushStyle.Clear;

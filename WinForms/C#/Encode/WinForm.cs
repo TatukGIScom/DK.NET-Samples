@@ -192,7 +192,7 @@ namespace Encode
 
             // add states layer
             ll = new TGIS_LayerSHP();
-            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() + @"\World\WorldDCW\world.shp";
+            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() + @"World\WorldDCW\world.shp";
             ll.Name = "base";
             ll.Params.Labels.Field = "NAME";
             GIS.Add(ll);

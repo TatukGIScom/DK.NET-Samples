@@ -209,7 +209,7 @@ Namespace PixelOperations
 
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
             dgOpen.Filter = TGIS_Utils.GisSupportedFiles((TGIS_FileType.All), False)
-            GIS.Open((TGIS_Utils.GisSamplesDataDir + "\World\Countries\USA\States\California\San Bernardino\DOQ\37134877.jpg"))
+            GIS.Open((TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\San Bernardino\DOQ\37134877.jpg"))
             cbPixels_CheckedChanged(sender, e)
         End Sub
 

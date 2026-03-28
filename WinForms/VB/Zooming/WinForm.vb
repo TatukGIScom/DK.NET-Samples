@@ -178,7 +178,7 @@ Namespace Zooming
         End Sub
 
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\World\Countries\Poland\DCW\poland.ttkproject")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\Poland\DCW\poland.ttkproject")
         End Sub
 
         Private Sub GIS_MouseWheel(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs)

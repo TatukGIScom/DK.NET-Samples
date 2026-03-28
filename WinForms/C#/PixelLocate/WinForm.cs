@@ -297,14 +297,14 @@ namespace PixelLocate
 
         private void btnImage_Click(object sender, EventArgs e)
         {
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\USA\States\California\San Bernardino\DOQ\37134877.jpg");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\USA\States\California\San Bernardino\DOQ\37134877.jpg");
             tbBrightness.Enabled = true;
             tbBrightness.Value = 0;
         }
 
         private void btnGrid_Click(object sender, EventArgs e)
         {
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\USA\States\California\San Bernardino\NED\w001001.adf");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\USA\States\California\San Bernardino\NED\w001001.adf");
             tbBrightness.Enabled = false;
             tbBrightness.Value = 0;
         }

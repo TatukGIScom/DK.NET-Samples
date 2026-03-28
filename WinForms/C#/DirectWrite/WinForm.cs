@@ -215,7 +215,7 @@ namespace DirectWrite
             lv.Open();
             ll = new TGIS_LayerSHP();
 
-            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() + @"\World\WorldDCW\cities.shp";
+            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() + @"World\WorldDCW\cities.shp";
             ll.Open();
 
             lv.ImportStructure(ll);
@@ -245,7 +245,7 @@ namespace DirectWrite
             GIS.Close();
 
             ll = new TGIS_LayerSHP();
-            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() + @"\World\WorldDCW\cities.shp";
+            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() + @"World\WorldDCW\cities.shp";
             GIS.Add(ll);
 
             shp = TGIS_GeometryFactory.GisCreateShapeFromWKT("POLYGON((7.86 56.39,31.37 56.39,31.37 39.48,7.86 39.48,7.868 56.39))");
@@ -274,7 +274,7 @@ namespace DirectWrite
             GIS.Close();
 
             ll = new TGIS_LayerSHP();
-            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() + @"\World\WorldDCW\cities.shp";
+            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() + @"World\WorldDCW\cities.shp";
             GIS.Add(ll);
 
             shp = TGIS_GeometryFactory.GisCreateShapeFromWKT("'POLYGON((7.86 56.39,31.37 56.39,31.37 39.48,7.86 39.48,7.868 56.39))");
@@ -304,7 +304,7 @@ namespace DirectWrite
 
             ll = new TGIS_LayerSHP();
 
-            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() + @"\World\WorldDCW\cities.shp";
+            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() + @"World\WorldDCW\cities.shp";
             ll.Open();
 
             lv = new TGIS_LayerSHP();
@@ -334,7 +334,7 @@ namespace DirectWrite
             GIS.Close();
 
             ll = new TGIS_LayerSHP();
-            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() + @"\World\WorldDCW\cities.shp";
+            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() + @"World\WorldDCW\cities.shp";
             ll.Open();
 
             lv = new TGIS_LayerSHP();

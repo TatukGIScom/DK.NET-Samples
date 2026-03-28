@@ -227,7 +227,7 @@ Namespace Relate
 
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
             ' open project
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\Samples\Topology\topology2.shp")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "Samples\Topology\topology2.shp")
 
             ' set style params
             CType(GIS.Items(0), TGIS_LayerVector).ParamsList.Add()

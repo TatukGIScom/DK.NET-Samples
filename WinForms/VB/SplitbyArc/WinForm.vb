@@ -181,7 +181,7 @@ Namespace SplitbyArc
 
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
             GIS.Lock()
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\Samples\Topology\topology3.shp")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "Samples\Topology\topology3.shp")
 
             layerPolygon = (CType(GIS.Items(0), TGIS_LayerVector))
             shpPolygon = CType(layerPolygon.GetShape(1).MakeEditable(), TGIS_ShapePolygon)

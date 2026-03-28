@@ -595,7 +595,7 @@ namespace DemOperations
         private void WinForm_Load(object sender, System.EventArgs e)
         {
             dlgOpen.Filter = TGIS_Utils.GisSupportedFiles(TGIS_FileType.All, false);
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\USA\States\California\San Bernardino\NED\w001001.adf");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\USA\States\California\San Bernardino\NED\w001001.adf");
             GIS.FullExtent();
 
             cbOperations_SelectedIndexChanged(sender, e);

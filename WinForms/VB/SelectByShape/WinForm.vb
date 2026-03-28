@@ -165,7 +165,7 @@ Namespace SelectByShape
 
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
             GIS.Lock()
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\World\Countries\USA\States\California\Counties.SHP")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\Counties.shp")
             ll = New TGIS_LayerVector()
             ll.Params.Area.Color = TGIS_Color.Blue
             ll.Transparency = 50

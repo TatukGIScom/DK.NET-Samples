@@ -284,7 +284,7 @@ Namespace Triangulation
             Dim lv As TGIS_LayerVector
 
             ' open a file
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\World\Countries\Poland\DCW\city.shp")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\Poland\DCW\city.shp")
 
             ' and add a new parametr
             lv = CType(GIS.Items(0), TGIS_LayerVector)

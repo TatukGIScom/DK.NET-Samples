@@ -219,7 +219,7 @@ namespace PixelEdit
 
             Memo.Clear();
 
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\Samples\PixelEdit\grid.ttkproject");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"Samples\PixelEdit\grid.ttkproject");
 
             lp = (TGIS_LayerPixel)GIS.Get("elevation");
             lv = (TGIS_LayerVector)GIS.Get("line");
@@ -244,7 +244,7 @@ namespace PixelEdit
 
             Memo.Clear();
 
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\Samples\PixelEdit\grid.ttkproject");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"Samples\PixelEdit\grid.ttkproject");
 
             lp = (TGIS_LayerPixel)GIS.Get("elevation");
             lv = (TGIS_LayerVector)GIS.Get("polygon");
@@ -305,7 +305,7 @@ namespace PixelEdit
 
             Memo.Clear();
 
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\Samples\PixelEdit\bitmap.ttkproject");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"Samples\PixelEdit\bitmap.ttkproject");
 
             lp = (TGIS_LayerPixel)GIS.Get("bluemarble");
             lv = (TGIS_LayerVector)GIS.Get("countries");

@@ -449,7 +449,7 @@ namespace Reclassification
 
           try
           {
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + "Samples/3D/elevation.grd");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"Samples\3D\elevation.grd");
             lp = (TGIS_LayerPixel)GIS.Items[0];
             ApplyNaturalBreaksStyle(lp, "Geology");
           }
@@ -469,7 +469,7 @@ namespace Reclassification
 
           try
           {
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + "World\\Countries\\Luxembourg\\CLC2018_CLC2018_V2018_20_Luxembourg.tif");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\Luxembourg\CLC2018_CLC2018_V2018_20_Luxembourg.tif");
             lp = (TGIS_LayerPixel)GIS.Items[0];
             ApplyUniqueStyle(lp, "UniquePastel");
           }

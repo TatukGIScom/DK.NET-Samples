@@ -221,7 +221,7 @@ namespace PixelOperations
         {
             dgOpen.Filter = TGIS_Utils.GisSupportedFiles(TGIS_FileType.All, false);
 
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\USA\States\California\San Bernardino\DOQ\37134877.jpg");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\USA\States\California\San Bernardino\DOQ\37134877.jpg");
             cbPixels_CheckedChanged(sender, e);
         }
 

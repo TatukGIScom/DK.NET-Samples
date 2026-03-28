@@ -192,7 +192,7 @@ namespace Topology
             topologyObj = new TGIS_Topology();
 
             GIS.Lock();
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\Samples\Topology\topology.shp");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"Samples\Topology\topology.shp");
 
             ll = (TGIS_LayerVector)GIS.Items[0];
             if (ll == null) return;

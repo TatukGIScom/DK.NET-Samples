@@ -395,10 +395,10 @@ Namespace LayerStatistics
             btnCalculate.Text = BUTTON_CALCULATE
             GIS.Mode = TGIS_ViewerMode.Zoom
             openDialog.Filter = TGIS_Utils.GisSupportedFiles(TGIS_FileType.Grid Or TGIS_FileType.Pixel Or TGIS_FileType.Vector, False)
-            sample_dir = TGIS_Utils.GisSamplesDataDirDownload() + "/World/Countries/USA/States/California"
-            sample_vector = sample_dir + "/Counties.shp"
-            sample_grid = sample_dir + "/San Bernardino/NED/w001001.adf"
-            sample_pixel = sample_dir + "/San Bernardino/DOQ/37134877.jpg"
+            sample_dir = TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California"
+            sample_vector = sample_dir & "\Counties.shp"
+            sample_grid = sample_dir & "\San Bernardino\NED\w001001.adf"
+            sample_pixel = sample_dir & "\San Bernardino\DOQ\37134877.jpg"
             custom_path = ""
             rbVector.Checked = True
             checkPredefined(STATISTICS_STANDARD)

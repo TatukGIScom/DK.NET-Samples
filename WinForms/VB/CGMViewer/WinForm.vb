@@ -163,7 +163,7 @@ Namespace CGMViewer
             Dim ll As TGIS_LayerVector
 
             ' load list box
-            dir = New DirectoryInfo(TGIS_Utils.GisSamplesDataDirDownload() + "\Symbols\")
+            dir = New DirectoryInfo(TGIS_Utils.GisSamplesDataDirDownload() & "Symbols\")
             For Each fileItem As FileInfo In dir.GetFiles("*.cgm")
                 listBox1.Items.Add(fileItem.Name)
             Next fileItem
@@ -204,7 +204,7 @@ Namespace CGMViewer
 
             ' create a symbol list
             If listBox1.SelectedIndex > -1 Then
-                shp.Params.Marker.Symbol = TGIS_Utils.SymbolList.Prepare(TGIS_Utils.GisSamplesDataDirDownload() & "\Symbols\" & listBox1.Items(listBox1.SelectedIndex))
+                shp.Params.Marker.Symbol = TGIS_Utils.SymbolList.Prepare(TGIS_Utils.GisSamplesDataDirDownload() & "Symbols\" & listBox1.Items(listBox1.SelectedIndex))
                 ' calculate symbol size
                 If Not shp.Params.Marker.Symbol Is Nothing Then
                     shp.Params.Marker.Size = -Math.Min(GIS.Width, GIS.Height) * 2 / 3
@@ -236,7 +236,7 @@ Namespace CGMViewer
         End Sub
 
         Private Sub listBox1_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles listBox1.SelectedIndexChanged
-            statusBar1.Items(0).Text = TGIS_Utils.GisSamplesDataDirDownload() + listBox1.Items(listBox1.SelectedIndex)
+            statusBar1.Items(0).Text = TGIS_Utils.GisSamplesDataDirDownload() & listBox1.Items(listBox1.SelectedIndex)
             drawSymbol()
         End Sub
     End Class

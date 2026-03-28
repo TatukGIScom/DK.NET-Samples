@@ -517,7 +517,7 @@ Namespace SimpleEdit
             Dim i As Integer
 
             statusBar1.Items(3).Text = "See: www.tatukgis.com"
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\samples\SimpleEdit\simpleedit.ttkproject")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "Samples\SimpleEdit\simpleedit.ttkproject")
 
             cmbLayer.Items.Add("Show all")
             i = 0

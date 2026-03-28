@@ -356,7 +356,7 @@ namespace PixelFilters
             GIS.Close(); ;
             ll = (TGIS_LayerPixel)(
             TGIS_Utils.GisCreateLayer("", TGIS_Utils.GisSamplesDataDirDownload() +
-              "World\\Countries\\USA\\States\\California\\San Bernardino\\NED\\w001001.adf")
+              @"World\Countries\USA\States\California\San Bernardino\NED\w001001.adf")
             );
             ll.Open();
             ll.Params.Pixel.AltitudeMapZones.Clear();

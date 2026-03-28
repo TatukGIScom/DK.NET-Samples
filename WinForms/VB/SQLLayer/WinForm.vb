@@ -164,7 +164,7 @@ Namespace SQLLayer
 
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
             ' open a project
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\Samples\SQLLayers\gistest.ttkls")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "Samples\SQLLayers\gistest.ttkls")
 
             GIS.FullExtent()
         End Sub

@@ -183,7 +183,7 @@ namespace Zooming
 
         private void WinForm_Load(object sender, System.EventArgs e)
         {
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\Poland\DCW\poland.ttkproject");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\Poland\DCW\poland.ttkproject");
         }
 
         private void GIS_MouseWheel(object sender, System.Windows.Forms.MouseEventArgs e)

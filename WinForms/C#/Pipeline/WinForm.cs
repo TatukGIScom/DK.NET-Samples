@@ -299,7 +299,7 @@ namespace Pipeline
         {
             int i;
 
-            readFromFile( TGIS_Utils.GisSamplesDataDirDownload() + "/Samples/Pipeline/contouring.ttkpipeline" );
+            readFromFile( TGIS_Utils.GisSamplesDataDirDownload() + @"Samples\Pipeline\contouring.ttkpipeline" );
             
 
             oPipeline = new TGIS_Pipeline();

@@ -157,7 +157,7 @@ Namespace ShapeOperations
             handleMouseMove = False
             rbRotate.PerformClick()
             GIS.Lock()
-            GIS.Open((TGIS_Utils.GisSamplesDataDir + "Samples\3D\buildings.shp"))
+            GIS.Open((TGIS_Utils.GisSamplesDataDirDownload() & "Samples\3D\buildings.shp"))
             
             edtLayer = new TGIS_LayerVector() 
             edtLayer.CS =  GIS.CS 

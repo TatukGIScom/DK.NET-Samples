@@ -175,10 +175,10 @@ Namespace InMemory
 
             ' create a layer loading symbols for marker and line
             ll = New TGIS_LayerVector()
-            ll.Params.Marker.Symbol = TGIS_Utils.SymbolList.Prepare(TGIS_Utils.GisSamplesDataDirDownload() & "\Symbols\2267.cgm")
+            ll.Params.Marker.Symbol = TGIS_Utils.SymbolList.Prepare(TGIS_Utils.GisSamplesDataDirDownload() & "Symbols\2267.cgm")
             ll.Params.Marker.SymbolRotate = Math.PI / 2
             ll.Params.Marker.Size = -20
-            ll.Params.Line.Symbol = TGIS_Utils.SymbolList.Prepare(TGIS_Utils.GisSamplesDataDirDownload() & "\Symbols\1301.cgm")
+            ll.Params.Line.Symbol = TGIS_Utils.SymbolList.Prepare(TGIS_Utils.GisSamplesDataDirDownload() & "Symbols\1301.cgm")
             ll.Params.Line.Width = -5
             GIS.Add(ll)
             ll.Extent = TGIS_Utils.GisExtent(-180, -90, 180, 90)

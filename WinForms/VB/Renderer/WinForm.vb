@@ -167,7 +167,7 @@ Namespace Renderer
         End Sub
 
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\Samples\Projects\renderer.ttkproject")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "Samples\Projects\renderer.ttkproject")
         End Sub
 
         Private Sub toolBar1_ButtonClick(ByVal sender As Object, ByVal e As System.Windows.Forms.ToolStripItemClickedEventArgs) Handles toolBar1.ItemClicked

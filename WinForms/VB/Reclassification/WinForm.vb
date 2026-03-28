@@ -323,7 +323,7 @@ Additionally, this method copies colors from zones and automatically transfers t
             GIS.Lock()
 
             Try
-                GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "Samples/3D/elevation.grd")
+                GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "Samples\3D\elevation.grd")
                 lp = CType(GIS.Items(0), TGIS_LayerPixel)
                 ApplyNaturalBreaksStyle(lp, "Geology")
             Finally

@@ -212,7 +212,7 @@ namespace ShowHint
             toolTip1.AutoPopDelay = 2000;
             toolTip1.BackColor = hintColor;
 
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\Poland\DCW\poland.ttkproject");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\Poland\DCW\poland.ttkproject");
         }
 
         private void toolStrip1_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)

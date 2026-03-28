@@ -288,7 +288,7 @@ namespace Legend
         private void WinForm_Load(object sender, System.EventArgs e)
         {
             // open a file
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\Poland\DCW\poland.ttkproject");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\Poland\DCW\poland.ttkproject");
         }
 
         private void toolStrip1_ButtonClick(object sender, System.EventArgs e)

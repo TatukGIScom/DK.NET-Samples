@@ -257,7 +257,7 @@ Namespace Buffers1
 
             ' open a project
             GIS.Lock()
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\Samples\Topology\topology.shp")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "Samples\Topology\topology.shp")
             shp_id = 2
             ' create a layer for buffer
             lb = New TGIS_LayerVector()

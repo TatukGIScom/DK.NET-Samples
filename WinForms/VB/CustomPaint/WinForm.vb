@@ -198,7 +198,7 @@ Namespace CustomPaint
             ll.Extent = TGIS_Utils.GisExtent(-100, -100, 100, 100)
 
             bmp = New TGIS_Bitmap()
-            bmp.LoadFromFile(TGIS_Utils.GisSamplesDataDirDownload() + "Symbols\police.bmp")
+            bmp.LoadFromFile(TGIS_Utils.GisSamplesDataDirDownload() & "Symbols\police.bmp")
 
             GIS.FullExtent()
 

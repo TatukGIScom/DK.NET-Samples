@@ -165,7 +165,7 @@ Namespace Transform
         End Sub
 
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
-            GIS.Open((TGIS_Utils.GisSamplesDataDir + "\Samples\Rectify\satellite.jpg"))
+            GIS.Open((TGIS_Utils.GisSamplesDataDirDownload() & "Samples\Rectify\satellite.jpg"))
         End Sub
 
         Private Sub btnTransform_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnTransform.Click

@@ -130,7 +130,7 @@ Namespace Hierarchy
             GIS.Close()
             GIS_Legend.Mode = TGIS_ControlLegendMode.Groups
 
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\World\Countries\Poland\DCW\poland.ttkproject", False)
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\Poland\DCW\poland.ttkproject", False)
 
             GIS.Hierarchy.ClearGroups()
 

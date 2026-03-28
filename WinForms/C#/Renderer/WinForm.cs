@@ -170,7 +170,7 @@ namespace Renderer
 
         private void WinForm_Load(object sender, System.EventArgs e)
         {
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\Samples\Projects\renderer.ttkproject");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"Samples\Projects\renderer.ttkproject");
             GIS.FullExtent();
         }
 

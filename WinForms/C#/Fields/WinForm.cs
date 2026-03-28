@@ -279,7 +279,7 @@ namespace Fields
 
             if (chckbxUseSymbols.Checked)
             {
-                lv.Params.Marker.Symbol = TGIS_Utils.SymbolList.Prepare(TGIS_Utils.GisSamplesDataDirDownload() + @"\Symbols\2267.cgm");
+                lv.Params.Marker.Symbol = TGIS_Utils.SymbolList.Prepare(TGIS_Utils.GisSamplesDataDirDownload() + @"Symbols\2267.cgm");
                 lv.Params.Marker.SizeAsText = "FIELD:size:1 dip";
                 lv.Params.Marker.SymbolRotateAsText = "FIELD:rotateSymbol";
             }
@@ -295,7 +295,7 @@ namespace Fields
 
             if (chckbxUseSymbols.Checked)
             {
-                lv.Params.Line.Symbol = TGIS_Utils.SymbolList.Prepare(TGIS_Utils.GisSamplesDataDirDownload() + @"\Symbols\1301.cgm");
+                lv.Params.Line.Symbol = TGIS_Utils.SymbolList.Prepare(TGIS_Utils.GisSamplesDataDirDownload() + @"Symbols\1301.cgm");
                 lv.Params.Line.SymbolRotateAsText = "FIELD:rotateSymbol:1 deg";
             }
             lv.Params.Line.ColorAsText = "FIELD:color";
@@ -304,7 +304,7 @@ namespace Fields
 
             lv.Params.Area.SymbolRotateAsText = "rotateSymbol";
             if (chckbxUseSymbols.Checked)
-                lv.Params.Area.Symbol = TGIS_Utils.SymbolList.Prepare(TGIS_Utils.GisSamplesDataDirDownload() + @"\Symbols\1301.cgm");
+                lv.Params.Area.Symbol = TGIS_Utils.SymbolList.Prepare(TGIS_Utils.GisSamplesDataDirDownload() + @"Symbols\1301.cgm");
             lv.Params.Area.ColorAsText = "FIELD:color";
             lv.Params.Area.OutlineColorAsText = "FIELD:outlinecolor";
 

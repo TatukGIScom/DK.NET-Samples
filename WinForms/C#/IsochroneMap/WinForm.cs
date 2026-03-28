@@ -357,7 +357,7 @@ namespace IsochroneMap
             GIS.Lock();
             try
             {
-                GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\USA\States\California\San Bernardino\TIGER\tl_2008_06071_edges_trunc.SHP");
+                GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\USA\States\California\San Bernardino\TIGER\tl_2008_06071_edges_trunc.shp");
                 layerSrc = (TGIS_LayerVector)(GIS.Get("tl_2008_06071_edges_trunc"));
 
                 if (layerSrc == null) return;

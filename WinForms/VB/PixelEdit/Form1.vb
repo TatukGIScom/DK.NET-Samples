@@ -31,7 +31,7 @@ Public Class Form1
 
         Memo.Clear()
 
-        GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\Samples\PixelEdit\grid.ttkproject")
+        GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "Samples\PixelEdit\grid.ttkproject")
 
         lp = CType(GIS.Get("elevation"), TGIS_LayerPixel)
         lv = CType(GIS.Get("line"), TGIS_LayerVector)
@@ -55,7 +55,7 @@ Public Class Form1
 
         Memo.Clear()
 
-        GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\Samples\PixelEdit\grid.ttkproject")
+        GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "Samples\PixelEdit\grid.ttkproject")
 
         lp = CType(GIS.Get("elevation"), TGIS_LayerPixel)
         lv = CType(GIS.Get("polygon"), TGIS_LayerVector)
@@ -112,7 +112,7 @@ Public Class Form1
 
         Memo.Clear()
 
-        GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\Samples\PixelEdit\bitmap.ttkproject")
+        GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "Samples\PixelEdit\bitmap.ttkproject")
 
         lp = CType(GIS.Get("bluemarble"), TGIS_LayerPixel)
         lv = CType(GIS.Get("countries"), TGIS_LayerVector)

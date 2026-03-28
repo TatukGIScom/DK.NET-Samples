@@ -46,7 +46,7 @@ Namespace ViewshedOpenCL
             End If
 
 
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + "\World\Countries\USA\States\California\San Bernardino\NED\w001001.adf")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\San Bernardino\NED\w001001.adf")
 
             cl_proc = False
         End Sub

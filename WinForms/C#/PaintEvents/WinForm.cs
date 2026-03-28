@@ -367,7 +367,7 @@ namespace PaintEvents
 
             // add layer
             ll = new TGIS_LayerSHP();
-            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\USA\States\California\Counties.shp" ;
+            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\USA\States\California\Counties.shp" ;
             ll.Params.Area.Color = TGIS_Color.LightGray;
             GIS.Add(ll);
             GIS.FullExtent();

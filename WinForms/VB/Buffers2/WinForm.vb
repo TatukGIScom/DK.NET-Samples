@@ -286,7 +286,7 @@ Namespace Buffers2
             Dim la As TGIS_LayerAbstract
             Dim lb As TGIS_LayerVector
 
-            la = TGIS_Utils.GisCreateLayer("counties", TGIS_Utils.GisSamplesDataDirDownload() & "\World\Countries\USA\States\California\Counties.SHP")
+            la = TGIS_Utils.GisCreateLayer("counties", TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\Counties.shp")
             GIS.Lock()
             GIS.Add(la)
 

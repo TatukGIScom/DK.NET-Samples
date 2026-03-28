@@ -235,7 +235,7 @@ Namespace Interpolation
         End Sub
 
         Private Sub WinForm_Load(sender As Object, e As System.EventArgs) Handles Me.Load
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + "Samples\Interpolation\Interpolation.ttkproject")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "Samples\Interpolation\Interpolation.ttkproject")
             GIS.CS = TGIS_CSFactory.ByEPSG(3395)
 
             GIS.FullExtent()

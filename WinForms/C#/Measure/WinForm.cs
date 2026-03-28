@@ -241,7 +241,7 @@ namespace Measure
         private void WinForm_Load(object sender, System.EventArgs e)
         {
             GIS.Lock();
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\WorldDCW\world.shp");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\WorldDCW\world.shp");
 
             ll = new TGIS_LayerVector();
             ll.Params.Line.Color = TGIS_Color.Red;

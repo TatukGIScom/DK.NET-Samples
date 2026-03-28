@@ -405,7 +405,7 @@ Namespace TigerGeocoding
             ' create geocod+ing object, set fields for routing
             geoObj = New TGIS_Geocoding(layerSrc)
             geoObj.Offset = 0.0001
-            geoObj.LoadFormulas(TGIS_Utils.GisSamplesDataDirDownload() & "\Samples\Geocoding\us_addresses.geo", TGIS_Utils.GisSamplesDataDirDownload() & "\Samples\Geocoding\tiger2008.geo")
+            geoObj.LoadFormulas(TGIS_Utils.GisSamplesDataDirDownload() & "Samples\Geocoding\us_addresses.geo", TGIS_Utils.GisSamplesDataDirDownload() & "Samples\Geocoding\tiger2008.geo")
 
             GIS.Unlock()
             GIS.FullExtent()
@@ -451,7 +451,7 @@ Namespace TigerGeocoding
         End Sub
 
         Private Sub btnOpenDefault_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnOpenDefault.Click
-            openCoverage(TGIS_Utils.GisSamplesDataDirDownload() & "\World\Countries\USA\States\California\San Bernardino\TIGER\tl_2008_06071_edges_trunc.SHP")
+            openCoverage(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\San Bernardino\TIGER\tl_2008_06071_edges_trunc.shp")
         End Sub
 
         Private Sub btnOpen_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnOpen.Click

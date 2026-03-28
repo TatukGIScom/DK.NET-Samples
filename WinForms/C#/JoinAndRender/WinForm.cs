@@ -380,12 +380,12 @@ namespace JoinAndRender
             sqlConnection = new OleDbConnection();
             sqlConnection.ConnectionString = String.Format(
                 "Provider=Microsoft.Jet.OLEDB.4.0; Data Source={0}Stats.mdb",
-                TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\USA\Statistical\");
+                TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\USA\Statistical\");
             sqlConnection.Open();
 
             // create a layer, set render and label params
             ll = new TGIS_LayerSHP();
-            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\USA\States\California\tl_2008_06_county.shp";
+            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\USA\States\California\tl_2008_06_county.shp";
             ll.Name = "district";
 
             ll.UseConfig = false;

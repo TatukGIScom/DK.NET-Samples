@@ -308,7 +308,7 @@ namespace Triangulation
             TGIS_LayerVector lv;
 
             // open a file
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\Poland\DCW\city.shp");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\Poland\DCW\city.shp");
 
             // and add a new parametr
             lv = (TGIS_LayerVector)(GIS.Items[0]);

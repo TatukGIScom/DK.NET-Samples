@@ -179,7 +179,7 @@ Namespace Topology
             topologyObj = New TGIS_Topology()
 
             GIS.Lock()
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\Samples\Topology\topology.shp")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "Samples\Topology\topology.shp")
 
             ll = CType(GIS.Items(0), TGIS_LayerVector)
             If ll Is Nothing Then

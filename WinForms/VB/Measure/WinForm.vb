@@ -173,7 +173,7 @@ Namespace Measure
 
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs)
             GIS.Lock()
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\World\WorldDCW\world.shp")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\WorldDCW\world.shp")
             ll = New TGIS_LayerVector()
             ll.Params.Line.Color = TGIS_Color.Red
             ll.Params.Line.Width = 25

@@ -233,7 +233,7 @@ Namespace RasterAlgebra
             Dim lp As TGIS_LayerPixel
             Dim path As String
             GIS.Close()
-            path = TGIS_Utils.GisSamplesDataDirDownload() & "\World\Countries\USA\States\California\San Bernardino\DOQ\37134877.jpg"
+            path = TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\San Bernardino\DOQ\37134877.jpg"
             lp = CType(TGIS_Utils.GisCreateLayer("Pixel", path), TGIS_LayerPixel)
             GIS.Add(lp)
             GIS.FullExtent()
@@ -245,7 +245,7 @@ Namespace RasterAlgebra
             Dim lp As TGIS_LayerPixel
             Dim path As String
             GIS.Close()
-            path = TGIS_Utils.GisSamplesDataDirDownload() & "\World\Countries\USA\States\California\San Bernardino\NED\w001001.adf"
+            path = TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\San Bernardino\NED\w001001.adf"
             lp = CType(TGIS_Utils.GisCreateLayer("Grid", path), TGIS_LayerPixel)
             lp.UseConfig = False
             GIS.Add(lp)
@@ -259,7 +259,7 @@ Namespace RasterAlgebra
             Dim lv As TGIS_LayerVector
             Dim path As String
             GIS.Close()
-            path = TGIS_Utils.GisSamplesDataDirDownload() & "\World\Countries\USA\States\California\San Bernardino\TIGER\tl_2008_06071_edges_trunc.shp"
+            path = TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\San Bernardino\TIGER\tl_2008_06071_edges_trunc.shp"
             lv = CType(TGIS_Utils.GisCreateLayer("Vector", path), TGIS_LayerVector)
             lv.UseConfig = False
             GIS.Add(lv)

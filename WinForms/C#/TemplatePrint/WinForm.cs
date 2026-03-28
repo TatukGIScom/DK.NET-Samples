@@ -347,11 +347,11 @@ namespace TemplatePrint
         private void WinForm_Load(object sender, System.EventArgs e)
         {
             // open a file
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\Poland\DCW\poland.ttkproject");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\Poland\DCW\poland.ttkproject");
 
             // copy template file to the current directory as .ttktemplate
             string src_path = TGIS_Utils.GisSamplesDataDirDownload() + @"Samples\PrintTemplate\printtemplate.tpl";
-            string tpl_path = System.IO.Directory.GetCurrentDirectory() + "\\printtemplate.ttktemplate";
+            string tpl_path = System.IO.Directory.GetCurrentDirectory() + @"\printtemplate.ttktemplate";
             TGIS_TemplatePrintBuilder.CopyTemplateFile( src_path, tpl_path, false );
 
             // prepare template for printing

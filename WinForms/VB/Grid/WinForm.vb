@@ -292,7 +292,7 @@ Namespace Grid
 
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
             ' open a file
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\World\Countries\USA\States\California\San Bernardino\NED\w001001.adf")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\San Bernardino\NED\w001001.adf")
         End Sub
 
         Private Sub toolBar1_ButtonClick(ByVal sender As Object, ByVal e As System.Windows.Forms.ToolStripItemClickedEventArgs) Handles toolBar1.ItemClicked
@@ -337,7 +337,7 @@ Namespace Grid
             Dim ll As TGIS_LayerPixel
 
             ll = CType(GIS.Items(0), TGIS_LayerPixel)
-            ll.ConfigName = TGIS_Utils.GisSamplesDataDirDownload() & "\World\Countries\USA\States\California\San Bernardino\NED\w001001.adf"
+            ll.ConfigName = TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\San Bernardino\NED\w001001.adf"
             ll.RereadConfig()
             GIS.InvalidateWholeMap()
         End Sub
@@ -385,7 +385,7 @@ Namespace Grid
             Dim ll As TGIS_LayerPixel
 
             ll = CType(GIS.Items(0), TGIS_LayerPixel)
-            ll.ConfigName = TGIS_Utils.GisSamplesDataDirDownload() & "\Samples\Projects\dem_ned.ini"
+            ll.ConfigName = TGIS_Utils.GisSamplesDataDirDownload() & "Samples\Projects\dem_ned.ini"
             ll.RereadConfig()
             GIS.InvalidateWholeMap()
         End Sub

@@ -145,7 +145,7 @@ namespace Hierarchy
             GIS.Close();
             GIS_Legend.Mode = TGIS_ControlLegendMode.Groups;
 
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\Poland\DCW\poland.ttkproject", false);
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\Poland\DCW\poland.ttkproject", false);
 
             GIS.Hierarchy.ClearGroups();
 

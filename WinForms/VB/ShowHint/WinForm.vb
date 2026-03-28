@@ -198,7 +198,7 @@ Namespace ShowHint
             toolTip1.AutoPopDelay = 2000
             toolTip1.BackColor = hintColor
 
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + "\World\Countries\Poland\DCW\poland.ttkproject")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\Poland\DCW\poland.ttkproject")
         End Sub
 
         Private Sub toolBar1_MouseMove(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles toolBar1.MouseMove

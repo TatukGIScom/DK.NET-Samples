@@ -141,7 +141,7 @@ namespace Projections
                 cbxSrcProjection.Items.Add(lst.GetByIndex(i));
             };
 
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\Samples\Projects\world.ttkproject", true);
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"Samples\Projects\world.ttkproject", true);
 
             cbxSrcProjection.SelectedIndex = 0;
         }

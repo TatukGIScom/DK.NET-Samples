@@ -278,7 +278,7 @@ namespace RasterAlgebra
             GIS.Close();
 
             path = TGIS_Utils.GisSamplesDataDirDownload() +
-             @"\World\Countries\USA\States\California\San Bernardino\DOQ\37134877.jpg";
+             @"World\Countries\USA\States\California\San Bernardino\DOQ\37134877.jpg";
 
             lp = TGIS_Utils.GisCreateLayer("Pixel", path) as TGIS_LayerPixel;
             GIS.Add(lp);
@@ -296,7 +296,7 @@ namespace RasterAlgebra
             GIS.Close();
 
             path = TGIS_Utils.GisSamplesDataDirDownload() +
-             @"\World\Countries\USA\States\California\San Bernardino\NED\w001001.adf";
+             @"World\Countries\USA\States\California\San Bernardino\NED\w001001.adf";
 
             lp = TGIS_Utils.GisCreateLayer("Grid", path) as TGIS_LayerPixel;
             lp.UseConfig = false;
@@ -316,7 +316,7 @@ namespace RasterAlgebra
             GIS.Close();
 
             path = TGIS_Utils.GisSamplesDataDirDownload() +
-             @"\World\Countries\USA\States\California\San Bernardino\TIGER\tl_2008_06071_edges_trunc.shp";
+             @"World\Countries\USA\States\California\San Bernardino\TIGER\tl_2008_06071_edges_trunc.shp";
 
             lv = TGIS_Utils.GisCreateLayer("Vector", path) as TGIS_LayerVector;
             lv.UseConfig = false;

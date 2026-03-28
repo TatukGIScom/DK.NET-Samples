@@ -203,7 +203,7 @@ Namespace Pixel
         End Sub
 
         Private Sub comboBox1_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles comboBox1.SelectedIndexChanged
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + "\Samples\Projects\" + comboBox1.Items(comboBox1.SelectedIndex))
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "Samples\Projects\" & comboBox1.Items(comboBox1.SelectedIndex))
         End Sub
 
         Private Sub toolBar1_ButtonClick(ByVal sender As Object, ByVal e As System.Windows.Forms.ToolStripItemClickedEventArgs) Handles toolBar1.ItemClicked

@@ -193,7 +193,7 @@ Namespace DirectWrite
             lv.Open()
             ll = New TGIS_LayerSHP()
 
-            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() + "\World\WorldDCW\cities.shp"
+            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() & "World\WorldDCW\cities.shp"
             ll.Open()
 
             lv.ImportStructure(ll)
@@ -220,7 +220,7 @@ Namespace DirectWrite
             btnMergeLayer.Enabled = True
 
             ll = New TGIS_LayerSHP()
-            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() + "\World\WorldDCW\cities.shp"
+            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() & "World\WorldDCW\cities.shp"
             GIS.Add(ll)
 
             shp = TGIS_GeometryFactory.GisCreateShapeFromWKT("POLYGON((7.86 56.39,31.37 56.39,31.37 39.48,7.86 39.48,7.868 56.39))")
@@ -247,7 +247,7 @@ Namespace DirectWrite
             btnWrite.Enabled = True
 
             ll = New TGIS_LayerSHP()
-            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() + "\World\WorldDCW\cities.shp"
+            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() & "World\WorldDCW\cities.shp"
             GIS.Add(ll)
 
             shp = TGIS_GeometryFactory.GisCreateShapeFromWKT("'POLYGON((7.86 56.39,31.37 56.39,31.37 39.48,7.86 39.48,7.868 56.39))")
@@ -275,7 +275,7 @@ Namespace DirectWrite
 
             ll = New TGIS_LayerSHP()
 
-            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() + "\World\WorldDCW\cities.shp"
+            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() & "World\WorldDCW\cities.shp"
             ll.Open()
 
             lv = New TGIS_LayerSHP()
@@ -306,7 +306,7 @@ Namespace DirectWrite
             btnMergeHelper.Enabled = False
 
             ll = New TGIS_LayerSHP()
-            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() + "\World\WorldDCW\cities.shp"
+            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() & "World\WorldDCW\cities.shp"
             ll.Open()
 
             lv = New TGIS_LayerSHP()

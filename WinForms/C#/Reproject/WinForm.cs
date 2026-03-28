@@ -158,7 +158,7 @@ namespace Reproject
                 cbxSrcProjection.Items.Add(lst.GetByIndex(i));
 
             cbxSrcProjection.SelectedIndex = 0;
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\Poland\DCW\country.shp");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\Poland\DCW\country.shp");
         }
 
         private void button1_Click(object sender, System.EventArgs e)

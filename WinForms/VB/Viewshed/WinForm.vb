@@ -359,7 +359,7 @@ Namespace AddLayer
 
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
             GIS.Lock()
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + "World\\Countries\\USA\\States\\California\\San Bernardino\\NED\\w001001.adf")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\San Bernardino\NED\w001001.adf")
 
             '' obtain the DEM layer
             lTerrain = CType(GIS.Get("w001001"), TGIS_LayerPixel)

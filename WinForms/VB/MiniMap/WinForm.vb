@@ -328,11 +328,11 @@ Namespace MiniMap
             GIS.Lock()
             GISm.Lock()
 
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\World\Countries\Poland\DCW\poland.ttkproject")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\Poland\DCW\poland.ttkproject")
 
             GIS.SetCSByEPSG(2180)
 
-            llm = CType(TGIS_Utils.GisCreateLayer("country", TGIS_Utils.GisSamplesDataDirDownload() & "\World\Countries\Poland\DCW\country.shp"), TGIS_LayerVector)
+            llm = CType(TGIS_Utils.GisCreateLayer("country", TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\Poland\DCW\country.shp"), TGIS_LayerVector)
             llm.UseConfig = False
             llm.Params.Area.Color = TGIS_Color.White
             llm.Params.Area.OutlineColor = TGIS_Color.Silver

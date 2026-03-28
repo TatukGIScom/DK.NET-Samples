@@ -236,7 +236,7 @@ namespace Relate
         private void WinForm_Load(object sender, System.EventArgs e)
         {
             // open project
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\Samples\Topology\topology2.shp");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"Samples\Topology\topology2.shp");
 
             // set style params
             ((TGIS_LayerVector)GIS.Items[0]).ParamsList.Add();

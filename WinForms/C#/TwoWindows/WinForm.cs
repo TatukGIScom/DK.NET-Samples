@@ -167,11 +167,11 @@ namespace TwoWindows
         private void button1_Click(object sender, System.EventArgs e)
         {
             // open the same project for two viewers
-            GIS_ViewerWnd1.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\Poland\DCW\poland.ttkproject", true);
+            GIS_ViewerWnd1.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\Poland\DCW\poland.ttkproject", true);
             GIS_ViewerWnd1.Zoom = GIS_ViewerWnd1.Zoom * 3;
             GIS_ViewerWnd1.Mode = TGIS_ViewerMode.Zoom;
 
-            GIS_ViewerWnd2.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\Poland\DCW\poland.ttkproject", true);
+            GIS_ViewerWnd2.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\Poland\DCW\poland.ttkproject", true);
             GIS_ViewerWnd2.Zoom = GIS_ViewerWnd2.Zoom * 4;
             GIS_ViewerWnd2.Mode = TGIS_ViewerMode.Zoom;
         }

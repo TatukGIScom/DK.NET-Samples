@@ -169,7 +169,7 @@ Namespace DK.WinForms.VB
 
         Private Sub btnOpen_Click(sender As Object, e As EventArgs) Handles btnOpen.Click
             ' Open a project
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + "\\World\\WorldDCW\\world.shp")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\WorldDCW\world.shp")
             GIS.Mode = TGIS_ViewerMode.Select
         End Sub
 

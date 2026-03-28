@@ -371,7 +371,7 @@ namespace ExportToImage
 
         private void WinForm_Load(object sender, System.EventArgs e)
         {            
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\VisibleEarth\world_8km.jpg");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\VisibleEarth\world_8km.jpg");
         }
         
         public class T_capability
@@ -442,7 +442,7 @@ namespace ExportToImage
 
         private void rbImage_CheckedChanged(object sender, EventArgs e)
         {
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\VisibleEarth\world_8km.jpg");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\VisibleEarth\world_8km.jpg");
             tbPath.Clear();
             cbFormat.ResetText();
             cbFormat.Items.Clear();
@@ -452,7 +452,7 @@ namespace ExportToImage
 
         private void rbGrid_CheckedChanged(object sender, EventArgs e)
         {
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\USA\States\California\San Bernardino\NED\hdr.adf");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\USA\States\California\San Bernardino\NED\hdr.adf");
             tbPath.Clear();
             cbFormat.ResetText();
             cbFormat.Items.Clear();

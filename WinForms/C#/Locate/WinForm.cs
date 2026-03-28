@@ -168,7 +168,7 @@ namespace Locate
 
         private void WinForm_Load(object sender, System.EventArgs e)
         {
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\USA\States\California\Counties.SHP");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\USA\States\California\Counties.shp");
         }
 
         private void GIS_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)

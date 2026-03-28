@@ -299,7 +299,7 @@ namespace Buffers2
             TGIS_LayerVector lb;
 
             la = TGIS_Utils.GisCreateLayer("counties",
-                   TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\USA\States\California\Counties.SHP"
+                   TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\USA\States\California\Counties.shp"
                  );
             GIS.Lock();
             GIS.Add(la);

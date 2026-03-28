@@ -194,7 +194,7 @@ namespace SelectByShape
         private void WinForm_Load(object sender, System.EventArgs e)
         {
             GIS.Lock();
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\USA\States\California\Counties.SHP");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\USA\States\California\Counties.shp");
             ll = new TGIS_LayerVector();
             ll.Params.Area.Color = TGIS_Color.Blue;
             ll.Transparency = 50;

@@ -284,13 +284,13 @@ Namespace PixelLocate
         End Sub
 
         Private Sub btnImage_Click(sender As Object, e As EventArgs) Handles btnImage.Click
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\World\Countries\USA\States\California\San Bernardino\DOQ\37134877.jpg")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\San Bernardino\DOQ\37134877.jpg")
             tbBrightness.Enabled = True
             tbBrightness.Value = 0
         End Sub
 
         Private Sub btnGrid_Click(sender As Object, e As EventArgs) Handles btnGrid.Click
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\World\Countries\USA\States\California\San Bernardino\NED\w001001.adf")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\San Bernardino\NED\w001001.adf")
             tbBrightness.Enabled = False
             tbBrightness.Value = 0
         End Sub

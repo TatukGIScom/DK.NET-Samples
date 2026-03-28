@@ -363,7 +363,7 @@ namespace Viewshed
         private void Form1_Load(object sender, EventArgs e)
         {
             GIS.Lock();
-            GIS.Open( TGIS_Utils.GisSamplesDataDirDownload() + "World\\Countries\\USA\\States\\California\\San Bernardino\\NED\\w001001.adf" );
+            GIS.Open( TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\USA\States\California\San Bernardino\NED\w001001.adf" );
 
             // obtain the DEM layer
             lTerrain = (TGIS_LayerPixel)GIS.Get("w001001");

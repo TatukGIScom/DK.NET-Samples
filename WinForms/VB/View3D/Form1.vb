@@ -70,7 +70,7 @@ Public Class Form1
             End If
 
             GIS.Close()
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\Samples\3D\Building3D.ttkproject")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "Samples\3D\Building3D.ttkproject")
             cbx3DMode.SelectedIndex = 0
         Finally
             GIS.Unlock()

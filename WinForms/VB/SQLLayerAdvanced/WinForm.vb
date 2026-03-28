@@ -465,7 +465,7 @@ Namespace SQLLayerAdvanced
         End Sub
 
         Private Sub btnOpen_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnOpen.Click
-            GIS.Open((TGIS_Utils.GisSamplesDataDir + "\World\Countries\Poland\DCW\poland.ttkproject"))
+            GIS.Open((TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\Poland\DCW\poland.ttkproject"))
             GIS.InvalidateWholeMap()
         End Sub
 

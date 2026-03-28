@@ -292,7 +292,7 @@ Namespace UDFLayerVector
         End Function
 
         Private Sub frmMain_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-            FUDF = New TGIS_BufferedFileStream(TGIS_Utils.GisSamplesDataDirDownload() + "\\Samples\\UDF\\places.txt", TGIS_StreamMode.Read)
+            FUDF = New TGIS_BufferedFileStream(TGIS_Utils.GisSamplesDataDirDownload() & "Samples\UDF\places.txt", TGIS_StreamMode.Read)
             tkn = New TGIS_Tokenizer()
 
             GIS.Close()

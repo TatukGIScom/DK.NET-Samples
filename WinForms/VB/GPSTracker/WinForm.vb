@@ -299,7 +299,7 @@ Namespace GPSTracker
 
             GPS.Active = True
 
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\World\WorldDCW\world.shp")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\WorldDCW\world.shp")
 
             GIS.Add(TGIS_Utils.GisCreateLayer("routes", "routes.kml"))
             GIS.Add(TGIS_Utils.GisCreateLayer("points", "points.kml"))

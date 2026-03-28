@@ -216,7 +216,7 @@ namespace Pixel
 
         private void comboBox1_SelectedIndexChanged(object sender, System.EventArgs e)
         {
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\Samples\Projects\" +
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"Samples\Projects\" +
                       comboBox1.Items[comboBox1.SelectedIndex]
                     );
         }

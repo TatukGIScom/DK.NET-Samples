@@ -193,13 +193,13 @@ Namespace AddLayer
 
             ' add states layer
             ll = New TGIS_LayerSHP()
-            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() & "\World\Countries\Poland\DCW\country.shp"
+            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\Poland\DCW\country.shp"
             ll.Name = "country"
             ll.Params.Area.Color = TGIS_Color.LightGray
             GIS.Add(ll)
 
             ' add rivers layer, set line params
-            ll = CType(TGIS_Utils.GisCreateLayer("rivers", TGIS_Utils.GisSamplesDataDirDownload() & "\World\Countries\Poland\DCW\lwaters.shp"), TGIS_LayerSHP)
+            ll = CType(TGIS_Utils.GisCreateLayer("rivers", TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\Poland\DCW\lwaters.shp"), TGIS_LayerSHP)
             ll.UseConfig = False
             ll.Params.Line.OutlineWidth = 0
             ll.Params.Line.Width = 3

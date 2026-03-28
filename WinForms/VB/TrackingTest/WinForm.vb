@@ -161,15 +161,15 @@ Namespace TrackingTest
 
             GIS.Lock()
             Try
-                GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\World\VisibleEarth\world_8km.jpg")
+                GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\VisibleEarth\world_8km.jpg")
                 GIS.Zoom = GIS.Zoom * 2
 
                 ' create a layer and add a field
                 ll = New TGIS_LayerVector()
-                ll.Params.Marker.Symbol = TGIS_Utils.SymbolList.Prepare(TGIS_Utils.GisSamplesDataDirDownload() & "\Symbols\2267.cgm")
+                ll.Params.Marker.Symbol = TGIS_Utils.SymbolList.Prepare(TGIS_Utils.GisSamplesDataDirDownload() & "Symbols\2267.cgm")
                 ll.Params.Marker.SymbolRotate = Math.PI / 2
                 ll.Params.Marker.Size = -20
-                ll.Params.Line.Symbol = TGIS_Utils.SymbolList.Prepare(TGIS_Utils.GisSamplesDataDirDownload() & "\Symbols\1301.cgm")
+                ll.Params.Line.Symbol = TGIS_Utils.SymbolList.Prepare(TGIS_Utils.GisSamplesDataDirDownload() & "Symbols\1301.cgm")
                 ll.Params.Line.Width = -5
                 ll.CachedPaint = False
                 ll.CS = GIS.CS

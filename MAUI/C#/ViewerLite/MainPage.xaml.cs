@@ -42,7 +42,7 @@ namespace ViewerLite
         {
             var path = TGIS_Utils.GisSamplesDataDirDownload();
             GIS.RotationAngle = 0;
-            GIS.Open(path + "/World/Countries/Poland/DCW/poland.ttkproject");
+            GIS.Open(path + @"World\Countries\Poland\DCW\poland.ttkproject");
             customizeButtonColors();
         }
 

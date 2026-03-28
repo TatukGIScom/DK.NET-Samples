@@ -174,7 +174,7 @@ namespace CGMViewer
             TGIS_LayerVector ll;
 
             // load list box
-            dir = new DirectoryInfo(TGIS_Utils.GisSamplesDataDirDownload() + @"\Symbols\");
+            dir = new DirectoryInfo(TGIS_Utils.GisSamplesDataDirDownload() + @"Symbols\");
             foreach (FileInfo fileItem in dir.GetFiles("*.cgm"))
             {
                 listBox1.Items.Add(fileItem.Name);
@@ -215,7 +215,7 @@ namespace CGMViewer
             if (shp == null) return;
             // create a symbol list
             shp.Params.Marker.Symbol = TGIS_Utils.SymbolList.Prepare(
-                                         TGIS_Utils.GisSamplesDataDirDownload() + @"\Symbols\" +
+                                         TGIS_Utils.GisSamplesDataDirDownload() + @"Symbols\" +
                                          listBox1.Items[listBox1.SelectedIndex]
                                        );
 

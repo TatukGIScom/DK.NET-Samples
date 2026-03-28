@@ -156,7 +156,7 @@ Namespace CuttingPolygon
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
             Dim shp As TGIS_Shape
 
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + "\World\VisibleEarth\world_8km.jpg")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\VisibleEarth\world_8km.jpg")
             ll = New TGIS_LayerVector()
             ll.Name = "shape"
             GIS.Add(ll)

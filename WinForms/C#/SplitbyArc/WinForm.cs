@@ -192,7 +192,7 @@ namespace SplitbyArc
         private void WinForm_Load(object sender, System.EventArgs e)
         {
             GIS.Lock();
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\Samples\Topology\topology3.shp");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"Samples\Topology\topology3.shp");
 
             layerPolygon = ((TGIS_LayerVector)GIS.Items[0]);
             shpPolygon = (TGIS_ShapePolygon)(layerPolygon.GetShape(1).MakeEditable());

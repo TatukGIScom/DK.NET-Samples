@@ -262,7 +262,7 @@ Namespace Fields
             lv.Params.Marker.Size = 20 * 20 'converting points to twips -> 1pt = 20 twips
 
             If (chckbxUseSymbols.Checked) Then
-                lv.Params.Marker.Symbol = TGIS_Utils.SymbolList.Prepare(TGIS_Utils.GisSamplesDataDirDownload() & "\Symbols\2267.cgm")
+                lv.Params.Marker.Symbol = TGIS_Utils.SymbolList.Prepare(TGIS_Utils.GisSamplesDataDirDownload() & "Symbols\2267.cgm")
                 lv.Params.Marker.SizeAsText = "FIELD:size:1 dip"
                 lv.Params.Marker.SymbolRotateAsText = "FIELD:rotateSymbol"
 
@@ -278,7 +278,7 @@ Namespace Fields
 
 
             If (chckbxUseSymbols.Checked) Then
-                lv.Params.Line.Symbol = TGIS_Utils.SymbolList.Prepare(TGIS_Utils.GisSamplesDataDirDownload() & "\Symbols\1301.cgm")
+                lv.Params.Line.Symbol = TGIS_Utils.SymbolList.Prepare(TGIS_Utils.GisSamplesDataDirDownload() & "Symbols\1301.cgm")
                 lv.Params.Line.SymbolRotateAsText = "FIELD:rotateSymbol:1 deg"
             End If
 
@@ -289,7 +289,7 @@ Namespace Fields
 
             lv.Params.Area.SymbolRotateAsText = "rotateSymbol"
             If (chckbxUseSymbols.Checked) Then
-                lv.Params.Area.Symbol = TGIS_Utils.SymbolList.Prepare(TGIS_Utils.GisSamplesDataDirDownload() & "\Symbols\1301.cgm")
+                lv.Params.Area.Symbol = TGIS_Utils.SymbolList.Prepare(TGIS_Utils.GisSamplesDataDirDownload() & "Symbols\1301.cgm")
             End If
             lv.Params.Area.ColorAsText = "FIELD:color"
             lv.Params.Area.OutlineColorAsText = "FIELD:outlinecolor"

@@ -158,7 +158,7 @@ Namespace PaintLabel
 
             ' add some layers
             ll = New TGIS_LayerSHP()
-            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() & "\World\Countries\USA\States\California\Counties.SHP"
+            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\Counties.shp"
             ll.Name = "counties"
             ll.Params.Labels.Position = TGIS_LabelPosition.MiddleCenter Or TGIS_LabelPosition.Flow
 

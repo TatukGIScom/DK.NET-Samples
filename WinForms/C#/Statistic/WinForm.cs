@@ -219,7 +219,7 @@ namespace Statistic
 
             // add states layer
             ll = new TGIS_LayerSHP();
-            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\USA\States\California\Counties.SHP";
+            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\USA\States\California\Counties.shp";
             ll.Name = "counties";
 
             // set custom paint procedure

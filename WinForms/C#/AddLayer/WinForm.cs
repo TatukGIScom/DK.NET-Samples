@@ -196,7 +196,7 @@ namespace AddLayer
 
             // add states layer
             ll = new TGIS_LayerSHP();
-            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\Poland\DCW\country.shp";
+            ll.Path = TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\Poland\DCW\country.shp";
             ll.Name = "country";
             ll.Params.Area.Color = TGIS_Color.LightGray;
             GIS.Add(ll);

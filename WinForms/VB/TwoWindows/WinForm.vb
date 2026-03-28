@@ -155,11 +155,11 @@ Namespace TwoWindows
 
         Private Sub button1_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles button1.Click
             ' open the same project for two viewers
-            GIS_ViewerWnd1.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\World\Countries\Poland\DCW\poland.ttkproject", True)
+            GIS_ViewerWnd1.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\Poland\DCW\poland.ttkproject", True)
             GIS_ViewerWnd1.Zoom = GIS_ViewerWnd1.Zoom * 3
             GIS_ViewerWnd1.Mode = TatukGIS.NDK.TGIS_ViewerMode.Zoom
 
-            GIS_ViewerWnd2.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\World\Countries\Poland\DCW\poland.ttkproject", True)
+            GIS_ViewerWnd2.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\Poland\DCW\poland.ttkproject", True)
             GIS_ViewerWnd2.Zoom = GIS_ViewerWnd2.Zoom * 4
             GIS_ViewerWnd2.Mode = TatukGIS.NDK.TGIS_ViewerMode.Zoom
         End Sub

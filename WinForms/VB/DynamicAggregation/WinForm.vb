@@ -156,7 +156,7 @@ Namespace DynamicAggregation
         End Sub
 
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs)
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\Samples\Aggregation\Aggregation.ttkproject")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "Samples\Aggregation\Aggregation.ttkproject")
             cbxMethod.Items.Add("Off")
 
             For i As Integer = 0 To TGIS_DynamicAggregatorFactory.Names.Count - 1

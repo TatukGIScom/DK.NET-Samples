@@ -132,7 +132,7 @@ Namespace Projections
                 cbxSrcProjection.Items.Add(lst.GetByIndex(i))
             Next
 
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\Samples\Projects\world.ttkproject", True)
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "Samples\Projects\world.ttkproject", True)
 
             cbxSrcProjection.SelectedIndex = 0
         End Sub

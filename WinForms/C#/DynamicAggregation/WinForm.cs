@@ -201,7 +201,7 @@ namespace DynamicAggregation
 
         private void WinForm_Load(object sender, System.EventArgs e)
         {
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\Samples\Aggregation\Aggregation.ttkproject");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"Samples\Aggregation\Aggregation.ttkproject");
             cbxMethod.Items.Add("Off");
 
             for( int i = 0; i < TGIS_DynamicAggregatorFactory.Names.Count; i++ )

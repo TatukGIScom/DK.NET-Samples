@@ -180,7 +180,7 @@ namespace DK.WinForms.CS
         private void btnOpen_Click(object sender, EventArgs e)
         {
             //Open a project
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\\World\\WorldDCW\\world.shp");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\WorldDCW\world.shp");
             GIS.Mode = TGIS_ViewerMode.Select;
         }
 

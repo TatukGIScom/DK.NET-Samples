@@ -151,7 +151,7 @@ namespace DragLabel
             // create real point layer
             ll = new TGIS_LayerVector();
             ll.Params.Marker.Symbol = TGIS_Utils.SymbolList.Prepare(
-                                  TGIS_Utils.GisSamplesDataDirDownload() + @"\Symbols\2267.cgm"
+                                  TGIS_Utils.GisSamplesDataDirDownload() + @"Symbols\2267.cgm"
                                 );
             ll.Name = "realpoints";
             ll.CachedPaint = false;

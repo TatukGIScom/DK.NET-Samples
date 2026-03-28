@@ -159,7 +159,7 @@ namespace AddLayer
         {
             TGIS_Shape shp;
 
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\VisibleEarth\world_8km.jpg");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\VisibleEarth\world_8km.jpg");
             ll = new TGIS_LayerVector();
             ll.Name = "shape";
             GIS.Add(ll);

@@ -169,19 +169,19 @@ namespace TrackingTest
             GIS.Lock();
             try
             {
-                GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\VisibleEarth\world_8km.jpg");
+                GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\VisibleEarth\world_8km.jpg");
                 GIS.Zoom = GIS.Zoom * 2;
                 GIS.InvalidateWholeMap();
 
                 // create a layer and add a field
                 ll = new TGIS_LayerVector();
                 ll.Params.Marker.Symbol = TGIS_Utils.SymbolList.Prepare(
-                                                                        TGIS_Utils.GisSamplesDataDirDownload() + @"\Symbols\2267.cgm"
+                                                                        TGIS_Utils.GisSamplesDataDirDownload() + @"Symbols\2267.cgm"
                                                                     );
                 ll.Params.Marker.SymbolRotate = Math.PI / 2;
                 ll.Params.Marker.Size = -20;
                 ll.Params.Line.Symbol = TGIS_Utils.SymbolList.Prepare(
-                                                                    TGIS_Utils.GisSamplesDataDirDownload() + @"\Symbols\1301.cgm"
+                                                                    TGIS_Utils.GisSamplesDataDirDownload() + @"Symbols\1301.cgm"
                                                                 );
                 ll.Params.Line.Width = -5;
                 ll.CachedPaint = false;

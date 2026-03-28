@@ -421,8 +421,8 @@ namespace TigerGeocoding
             // create geocod+ing object, set fields for routing
             geoObj = new TGIS_Geocoding(layerSrc);
             geoObj.Offset = 0.0001;
-            geoObj.LoadFormulas(TGIS_Utils.GisSamplesDataDirDownload() + @"\Samples\Geocoding\us_addresses.geo",
-                                                     TGIS_Utils.GisSamplesDataDirDownload() + @"\Samples\Geocoding\tiger2008.geo"
+            geoObj.LoadFormulas(TGIS_Utils.GisSamplesDataDirDownload() + @"Samples\Geocoding\us_addresses.geo",
+                                                     TGIS_Utils.GisSamplesDataDirDownload() + @"Samples\Geocoding\tiger2008.geo"
                                                  );
 
             GIS.Unlock();
@@ -478,7 +478,7 @@ namespace TigerGeocoding
 
         private void btnOpenDefault_Click(object sender, System.EventArgs e)
         {
-            openCoverage(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\USA\States\California\San Bernardino\TIGER\tl_2008_06071_edges_trunc.SHP");
+            openCoverage(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\USA\States\California\San Bernardino\TIGER\tl_2008_06071_edges_trunc.shp");
         }
 
         private void btnOpen_Click(object sender, System.EventArgs e)

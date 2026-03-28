@@ -211,7 +211,7 @@ Namespace Multiselect
             Dim ll As TGIS_LayerVector
 
             ' open a file
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\World\Countries\USA\States\California\Counties.SHP")
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\Counties.shp")
 
             ' and add a new parametr
             ll = CType(GIS.Items(0), TGIS_LayerVector)

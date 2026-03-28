@@ -225,7 +225,7 @@ namespace Multiselect
             TGIS_LayerVector ll;
 
             // open a file
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"\World\Countries\USA\States\California\Counties.SHP");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\USA\States\California\Counties.shp");
 
             // and add a new parametr
             ll = (TGIS_LayerVector)GIS.Items[0];
