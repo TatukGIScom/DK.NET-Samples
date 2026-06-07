@@ -15,7 +15,7 @@ Public Class Window1
         rbMove_Click(Me, New RoutedEventArgs())
 
         GIS.Lock()
-        GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + "Samples\3D\buildings.shp")
+        GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "Samples\3D\buildings.shp")
 
         edtLayer = New TGIS_LayerVector()
         edtLayer.CS = GIS.CS

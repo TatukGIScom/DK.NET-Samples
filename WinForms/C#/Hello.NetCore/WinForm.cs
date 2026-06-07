@@ -228,9 +228,13 @@ namespace HelloNetCore
         [STAThread]
         static void Main()
         {
-            Application.SetHighDpiMode(HighDpiMode.SystemAware);
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
+            #if NET6_0_OR_GREATER
+              ApplicationConfiguration.Initialize();
+            #else
+              Application.SetHighDpiMode(HighDpiMode.SystemAware);
+              Application.EnableVisualStyles();
+              Application.SetCompatibleTextRenderingDefault(false);
+            #endif
             Application.Run(new WinForm());
         }
 

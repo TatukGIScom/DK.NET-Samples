@@ -32,7 +32,7 @@ namespace ViewerLite
 
         private void btnOpen_Click(object sender, RoutedEventArgs e)
         {
-            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + "\\World\\WorldDCW\\world.shp");
+            GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\WorldDCW\world.shp");
         }
 
         private void btnZoom_Click(object sender, RoutedEventArgs e)

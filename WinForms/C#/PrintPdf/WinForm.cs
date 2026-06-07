@@ -366,9 +366,13 @@ namespace Legend
         static void Main()
         {
             // comment the line for .Net Framework
-            Application.SetHighDpiMode(HighDpiMode.SystemAware);
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
+            #if NET6_0_OR_GREATER
+              ApplicationConfiguration.Initialize();
+            #else
+              Application.SetHighDpiMode(HighDpiMode.SystemAware);
+              Application.EnableVisualStyles();
+              Application.SetCompatibleTextRenderingDefault(false);
+            #endif
             Application.Run(new WinForm());
         }
 

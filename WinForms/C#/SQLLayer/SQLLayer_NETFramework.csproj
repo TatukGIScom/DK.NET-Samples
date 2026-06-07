@@ -45,8 +45,8 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
-    <Reference Include="TatukGIS_DK_Win, Version=11.112.0.40968, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\TatukGIS.DK.NET.Windows.112.0.40968\lib\net45\TatukGIS_DK_Win.dll</HintPath>
+    <Reference Include="TatukGIS_DK_Win, Version=11.114.0.41394, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\TatukGIS.DK.NET.Windows.114.0.41394\lib\net45\TatukGIS_DK_Win.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -42,6 +42,7 @@ namespace Viewer
         private System.Windows.Forms.ToolStripLabel stsBarPanel3;
         private System.Windows.Forms.ToolStripLabel stsBarPanel4;
         private TatukGIS.NDK.WinForms.TGIS_ControlLegend GIS_ControlLegend;
+        private TatukGIS.NDK.WinForms.TGIS_ControlScale GIS_ControlScale;
         private System.Windows.Forms.Splitter splitter1;
         public TatukGIS.NDK.WinForms.TGIS_ViewerWnd GIS;
         private System.Windows.Forms.ToolStripMenuItem mnuFile;
@@ -113,478 +114,525 @@ namespace Viewer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WinForm));
-            TatukGIS.NDK.TGIS_ControlLegendDialogOptions tgiS_ControlLegendDialogOptions1 = new TatukGIS.NDK.TGIS_ControlLegendDialogOptions();
-            this.mainMenu1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.mnuFile = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuFileOpen = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuAppend = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuEditFile = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuExportLayer = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuFilePrint = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuClose = new System.Windows.Forms.ToolStripMenuItem();
-            this.ToolStripMenuItem9 = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuFileExit = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuView = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuViewFullExtent = new System.Windows.Forms.ToolStripMenuItem();
-            this.ToolStripMenuItem13 = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuViewZoomMode = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuViewDragMode = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuViewSelectMode = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuOptions = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuUseRTree = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuColor = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuSearch = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuFindShape = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.btnFileOpen = new System.Windows.Forms.ToolStripButton();
-            this.btnAppend = new System.Windows.Forms.ToolStripButton();
-            this.btnClose = new System.Windows.Forms.ToolStripButton();
-            this.btnFilePrint = new System.Windows.Forms.ToolStripButton();
-            this.btnEditFile = new System.Windows.Forms.ToolStripButton();
-            this.btnSaveToImage = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.btnViewFullExtent = new System.Windows.Forms.ToolStripButton();
-            this.btnViewZoomMode = new System.Windows.Forms.ToolStripButton();
-            this.btnViewDragMode = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.btnViewSelectMode = new System.Windows.Forms.ToolStripButton();
-            this.btnSearch = new System.Windows.Forms.ToolStripButton();
-            this.btnSaveAll = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.btnLegendMode = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.btnCS = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
-            this.stsBar = new System.Windows.Forms.StatusStrip();
-            this.stsBarPanel1 = new System.Windows.Forms.ToolStripLabel();
-            this.stsBarPanel2 = new System.Windows.Forms.ToolStripLabel();
-            this.stsBarPanel3 = new System.Windows.Forms.ToolStripLabel();
-            this.stsBarPanel4 = new System.Windows.Forms.ToolStripLabel();
-            this.splitter1 = new System.Windows.Forms.Splitter();
-            this.dlgFileOpen = new System.Windows.Forms.OpenFileDialog();
-            this.dlgFileSave = new System.Windows.Forms.SaveFileDialog();
-            this.dlgColor = new System.Windows.Forms.ColorDialog();
-            this.dlgFileAppend = new System.Windows.Forms.OpenFileDialog();
-            this.dlgSaveImage = new System.Windows.Forms.SaveFileDialog();
-            this.GIS = new TatukGIS.NDK.WinForms.TGIS_ViewerWnd();
-            this.GIS_ControlLegend = new TatukGIS.NDK.WinForms.TGIS_ControlLegend();
-            this.GIS_ControlPrintPreviewSimple = new TatukGIS.NDK.WinForms.TGIS_ControlPrintPreviewSimple();
-            this.SuspendLayout();
+            this.components = new Container();
+            ComponentResourceManager resources = new ComponentResourceManager(typeof(WinForm));
+            TGIS_ControlLegendDialogOptions tgiS_ControlLegendDialogOptions1 = new TGIS_ControlLegendDialogOptions();
+            TGIS_CSUnits tgiS_csUnits1 = new TGIS_CSUnits();
+            mainMenu1 = new ContextMenuStrip(components);
+            mnuFile = new ToolStripMenuItem();
+            mnuFileOpen = new ToolStripMenuItem();
+            mnuAppend = new ToolStripMenuItem();
+            mnuEditFile = new ToolStripMenuItem();
+            mnuExportLayer = new ToolStripMenuItem();
+            mnuFilePrint = new ToolStripMenuItem();
+            mnuClose = new ToolStripMenuItem();
+            ToolStripMenuItem9 = new ToolStripMenuItem();
+            mnuFileExit = new ToolStripMenuItem();
+            mnuView = new ToolStripMenuItem();
+            mnuViewFullExtent = new ToolStripMenuItem();
+            ToolStripMenuItem13 = new ToolStripMenuItem();
+            mnuViewZoomMode = new ToolStripMenuItem();
+            mnuViewDragMode = new ToolStripMenuItem();
+            mnuViewSelectMode = new ToolStripMenuItem();
+            mnuOptions = new ToolStripMenuItem();
+            mnuUseRTree = new ToolStripMenuItem();
+            mnuColor = new ToolStripMenuItem();
+            mnuSearch = new ToolStripMenuItem();
+            mnuFindShape = new ToolStripMenuItem();
+            toolStrip1 = new ToolStrip();
+            imageList1 = new ImageList(components);
+            btnFileOpen = new ToolStripButton();
+            btnAppend = new ToolStripButton();
+            btnClose = new ToolStripButton();
+            btnFilePrint = new ToolStripButton();
+            btnEditFile = new ToolStripButton();
+            btnSaveToImage = new ToolStripButton();
+            toolStripSeparator1 = new ToolStripSeparator();
+            btnViewFullExtent = new ToolStripButton();
+            btnViewZoomMode = new ToolStripButton();
+            btnViewDragMode = new ToolStripButton();
+            toolStripSeparator2 = new ToolStripSeparator();
+            btnViewSelectMode = new ToolStripButton();
+            btnSearch = new ToolStripButton();
+            btnSaveAll = new ToolStripButton();
+            toolStripSeparator3 = new ToolStripSeparator();
+            btnLegendMode = new ToolStripButton();
+            toolStripSeparator4 = new ToolStripSeparator();
+            btnCS = new ToolStripButton();
+            toolStripSeparator5 = new ToolStripSeparator();
+            stsBar = new StatusStrip();
+            stsBarPanel1 = new ToolStripLabel();
+            stsBarPanel2 = new ToolStripLabel();
+            stsBarPanel3 = new ToolStripLabel();
+            stsBarPanel4 = new ToolStripLabel();
+            splitter1 = new Splitter();
+            dlgFileOpen = new OpenFileDialog();
+            dlgFileSave = new SaveFileDialog();
+            dlgColor = new ColorDialog();
+            dlgFileAppend = new OpenFileDialog();
+            dlgSaveImage = new SaveFileDialog();
+            GIS = new TGIS_ViewerWnd();
+            GIS_ControlLegend = new TGIS_ControlLegend();
+            GIS_ControlScale = new TGIS_ControlScale();
+            GIS_ControlPrintPreviewSimple = new TGIS_ControlPrintPreviewSimple();
+            mainMenu1.SuspendLayout();
+            toolStrip1.SuspendLayout();
+            stsBar.SuspendLayout();
+            GIS.SuspendLayout();
+            SuspendLayout();
             // 
             // mainMenu1
             // 
-            this.mainMenu1.Items.AddRange(new System.Windows.Forms.ToolStripMenuItem[] {
-            this.mnuFile,
-            this.mnuView,
-            this.mnuOptions,
-            this.mnuSearch});
+            mainMenu1.Items.AddRange(new ToolStripItem[] { mnuFile, mnuView, mnuOptions, mnuSearch });
+            mainMenu1.Name = "mainMenu1";
+            mainMenu1.Size = new Size(117, 92);
             // 
             // mnuFile
             // 
-            this.mnuFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripMenuItem[] {
-            this.mnuFileOpen,
-            this.mnuAppend,
-            this.mnuEditFile,
-            this.mnuExportLayer,
-            this.mnuFilePrint,
-            this.mnuClose,
-            this.ToolStripMenuItem9,
-            this.mnuFileExit});
-            this.mnuFile.Text = "File";
+            mnuFile.DropDownItems.AddRange(new ToolStripItem[] { mnuFileOpen, mnuAppend, mnuEditFile, mnuExportLayer, mnuFilePrint, mnuClose, ToolStripMenuItem9, mnuFileExit });
+            mnuFile.Name = "mnuFile";
+            mnuFile.Size = new Size(116, 22);
+            mnuFile.Text = "File";
             // 
             // mnuFileOpen
             // 
-            this.mnuFileOpen.Text = "Open ...";
-            this.mnuFileOpen.Click += new System.EventHandler(this.mnuFileOpen_Click);
+            mnuFileOpen.Name = "mnuFileOpen";
+            mnuFileOpen.Size = new Size(232, 22);
+            mnuFileOpen.Text = "Open ...";
+            mnuFileOpen.Click += mnuFileOpen_Click;
             // 
             // mnuAppend
             // 
-            this.mnuAppend.ShortcutKeys = Keys.Control | Keys.A;
-            this.mnuAppend.Text = "Add ...";
-            this.mnuAppend.Click += new System.EventHandler(this.mnuAppend_Click);
+            mnuAppend.Name = "mnuAppend";
+            mnuAppend.ShortcutKeys = Keys.Control | Keys.A;
+            mnuAppend.Size = new Size(232, 22);
+            mnuAppend.Text = "Add ...";
+            mnuAppend.Click += mnuAppend_Click;
             // 
             // mnuEditFile
             // 
-            this.mnuEditFile.ShortcutKeys = Keys.Control | Keys.E;
-            this.mnuEditFile.Text = "Edit project/config file";
-            this.mnuEditFile.Click += new System.EventHandler(this.mnuEditFile_Click);
+            mnuEditFile.Name = "mnuEditFile";
+            mnuEditFile.ShortcutKeys = Keys.Control | Keys.E;
+            mnuEditFile.Size = new Size(232, 22);
+            mnuEditFile.Text = "Edit project/config file";
+            mnuEditFile.Click += mnuEditFile_Click;
             // 
             // mnuExportLayer
             // 
-            this.mnuExportLayer.Text = "Export ...";
-            this.mnuExportLayer.Click += new System.EventHandler(this.mnuExportLayer_Click);
+            mnuExportLayer.Name = "mnuExportLayer";
+            mnuExportLayer.Size = new Size(232, 22);
+            mnuExportLayer.Text = "Export ...";
+            mnuExportLayer.Click += mnuExportLayer_Click;
             // 
             // mnuFilePrint
             // 
-            this.mnuFilePrint.Text = "Print ...";
-            this.mnuFilePrint.Click += new System.EventHandler(this.mnuFilePrint_Click);
+            mnuFilePrint.Name = "mnuFilePrint";
+            mnuFilePrint.Size = new Size(232, 22);
+            mnuFilePrint.Text = "Print ...";
+            mnuFilePrint.Click += mnuFilePrint_Click;
             // 
             // mnuClose
             // 
-            this.mnuClose.ShortcutKeys = Keys.Control | Keys.Q;
-            this.mnuClose.Text = "Close";
-            this.mnuClose.Click += new System.EventHandler(this.mnuClose_Click);
+            mnuClose.Name = "mnuClose";
+            mnuClose.ShortcutKeys = Keys.Control | Keys.Q;
+            mnuClose.Size = new Size(232, 22);
+            mnuClose.Text = "Close";
+            mnuClose.Click += mnuClose_Click;
             // 
             // ToolStripMenuItem9
             // 
-            this.ToolStripMenuItem9.Text = "-";
+            ToolStripMenuItem9.Name = "ToolStripMenuItem9";
+            ToolStripMenuItem9.Size = new Size(232, 22);
+            ToolStripMenuItem9.Text = "-";
             // 
             // mnuFileExit
             // 
-            this.mnuFileExit.Text = "Exit";
-            this.mnuFileExit.Click += new System.EventHandler(this.mnuFileExit_Click);
+            mnuFileExit.Name = "mnuFileExit";
+            mnuFileExit.Size = new Size(232, 22);
+            mnuFileExit.Text = "Exit";
+            mnuFileExit.Click += mnuFileExit_Click;
             // 
             // mnuView
             // 
-            this.mnuView.DropDownItems.AddRange(new System.Windows.Forms.ToolStripMenuItem[] {
-            this.mnuViewFullExtent,
-            this.ToolStripMenuItem13,
-            this.mnuViewZoomMode,
-            this.mnuViewDragMode,
-            this.mnuViewSelectMode});
-            this.mnuView.Text = "View";
+            mnuView.DropDownItems.AddRange(new ToolStripItem[] { mnuViewFullExtent, ToolStripMenuItem13, mnuViewZoomMode, mnuViewDragMode, mnuViewSelectMode });
+            mnuView.Name = "mnuView";
+            mnuView.Size = new Size(116, 22);
+            mnuView.Text = "View";
             // 
             // mnuViewFullExtent
             // 
-            this.mnuViewFullExtent.Text = "Full Extent";
-            this.mnuViewFullExtent.Click += new System.EventHandler(this.mnuViewFullExtent_Click);
+            mnuViewFullExtent.Name = "mnuViewFullExtent";
+            mnuViewFullExtent.Size = new Size(128, 22);
+            mnuViewFullExtent.Text = "Full Extent";
+            mnuViewFullExtent.Click += mnuViewFullExtent_Click;
             // 
             // ToolStripMenuItem13
             // 
-            this.ToolStripMenuItem13.Text = "-";
+            ToolStripMenuItem13.Name = "ToolStripMenuItem13";
+            ToolStripMenuItem13.Size = new Size(128, 22);
+            ToolStripMenuItem13.Text = "-";
             // 
             // mnuViewZoomMode
             // 
-            this.mnuViewZoomMode.Text = "Zoom";
-            this.mnuViewZoomMode.Click += new System.EventHandler(this.mnuViewZoomMode_Click);
+            mnuViewZoomMode.Name = "mnuViewZoomMode";
+            mnuViewZoomMode.Size = new Size(128, 22);
+            mnuViewZoomMode.Text = "Zoom";
+            mnuViewZoomMode.Click += mnuViewZoomMode_Click;
             // 
             // mnuViewDragMode
             // 
-            this.mnuViewDragMode.Text = "Drag";
-            this.mnuViewDragMode.Click += new System.EventHandler(this.mnuViewDragMode_Click);
+            mnuViewDragMode.Name = "mnuViewDragMode";
+            mnuViewDragMode.Size = new Size(128, 22);
+            mnuViewDragMode.Text = "Drag";
+            mnuViewDragMode.Click += mnuViewDragMode_Click;
             // 
             // mnuViewSelectMode
             // 
-            this.mnuViewSelectMode.Text = "Info";
-            this.mnuViewSelectMode.Click += new System.EventHandler(this.mnuViewSelectMode_Click);
+            mnuViewSelectMode.Name = "mnuViewSelectMode";
+            mnuViewSelectMode.Size = new Size(128, 22);
+            mnuViewSelectMode.Text = "Info";
+            mnuViewSelectMode.Click += mnuViewSelectMode_Click;
             // 
             // mnuOptions
             // 
-            this.mnuOptions.DropDownItems.AddRange(new System.Windows.Forms.ToolStripMenuItem[] {
-            this.mnuUseRTree,
-            this.mnuColor});
-            this.mnuOptions.Text = "Options";
+            mnuOptions.DropDownItems.AddRange(new ToolStripItem[] { mnuUseRTree, mnuColor });
+            mnuOptions.Name = "mnuOptions";
+            mnuOptions.Size = new Size(116, 22);
+            mnuOptions.Text = "Options";
             // 
             // mnuUseRTree
             // 
-            this.mnuUseRTree.Text = "Use R-tree";
-            this.mnuUseRTree.Click += new System.EventHandler(this.mnuUseRTree_Click);
+            mnuUseRTree.Name = "mnuUseRTree";
+            mnuUseRTree.Size = new Size(128, 22);
+            mnuUseRTree.Text = "Use R-tree";
+            mnuUseRTree.Click += mnuUseRTree_Click;
             // 
             // mnuColor
             // 
-            this.mnuColor.Text = "Color";
-            this.mnuColor.Click += new System.EventHandler(this.mnuColor_Click);
+            mnuColor.Name = "mnuColor";
+            mnuColor.Size = new Size(128, 22);
+            mnuColor.Text = "Color";
+            mnuColor.Click += mnuColor_Click;
             // 
             // mnuSearch
             // 
-            this.mnuSearch.DropDownItems.AddRange(new System.Windows.Forms.ToolStripMenuItem[] {
-            this.mnuFindShape});
-            this.mnuSearch.Text = "Search";
+            mnuSearch.DropDownItems.AddRange(new ToolStripItem[] { mnuFindShape });
+            mnuSearch.Name = "mnuSearch";
+            mnuSearch.Size = new Size(116, 22);
+            mnuSearch.Text = "Search";
             // 
             // mnuFindShape
             // 
-            this.mnuFindShape.ShortcutKeys = Keys.Control | Keys.F;
-            this.mnuFindShape.Text = "Find shape";
-            this.mnuFindShape.Click += new System.EventHandler(this.mnuFindShape_Click);
+            mnuFindShape.Name = "mnuFindShape";
+            mnuFindShape.ShortcutKeys = Keys.Control | Keys.F;
+            mnuFindShape.Size = new Size(171, 22);
+            mnuFindShape.Text = "Find shape";
+            mnuFindShape.Click += mnuFindShape_Click;
             // 
             // toolStrip1
             // 
-            this.toolStrip1.AutoSize = false;
-            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.btnFileOpen,
-            this.btnAppend,
-            this.btnClose,
-            this.btnFilePrint,
-            this.btnEditFile,
-            this.btnSaveToImage,
-            this.toolStripSeparator1,
-            this.btnViewFullExtent,
-            this.btnViewZoomMode,
-            this.btnViewDragMode,
-            this.toolStripSeparator2,
-            this.btnViewSelectMode,
-            this.btnSearch,
-            this.btnSaveAll,
-            this.toolStripSeparator3,
-            this.btnLegendMode,
-            this.toolStripSeparator4,
-            this.btnCS,
-            this.toolStripSeparator5});
-            this.toolStrip1.ImageList = this.imageList1;
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
-            this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.ShowItemToolTips = true;
-            this.toolStrip1.Size = new System.Drawing.Size(592, 24);
-            this.toolStrip1.TabIndex = 0;
-            // 
-            // btnFileOpen
-            // 
-            this.btnFileOpen.ImageIndex = 4;
-            this.btnFileOpen.Name = "btnFileOpen";
-            this.btnFileOpen.ToolTipText = "Open GIS coverage";
-            this.btnFileOpen.Click += toolStrip1_ButtonClick;
-            // 
-            // btnAppend
-            // 
-            this.btnAppend.ImageIndex = 6;
-            this.btnAppend.Name = "btnAppend";
-            this.btnAppend.ToolTipText = "Add layers";
-            this.btnAppend.Click += toolStrip1_ButtonClick;
-            // 
-            // btnClose
-            // 
-            this.btnClose.ImageIndex = 8;
-            this.btnClose.Name = "btnClose";
-            this.btnClose.ToolTipText = "Close all layers";
-            this.btnClose.Click += toolStrip1_ButtonClick;
-            // 
-            // btnFilePrint
-            // 
-            this.btnFilePrint.ImageIndex = 5;
-            this.btnFilePrint.Name = "btnFilePrint";
-            this.btnFilePrint.ToolTipText = "Print preview";
-            this.btnFilePrint.Click += toolStrip1_ButtonClick;
-            // 
-            // btnEditFile
-            // 
-            this.btnEditFile.ImageIndex = 9;
-            this.btnEditFile.Name = "btnEditFile";
-            this.btnEditFile.ToolTipText = "Edit project/config file";
-            this.btnEditFile.Click += toolStrip1_ButtonClick;
-            // 
-            // btnSaveToImage
-            // 
-            this.btnSaveToImage.ImageIndex = 10;
-            this.btnSaveToImage.Name = "btnSaveToImage";
-            this.btnSaveToImage.ToolTipText = "Save to Image";
-            this.btnSaveToImage.Click += toolStrip1_ButtonClick;
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            // 
-            // btnViewFullExtent
-            // 
-            this.btnViewFullExtent.ImageIndex = 0;
-            this.btnViewFullExtent.Name = "btnViewFullExtent";
-            this.btnViewFullExtent.ToolTipText = "Fit map into the window";
-            this.btnViewFullExtent.Click += toolStrip1_ButtonClick;
-            // 
-            // btnViewZoomMode
-            // 
-            this.btnViewZoomMode.ImageIndex = 1;
-            this.btnViewZoomMode.Name = "btnViewZoomMode";
-            this.btnViewZoomMode.ToolTipText = "Zoom mode";
-            this.btnViewZoomMode.Click += toolStrip1_ButtonClick;
-            // 
-            // btnViewDragMode
-            // 
-            this.btnViewDragMode.ImageIndex = 2;
-            this.btnViewDragMode.Name = "btnViewDragMode";
-            this.btnViewDragMode.ToolTipText = "Drag mode";
-            this.btnViewDragMode.Click += toolStrip1_ButtonClick;
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            // 
-            // btnViewSelectMode
-            // 
-            this.btnViewSelectMode.ImageIndex = 3;
-            this.btnViewSelectMode.Name = "btnViewSelectMode";
-            this.btnViewSelectMode.ToolTipText = "Select mode";
-            this.btnViewSelectMode.Click += toolStrip1_ButtonClick;
-            // 
-            // btnSearch
-            // 
-            this.btnSearch.ImageIndex = 7;
-            this.btnSearch.Name = "btnSearch";
-            this.btnSearch.ToolTipText = "Search";
-            this.btnSearch.Click += toolStrip1_ButtonClick;
-            // 
-            // btnSaveAll
-            // 
-            this.btnSaveAll.ImageIndex = 11;
-            this.btnSaveAll.Name = "btnSaveAll";
-            this.btnSaveAll.ToolTipText = "Save changes";
-            this.btnSaveAll.Click += toolStrip1_ButtonClick;
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            // 
-            // btnLegendMode
-            // 
-            this.btnLegendMode.ImageIndex = 12;
-            this.btnLegendMode.Name = "btnLegendMode";
-            this.btnLegendMode.ToolTipText = "Legend mode";
-            this.btnLegendMode.Click += toolStrip1_ButtonClick;
-            // 
-            // toolStripSeparator4
-            // 
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            // 
-            // btnCS
-            // 
-            this.btnCS.ImageIndex = 13;
-            this.btnCS.Name = "btnCS";
-            this.btnCS.ToolTipText = "Coordinate system";
-            this.btnCS.Click += toolStrip1_ButtonClick;
-            // 
-            // toolStripSeparator5
-            // 
-            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            toolStrip1.AutoSize = false;
+            toolStrip1.ImageList = imageList1;
+            toolStrip1.Items.AddRange(new ToolStripItem[] { btnFileOpen, btnAppend, btnClose, btnFilePrint, btnEditFile, btnSaveToImage, toolStripSeparator1, btnViewFullExtent, btnViewZoomMode, btnViewDragMode, toolStripSeparator2, btnViewSelectMode, btnSearch, btnSaveAll, toolStripSeparator3, btnLegendMode, toolStripSeparator4, btnCS, toolStripSeparator5 });
+            toolStrip1.Location = new Point(0, 0);
+            toolStrip1.Name = "toolStrip1";
+            toolStrip1.Size = new Size(592, 24);
+            toolStrip1.TabIndex = 0;
             // 
             // imageList1
             // 
-            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
-            this.imageList1.TransparentColor = System.Drawing.Color.Fuchsia;
-            this.imageList1.Images.SetKeyName(0, "");
-            this.imageList1.Images.SetKeyName(1, "");
-            this.imageList1.Images.SetKeyName(2, "");
-            this.imageList1.Images.SetKeyName(3, "");
-            this.imageList1.Images.SetKeyName(4, "");
-            this.imageList1.Images.SetKeyName(5, "");
-            this.imageList1.Images.SetKeyName(6, "");
-            this.imageList1.Images.SetKeyName(7, "");
-            this.imageList1.Images.SetKeyName(8, "");
-            this.imageList1.Images.SetKeyName(9, "");
-            this.imageList1.Images.SetKeyName(10, "");
-            this.imageList1.Images.SetKeyName(11, "");
-            this.imageList1.Images.SetKeyName(12, "DesktopSave1_b.bmp");
-            this.imageList1.Images.SetKeyName(13, "ExtentLayer.bmp");
-            this.imageList1.Images.SetKeyName(14, "FullScreen.bmp");
+            imageList1.ColorDepth = ColorDepth.Depth8Bit;
+            imageList1.ImageStream = (ImageListStreamer)resources.GetObject("imageList1.ImageStream");
+            imageList1.TransparentColor = Color.Fuchsia;
+            imageList1.Images.SetKeyName(0, "");
+            imageList1.Images.SetKeyName(1, "");
+            imageList1.Images.SetKeyName(2, "");
+            imageList1.Images.SetKeyName(3, "");
+            imageList1.Images.SetKeyName(4, "");
+            imageList1.Images.SetKeyName(5, "");
+            imageList1.Images.SetKeyName(6, "");
+            imageList1.Images.SetKeyName(7, "");
+            imageList1.Images.SetKeyName(8, "");
+            imageList1.Images.SetKeyName(9, "");
+            imageList1.Images.SetKeyName(10, "");
+            imageList1.Images.SetKeyName(11, "");
+            imageList1.Images.SetKeyName(12, "DesktopSave1_b.bmp");
+            imageList1.Images.SetKeyName(13, "ExtentLayer.bmp");
+            imageList1.Images.SetKeyName(14, "FullScreen.bmp");
+            // 
+            // btnFileOpen
+            // 
+            btnFileOpen.ImageIndex = 4;
+            btnFileOpen.Name = "btnFileOpen";
+            btnFileOpen.Size = new Size(23, 21);
+            btnFileOpen.ToolTipText = "Open GIS coverage";
+            btnFileOpen.Click += toolStrip1_ButtonClick;
+            // 
+            // btnAppend
+            // 
+            btnAppend.ImageIndex = 6;
+            btnAppend.Name = "btnAppend";
+            btnAppend.Size = new Size(23, 21);
+            btnAppend.ToolTipText = "Add layers";
+            btnAppend.Click += toolStrip1_ButtonClick;
+            // 
+            // btnClose
+            // 
+            btnClose.ImageIndex = 8;
+            btnClose.Name = "btnClose";
+            btnClose.Size = new Size(23, 21);
+            btnClose.ToolTipText = "Close all layers";
+            btnClose.Click += toolStrip1_ButtonClick;
+            // 
+            // btnFilePrint
+            // 
+            btnFilePrint.ImageIndex = 5;
+            btnFilePrint.Name = "btnFilePrint";
+            btnFilePrint.Size = new Size(23, 21);
+            btnFilePrint.ToolTipText = "Print preview";
+            btnFilePrint.Click += toolStrip1_ButtonClick;
+            // 
+            // btnEditFile
+            // 
+            btnEditFile.ImageIndex = 9;
+            btnEditFile.Name = "btnEditFile";
+            btnEditFile.Size = new Size(23, 21);
+            btnEditFile.ToolTipText = "Edit project/config file";
+            btnEditFile.Click += toolStrip1_ButtonClick;
+            // 
+            // btnSaveToImage
+            // 
+            btnSaveToImage.ImageIndex = 10;
+            btnSaveToImage.Name = "btnSaveToImage";
+            btnSaveToImage.Size = new Size(23, 21);
+            btnSaveToImage.ToolTipText = "Save to Image";
+            btnSaveToImage.Click += toolStrip1_ButtonClick;
+            // 
+            // toolStripSeparator1
+            // 
+            toolStripSeparator1.Name = "toolStripSeparator1";
+            toolStripSeparator1.Size = new Size(6, 24);
+            // 
+            // btnViewFullExtent
+            // 
+            btnViewFullExtent.ImageIndex = 0;
+            btnViewFullExtent.Name = "btnViewFullExtent";
+            btnViewFullExtent.Size = new Size(23, 21);
+            btnViewFullExtent.ToolTipText = "Fit map into the window";
+            btnViewFullExtent.Click += toolStrip1_ButtonClick;
+            // 
+            // btnViewZoomMode
+            // 
+            btnViewZoomMode.ImageIndex = 1;
+            btnViewZoomMode.Name = "btnViewZoomMode";
+            btnViewZoomMode.Size = new Size(23, 21);
+            btnViewZoomMode.ToolTipText = "Zoom mode";
+            btnViewZoomMode.Click += toolStrip1_ButtonClick;
+            // 
+            // btnViewDragMode
+            // 
+            btnViewDragMode.ImageIndex = 2;
+            btnViewDragMode.Name = "btnViewDragMode";
+            btnViewDragMode.Size = new Size(23, 21);
+            btnViewDragMode.ToolTipText = "Drag mode";
+            btnViewDragMode.Click += toolStrip1_ButtonClick;
+            // 
+            // toolStripSeparator2
+            // 
+            toolStripSeparator2.Name = "toolStripSeparator2";
+            toolStripSeparator2.Size = new Size(6, 24);
+            // 
+            // btnViewSelectMode
+            // 
+            btnViewSelectMode.ImageIndex = 3;
+            btnViewSelectMode.Name = "btnViewSelectMode";
+            btnViewSelectMode.Size = new Size(23, 21);
+            btnViewSelectMode.ToolTipText = "Select mode";
+            btnViewSelectMode.Click += toolStrip1_ButtonClick;
+            // 
+            // btnSearch
+            // 
+            btnSearch.ImageIndex = 7;
+            btnSearch.Name = "btnSearch";
+            btnSearch.Size = new Size(23, 21);
+            btnSearch.ToolTipText = "Search";
+            btnSearch.Click += toolStrip1_ButtonClick;
+            // 
+            // btnSaveAll
+            // 
+            btnSaveAll.ImageIndex = 11;
+            btnSaveAll.Name = "btnSaveAll";
+            btnSaveAll.Size = new Size(23, 21);
+            btnSaveAll.ToolTipText = "Save changes";
+            btnSaveAll.Click += toolStrip1_ButtonClick;
+            // 
+            // toolStripSeparator3
+            // 
+            toolStripSeparator3.Name = "toolStripSeparator3";
+            toolStripSeparator3.Size = new Size(6, 24);
+            // 
+            // btnLegendMode
+            // 
+            btnLegendMode.ImageIndex = 12;
+            btnLegendMode.Name = "btnLegendMode";
+            btnLegendMode.Size = new Size(23, 21);
+            btnLegendMode.ToolTipText = "Legend mode";
+            btnLegendMode.Click += toolStrip1_ButtonClick;
+            // 
+            // toolStripSeparator4
+            // 
+            toolStripSeparator4.Name = "toolStripSeparator4";
+            toolStripSeparator4.Size = new Size(6, 24);
+            // 
+            // btnCS
+            // 
+            btnCS.ImageIndex = 13;
+            btnCS.Name = "btnCS";
+            btnCS.Size = new Size(23, 21);
+            btnCS.ToolTipText = "Coordinate system";
+            btnCS.Click += toolStrip1_ButtonClick;
+            // 
+            // toolStripSeparator5
+            // 
+            toolStripSeparator5.Name = "toolStripSeparator5";
+            toolStripSeparator5.Size = new Size(6, 24);
             // 
             // stsBar
             // 
-            this.stsBar.Location = new System.Drawing.Point(0, 426);
-            this.stsBar.Name = "stsBar";
-            this.stsBar.Items.AddRange(new System.Windows.Forms.ToolStripLabel[] {
-            this.stsBarPanel1,
-            this.stsBarPanel2,
-            this.stsBarPanel3,
-            this.stsBarPanel4});
-            this.stsBar.Size = new System.Drawing.Size(592, 20);
-            this.stsBar.TabIndex = 1;
+            stsBar.Items.AddRange(new ToolStripItem[] { stsBarPanel1, stsBarPanel2, stsBarPanel3, stsBarPanel4 });
+            stsBar.Location = new Point(0, 424);
+            stsBar.Name = "stsBar";
+            stsBar.Size = new Size(592, 22);
+            stsBar.TabIndex = 1;
             // 
             // stsBarPanel1
             // 
-            this.stsBarPanel1.Name = "stsBarPanel1";
-            this.stsBarPanel1.Width = 60;
+            stsBarPanel1.Name = "stsBarPanel1";
+            stsBarPanel1.Size = new Size(0, 20);
             // 
             // stsBarPanel2
             // 
-            this.stsBarPanel2.Name = "stsBarPanel2";
-            this.stsBarPanel2.Width = 200;
+            stsBarPanel2.Name = "stsBarPanel2";
+            stsBarPanel2.Size = new Size(0, 20);
             // 
             // stsBarPanel3
             // 
-            this.stsBarPanel3.Name = "stsBarPanel3";
-            this.stsBarPanel3.Width = 200;
+            stsBarPanel3.Name = "stsBarPanel3";
+            stsBarPanel3.Size = new Size(0, 20);
             // 
             // stsBarPanel4
             // 
-            this.stsBarPanel4.Name = "stsBarPanel4";
-            this.stsBarPanel4.Width = 115;
+            stsBarPanel4.Name = "stsBarPanel4";
+            stsBarPanel4.Size = new Size(0, 20);
             // 
             // splitter1
             // 
-            this.splitter1.Location = new System.Drawing.Point(166, 24);
-            this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(3, 402);
-            this.splitter1.TabIndex = 3;
-            this.splitter1.TabStop = false;
+            splitter1.Location = new Point(166, 24);
+            splitter1.Name = "splitter1";
+            splitter1.Size = new Size(3, 400);
+            splitter1.TabIndex = 3;
+            splitter1.TabStop = false;
             // 
             // dlgFileSave
             // 
-            this.dlgFileSave.CreatePrompt = true;
-            this.dlgFileSave.Filter = "Arcview Shape File (*.shp, *.shx, *.dbf)|*.SHP|Autocad (*.dxf)|*.DXF|Mapinfo Inte" +
-    "rchange (*.mif, *.mid)|*.MIF|TatukGIS SQL Layer (.ttkls)|*.TTKLS";
-            this.dlgFileSave.Title = "Export layer";
+            dlgFileSave.CreatePrompt = true;
+            dlgFileSave.Filter = "Arcview Shape File (*.shp, *.shx, *.dbf)|*.SHP|Autocad (*.dxf)|*.DXF|Mapinfo Interchange (*.mif, *.mid)|*.MIF|TatukGIS SQL Layer (.ttkls)|*.TTKLS";
+            dlgFileSave.Title = "Export layer";
             // 
             // dlgFileAppend
             // 
-            this.dlgFileAppend.Multiselect = true;
+            dlgFileAppend.Multiselect = true;
             // 
             // dlgSaveImage
             // 
-            this.dlgSaveImage.CreatePrompt = true;
-            this.dlgSaveImage.Filter = "BMP|*.BMP|JPG|*.JPG|PNG|*.PNG|TIF|*.TIF";
-            this.dlgSaveImage.Title = "Save to Image";
+            dlgSaveImage.CreatePrompt = true;
+            dlgSaveImage.Filter = "BMP|*.BMP|JPG|*.JPG|PNG|*.PNG|TIF|*.TIF";
+            dlgSaveImage.Title = "Save to Image";
             // 
             // GIS
             // 
-            this.GIS.Cursor = System.Windows.Forms.Cursors.Default;
-            this.GIS.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.GIS.Location = new System.Drawing.Point(169, 24);
-            this.GIS.Mode = TatukGIS.NDK.TGIS_ViewerMode.Zoom;
-            this.GIS.Name = "GIS";
-            this.GIS.RestrictedDrag = false;
-            this.GIS.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.GIS.Size = new System.Drawing.Size(423, 402);
-            this.GIS.TabIndex = 4;
-            this.GIS.BusyEvent += new TatukGIS.NDK.TGIS_BusyEvent(this.GIS_Busy);
-            this.GIS.PaintExtraEvent += new TatukGIS.NDK.TGIS_RendererEvent(this.GIS_PaintExtraEvent);
-            this.GIS.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GIS_MouseDown);
-            this.GIS.MouseMove += new System.Windows.Forms.MouseEventHandler(this.GIS_MouseMove);
+            GIS.AutoStyle = false;
+            GIS.BackColor = Color.FromArgb(255, 255, 255);
+            GIS.Controls.Add(GIS_ControlScale);
+            GIS.Dock = DockStyle.Fill;
+            GIS.Level = 1D;
+            GIS.Location = new Point(169, 24);
+            GIS.Mode = TGIS_ViewerMode.Zoom;
+            GIS.Name = "GIS";
+            GIS.RestrictedDrag = false;
+            GIS.SelectionColor = Color.FromArgb(255, 255, 255);
+            GIS.Size = new Size(423, 400);
+            GIS.TabIndex = 4;
+            GIS.TiledPaint = false;
+            GIS.BusyEvent += GIS_Busy;
+            GIS.PaintExtraEvent += GIS_PaintExtraEvent;
+            GIS.SizeChanged += GIS_SizeChanged;
+            GIS.MouseDown += GIS_MouseDown;
+            GIS.DpiChangedBeforeParent += GIS_DpiChangedBeforeParent;
+            GIS.DpiChangedAfterParent += GIS_DpiChangedAfterParent;
+            GIS.MouseMove += GIS_MouseMove;
+            GIS.Resize += GIS_Resize;
             // 
             // GIS_ControlLegend
             // 
             tgiS_ControlLegendDialogOptions1.VectorWizardUniqueLimit = 256;
             tgiS_ControlLegendDialogOptions1.VectorWizardUniqueSearchLimit = 16384;
-            this.GIS_ControlLegend.DialogOptions = tgiS_ControlLegendDialogOptions1;
-            this.GIS_ControlLegend.Dock = System.Windows.Forms.DockStyle.Left;
-            this.GIS_ControlLegend.GIS_Group = null;
-            this.GIS_ControlLegend.GIS_Layer = null;
-            this.GIS_ControlLegend.GIS_Viewer = this.GIS;
-            this.GIS_ControlLegend.Location = new System.Drawing.Point(0, 24);
-            this.GIS_ControlLegend.Mode = TatukGIS.NDK.TGIS_ControlLegendMode.Layers;
-            this.GIS_ControlLegend.Name = "GIS_ControlLegend";
-            this.GIS_ControlLegend.Options = ((TatukGIS.NDK.TGIS_ControlLegendOption)((((((TatukGIS.NDK.TGIS_ControlLegendOption.AllowMove | TatukGIS.NDK.TGIS_ControlLegendOption.AllowActive) 
-            | TatukGIS.NDK.TGIS_ControlLegendOption.AllowExpand) 
-            | TatukGIS.NDK.TGIS_ControlLegendOption.AllowParams) 
-            | TatukGIS.NDK.TGIS_ControlLegendOption.AllowSelect) 
-            | TatukGIS.NDK.TGIS_ControlLegendOption.ShowSubLayers)));
-            this.GIS_ControlLegend.ReverseOrder = true;
-            this.GIS_ControlLegend.Size = new System.Drawing.Size(166, 402);
-            this.GIS_ControlLegend.TabIndex = 2;
+            GIS_ControlLegend.DialogOptions = tgiS_ControlLegendDialogOptions1;
+            GIS_ControlLegend.Dock = DockStyle.Left;
+            GIS_ControlLegend.GIS_Viewer = GIS;
+            GIS_ControlLegend.Location = new Point(0, 24);
+            GIS_ControlLegend.Name = "GIS_ControlLegend";
+            GIS_ControlLegend.Options = TGIS_ControlLegendOption.AllowMove | TGIS_ControlLegendOption.AllowActive | TGIS_ControlLegendOption.AllowExpand | TGIS_ControlLegendOption.AllowParams | TGIS_ControlLegendOption.AllowSelect | TGIS_ControlLegendOption.ShowSubLayers;
+            GIS_ControlLegend.ReverseOrder = true;
+            GIS_ControlLegend.Size = new Size(166, 400);
+            GIS_ControlLegend.TabIndex = 2;
+            // 
+            // GIS_ControlScale
+            // 
+            GIS_ControlScale.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            GIS_ControlScale.BorderStyle = BorderStyle.FixedSingle;
+            GIS_ControlScale.DividerColor1 = Color.Black;
+            GIS_ControlScale.DividerColor2 = Color.White;
+            GIS_ControlScale.GIS_Viewer = GIS;
+            GIS_ControlScale.Location = new Point(245, 348);
+            GIS_ControlScale.Name = "GIS_ControlScale";
+            GIS_ControlScale.PrepareEvent = null;
+            GIS_ControlScale.Size = new Size(166, 39);
+            GIS_ControlScale.TabIndex = 2;
+            tgiS_csUnits1.DescriptionEx = null;
+            GIS_ControlScale.Units = tgiS_csUnits1;
+            GIS_ControlScale.UnitsEPSG = 0;
             // 
             // GIS_ControlPrintPreviewSimple
             // 
-            this.GIS_ControlPrintPreviewSimple.GIS_Viewer = this.GIS;
+            GIS_ControlPrintPreviewSimple.GIS_Viewer = GIS;
             // 
             // WinForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(592, 446);
-            this.Controls.Add(this.GIS);
-            this.Controls.Add(this.splitter1);
-            this.Controls.Add(this.GIS_ControlLegend);
-            this.Controls.Add(this.stsBar);
-            this.Controls.Add(this.toolStrip1);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Location = new System.Drawing.Point(200, 120);
-            this.ContextMenuStrip = this.mainMenu1;
-            this.Name = "WinForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "TatukGIS Coverage Viewer";
-            this.Closing += new System.ComponentModel.CancelEventHandler(this.WinForm_Closing);
-            this.Load += new System.EventHandler(this.frmMain_Load);
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new SizeF(96F, 96F);
+            AutoScaleMode = AutoScaleMode.Dpi;
+            ClientSize = new Size(592, 446);
+            ContextMenuStrip = mainMenu1;
+            Controls.Add(GIS);
+            Controls.Add(splitter1);
+            Controls.Add(GIS_ControlLegend);
+            Controls.Add(stsBar);
+            Controls.Add(toolStrip1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            Location = new Point(200, 120);
+            Name = "WinForm";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "TatukGIS Coverage Viewer";
+            Closing += WinForm_Closing;
+            Load += frmMain_Load;
+            mainMenu1.ResumeLayout(false);
+            toolStrip1.ResumeLayout(false);
+            toolStrip1.PerformLayout();
+            stsBar.ResumeLayout(false);
+            stsBar.PerformLayout();
+            GIS.ResumeLayout(false);
+            ResumeLayout(false);
+            PerformLayout();
 
         }
         #endregion
@@ -595,8 +643,12 @@ namespace Viewer
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
+            #if NET6_0_OR_GREATER
+              ApplicationConfiguration.Initialize();
+            #else
+              Application.EnableVisualStyles();
+              Application.SetCompatibleTextRenderingDefault(false);
+            #endif
             Application.Run(new WinForm());
         }
 
@@ -1110,10 +1162,10 @@ namespace Viewer
             TGIS_CompressionType comp;
             TGIS_Extent ex;
 
-            ex  = GIS.Extent;
-            w   = 1024;
-            h   = (int)Math.Round((ex.YMax - ex.YMin) / (ex.XMax - ex.XMin) * w);
-            ex  = TGIS_Utils.GisExtent(ex.XMin, ex.YMin, ex.XMax, ex.YMin + ((ex.XMax - ex.XMin) / w) * h);
+            ex = GIS.Extent;
+            w = 1024;
+            h = (int)Math.Round((ex.YMax - ex.YMin) / (ex.XMax - ex.XMin) * w);
+            ex = TGIS_Utils.GisExtent(ex.XMin, ex.YMin, ex.XMax, ex.YMin + ((ex.XMax - ex.XMin) / w) * h);
             dpi = 96;
 
             // save image from the viewer to file
@@ -1247,6 +1299,26 @@ namespace Viewer
         private void GIS_PaintExtraEvent(object _sender, TGIS_RendererEventArgs _e)
         {
 
+        }
+
+        private void GIS_DpiChangedAfterParent(object sender, EventArgs e)
+        {
+            //?
+        }
+
+        private void GIS_DpiChangedBeforeParent(object sender, EventArgs e)
+        {
+            //GIS.ResetPPI();
+        }
+
+        private void GIS_Resize(object sender, EventArgs e)
+        {
+            //?
+        }
+
+        private void GIS_SizeChanged(object sender, EventArgs e)
+        {
+            //?
         }
     }
 }

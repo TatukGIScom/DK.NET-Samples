@@ -165,6 +165,9 @@ Namespace InMemory
         ''' </summary>
         <STAThread>
         Shared Sub Main()
+#If NET5_0_OR_GREATER Then
+            Application.SetHighDpiMode(HighDpiMode.PerMonitorV2)
+#End If
             Application.EnableVisualStyles()
             Application.SetCompatibleTextRenderingDefault(false)
             Application.Run(New WinForm())

@@ -14,7 +14,7 @@ Public Class Window1
     End Sub
 
     Private Sub btnOpen_Click(ByVal sender As System.Object, ByVal e As System.Windows.RoutedEventArgs)
-        GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "\\World\\WorldDCW\\world.shp")
+        GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\WorldDCW\world.shp")
     End Sub
 
     Private Sub btnZoom_Click(sender As Object, e As RoutedEventArgs)

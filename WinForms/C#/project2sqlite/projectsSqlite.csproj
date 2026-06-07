@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-        <PackageReference Include="TatukGIS.DK.NET.Windows" Version="112.0.40968" />
+        <PackageReference Include="TatukGIS.DK.NET.Windows" Version="114.0.41394" />
   </ItemGroup>
 
 </Project>

@@ -358,6 +358,9 @@ Namespace AddLayer
         ''' </summary>
         <STAThread>
         Shared Sub Main()
+#If NET5_0_OR_GREATER Then
+            Application.SetHighDpiMode(HighDpiMode.PerMonitorV2)
+#End If
             Call Application.EnableVisualStyles()
             Application.SetCompatibleTextRenderingDefault(False)
             Call Application.Run(New WinForm())

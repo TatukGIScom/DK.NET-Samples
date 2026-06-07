@@ -318,8 +318,12 @@ namespace GPSTracker
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
+            #if NET6_0_OR_GREATER
+              ApplicationConfiguration.Initialize();
+            #else
+              Application.EnableVisualStyles();
+              Application.SetCompatibleTextRenderingDefault(false);
+            #endif
             Application.Run(new WinForm());
         }
 

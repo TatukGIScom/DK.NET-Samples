@@ -507,6 +507,9 @@ Namespace SimpleEdit
         ''' </summary>
         <STAThread()>
         Shared Sub Main()
+#If NET5_0_OR_GREATER Then
+            Application.SetHighDpiMode(HighDpiMode.PerMonitorV2)
+#End If
             Application.EnableVisualStyles()
             Application.SetCompatibleTextRenderingDefault(False)
             Application.Run(New MainForm())
