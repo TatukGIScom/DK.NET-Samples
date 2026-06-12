@@ -8,6 +8,14 @@ using TatukGIS.NDK;
 
 namespace Viewshed
 {
+    /// <summary>
+    /// Viewshed sample — demonstrates line-of-sight terrain analysis using TGIS_Viewshed.
+    /// Loads a DEM (Digital Elevation Model) for San Bernardino, CA.  The user clicks on the map
+    /// to place observers; TGIS_Viewshed.Generate computes a viewshed raster (which cells are
+    /// visible from all observer points) and an AGL (Above-Ground-Level) raster (minimum height
+    /// needed for non-visible cells to become visible from at least one observer).
+    /// Radio buttons switch between binary viewshed, frequency viewshed, and AGL display.
+    /// </summary>
     public class WinForm : System.Windows.Forms.Form
     {
         /// <summary>
@@ -289,6 +297,8 @@ namespace Viewshed
             InitializeComponent();
         }
 
+        /// <summary>Toggles active state between the viewshed and AGL layers based on the selected
+        /// radio button, refreshes the color ramp, and updates the hint label.</summary>
         private void setLayerActive()
         {
             GIS.Lock();
@@ -304,6 +314,8 @@ namespace Viewshed
             showComment();
         }
 
+        /// <summary>Updates the hint label with a description of the currently active layer's
+        /// color scheme.</summary>
         private void showComment()
         {
             if( rbtnViewshedBinary.Checked )
@@ -326,6 +338,8 @@ namespace Viewshed
             }
         }
 
+        /// <summary>Applies a binary (green = visible) or frequency (red-to-green gradient) color
+        /// ramp to the viewshed layer based on the selected radio button.</summary>
         private void makeViewshedRamp()
         {
             if (GIS.Get(SAMPLE_VIEWSHED_NAME) == null)
@@ -364,6 +378,8 @@ namespace Viewshed
             }
         }
 
+        /// <summary>Opens the DEM raster for San Bernardino, CA; creates an Observers vector layer
+        /// with a tower symbol; and zooms to the full extent.</summary>
         private void Form1_Load(object sender, EventArgs e)
         {
             GIS.Lock();
@@ -391,6 +407,9 @@ namespace Viewshed
             GIS.FullExtent();
         }
 
+        /// <summary>In UserDefined mode, adds the clicked point as an observer, runs
+        /// TGIS_Viewshed.Generate to compute viewshed and AGL rasters, and refreshes the
+        /// display with the appropriate color ramp.</summary>
         private void GIS_MouseDown(object sender, MouseEventArgs e)
         {
             TGIS_Point pt;
@@ -489,6 +508,8 @@ namespace Viewshed
             }
         }
 
+        /// <summary>Reads viewshed frequency and AGL values at the cursor position and displays
+        /// them in the status bar.</summary>
         private void GIS_MouseMove(object sender, MouseEventArgs e)
         {
             TGIS_Point ptg;
@@ -514,11 +535,14 @@ namespace Viewshed
             statusStrip.Text = str;
         }
 
+        /// <summary>Zooms the viewer to the full extent of all layers.</summary>
         private void btnFullExtent_Click(object sender, EventArgs e)
         {
             GIS.FullExtent();
         }
 
+        /// <summary>Removes the viewshed and AGL layers and reverts all observer points to reset
+        /// the display.</summary>
         private void btnReset_Click(object sender, EventArgs e)
         {
             GIS.Lock();
@@ -534,26 +558,31 @@ namespace Viewshed
             GIS.Unlock();
         }
 
+        /// <summary>Switches the viewer to Zoom mode.</summary>
         private void rbtnZoom_CheckedChanged(object sender, EventArgs e)
         {
             GIS.Mode = TGIS_ViewerMode.Zoom;
         }
 
+        /// <summary>Switches the viewer to UserDefined mode for adding observer points.</summary>
         private void rbtnAddObserver_CheckedChanged(object sender, EventArgs e)
         {
             GIS.Mode = TGIS_ViewerMode.UserDefined;
         }
 
+        /// <summary>Refreshes the visible layer when the binary viewshed radio button changes.</summary>
         private void rbtnViewshedBinary_CheckedChanged(object sender, EventArgs e)
         {
             setLayerActive();
         }
 
+        /// <summary>Refreshes the visible layer when the frequency viewshed radio button changes.</summary>
         private void rbtnViewshedColor_CheckedChanged(object sender, EventArgs e)
         {
             setLayerActive();
         }
 
+        /// <summary>Refreshes the visible layer when the AGL radio button changes.</summary>
         private void rbtnAGL_CheckedChanged(object sender, EventArgs e)
         {
             setLayerActive();

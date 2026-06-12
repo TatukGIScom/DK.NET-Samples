@@ -10,9 +10,32 @@ Imports TatukGIS.NDK
 Imports TatukGIS.NDK.WinForms
 
 Namespace CGMViewer
-    ''' <summary>
-    ''' Summary description for WinForm.
-    ''' </summary>
+    ' CGMViewer sample — demonstrates rendering CGM (Computer Graphics Metafile) symbol files (VB.NET/.NET WinForms).
+    '
+    ' What the sample shows:
+    '   - Loading CGM (Computer Graphics Metafile) symbol files
+    '   - Displaying available symbols from TatukGIS symbol library
+    '   - Rendering CGM symbols as point markers on the map
+    '   - Using TGIS_Utils.SymbolList to enumerate symbol resources
+    '   - Creating point shapes with symbol markers
+    '   - Rotating symbols programmatically (90° increments)
+    '   - Scaling symbols to fit viewer extents
+    '   - Interactive symbol selection via listbox
+    '   - Displaying symbols centered on crosshair layer
+    '   - Symbol preview and visualization
+    '   - Supporting multiple symbol size and rotation parameters
+    '
+    ' Key TatukGIS API concepts shown here:
+    '   TGIS_ViewerWnd              - main visual map control
+    '   TGIS_Utils.SymbolList       - enumerate CGM symbol resources
+    '   TGIS_LayerVector            - vector layer for symbol markers
+    '   TGIS_Shape (point)          - point geometry for symbol placement
+    '   TGIS_Params.Marker          - point symbol rendering parameters
+    '   CGM symbols                 - Computer Graphics Metafile vector symbols
+    '   Symbol rotation             - angle-based marker orientation
+    '   Symbol scaling              - size adjustment for display
+    '   Symbol library              - TatukGIS built-in symbol collection
+    '   Interactive selection       - listbox-based symbol picking
     Public Class WinForm
         Inherits System.Windows.Forms.Form
         ''' <summary>
@@ -161,6 +184,10 @@ Namespace CGMViewer
             Application.Run(New WinForm())
         End Sub
 
+        ''' <summary>
+        ''' Populates the list box with *.cgm filenames and creates the crosshair vector layer
+        ''' (horizontal line, vertical line, and centre point shape) that displays the selected symbol.
+        ''' </summary>
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
             Dim dir As DirectoryInfo
             Dim ll As TGIS_LayerVector
@@ -195,10 +222,16 @@ Namespace CGMViewer
             shp.AddPoint(New TGIS_Point(0, 0))
         End Sub
 
+        ''' <summary>Redraws the symbol at the new size whenever the form is resized.</summary>
         Private Sub WinForm_Resize(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Resize
             drawSymbol()
         End Sub
 
+        ''' <summary>
+        ''' Loads the selected CGM file into SymbolList, sizes it to fit two-thirds of the smaller
+        ''' viewer dimension, and invalidates the map.  Aspect ratio is preserved by scaling down
+        ''' if the symbol is taller than it is wide.
+        ''' </summary>
         Private Sub drawSymbol()
             Dim w, h As Integer
 
@@ -232,12 +265,14 @@ Namespace CGMViewer
             End If
         End Sub
 
+        ''' <summary>Rotates the displayed symbol by 90° (π/2 radians) each click.</summary>
         Private Sub button1_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles button1.Click
             ' rotate symbol
             shp.Params.Marker.SymbolRotate = shp.Params.Marker.SymbolRotate + Math.PI / 2
             shp.Invalidate()
         End Sub
 
+        ''' <summary>Redraws the symbol when a different CGM file is selected in the list box.</summary>
         Private Sub listBox1_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles listBox1.SelectedIndexChanged
             statusBar1.Items(0).Text = TGIS_Utils.GisSamplesDataDirDownload() & listBox1.Items(listBox1.SelectedIndex)
             drawSymbol()

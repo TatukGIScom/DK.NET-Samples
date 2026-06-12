@@ -30,6 +30,35 @@ namespace AIModelRunner_New
     public delegate void GIS_AIModelDoneProc(string err);
     public enum RunTarget { Layer, Viewer }
 
+    /*
+    AIModelRunner sample — demonstrates execution of machine learning models on raster data (C#/.NET WinForms).
+
+    What the sample shows:
+      - Loading image files (TIFF, etc.) into the GIS viewer
+      - Executing AI/ML models on raster data via Python backend
+      - RealEsrgan model for image upscaling (super-resolution)
+      - MMRotate model for object detection and orientation
+      - Selecting models from dropdown list
+      - Background model execution with progress feedback
+      - TGIS_AIPythonWorker for asynchronous model processing
+      - TGIS_AIModelCustom for wrapping custom AI implementations
+      - Dual-target .NET build (net6.0-windows + net4.8)
+      - GisImageExporter for output raster generation
+      - Handling long-running AI computations without UI blocking
+      - Integration with Python environment and model libraries
+
+    Key TatukGIS API concepts shown here:
+      TGIS_ViewerWnd              - main visual map control
+      TGIS_LayerPixel             - raster/image layer for AI input
+      TGIS_AIPythonWorker         - async Python model execution
+      TGIS_AIModelCustom          - AI model wrapper interface
+      TGIS_AIModelRealEsrgan      - image upscaling model
+      TGIS_AIModelMmRotate        - object detection model
+      GisImageExporter            - raster output generation
+      GisAIPythonManager          - Python environment management
+      Background processing       - non-blocking model execution
+      Progress feedback           - user feedback during computation
+    */
     public partial class WinForm : System.Windows.Forms.Form
     {
         // ── Runtime-only UI (not designer-managed) ──────────────────────────

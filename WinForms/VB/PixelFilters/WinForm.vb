@@ -1,3 +1,42 @@
+' =============================================================================
+' This source code is a part of TatukGIS Developer Kernel.
+' =============================================================================
+'
+' PixelFilters - demonstrates how to apply image-processing filters to raster
+' (pixel) layers using TatukGIS.
+'
+' The sample loads a DEM (Digital Elevation Model) in ESRI ADF format and lets
+' the user pick a filter from a list box, configure its parameters, and execute
+' it against the layer.  The filtered result is displayed in the viewer.
+'
+' Supported filter categories:
+'   - Intensity / threshold  : Threshold, Salt-and-Pepper Noise, Gaussian Noise
+'   - Convolution kernels    : Low-Pass, High-Pass, Gaussian, Laplacian, Gradient
+'                              direction, Point Detector, Line Detectors
+'   - Rank / statistical     : Sobel Magnitude, Range, Midpoint, Minimum, Maximum,
+'                              Arithmetic Mean, Alpha-Trimmed Mean,
+'                              Contra-Harmonic Mean, Geometric Mean, Harmonic Mean,
+'                              Weighted Mean, Yp Mean, Majority, Minority, Median,
+'                              Weighted Median, Sum, Standard Deviation, Unique Count
+'   - Morphological          : Erosion, Dilation, Opening, Closing, Top-Hat, Bottom-Hat
+'
+' Key TatukGIS API concepts shown here:
+'   - TGIS_LayerPixel             : base class for raster layers; the filter input
+'   - TGIS_PixelFilterAbstract    : abstract base class for all pixel filters;
+'                                   set SourceLayer, DestinationLayer, Band,
+'                                   ColorSpace, BusyEvent, then call Execute()
+'   - TGIS_PixelFilterConvolution : applies a predefined kernel; type set via
+'                                   MaskType (TGIS_PixelFilterMaskType enum)
+'   - TGIS_PixelFilterStructuringElementType : SE shape for morphological ops
+'   - TGIS_PixelFilterColorSpace  : colour space in which the filter operates
+'   - TGIS_LayerPixel.Build()     : creates an in-memory output layer matching
+'                                   the input layer's CRS and pixel dimensions
+'   - filter.BusyEvent            : progress callback during Execute()
+'   - bFirst flag                 : on the first run a fresh output layer is
+'                                   created and swapped in; subsequent runs are
+'                                   in-place (output = input)
+' =============================================================================
+
 Imports System
 Imports System.Drawing
 Imports System.Collections
@@ -8,23 +47,32 @@ Imports TatukGIS.NDK
 Imports TatukGIS.NDK.WinForms
 
 Namespace PixelFilters
+    ''' <summary>
+    ''' Main form for the PixelFilters sample application.
+    ''' Provides a filter list, parameter controls, and Execute/Reset buttons to
+    ''' demonstrate applying TatukGIS pixel filters to a DEM raster layer.
+    ''' </summary>
     Public Class WinForm
         Inherits System.Windows.Forms.Form
 
-        Private GIS As TGIS_ViewerWnd
-        Private pProgress As ProgressBar
-        Private GIS_Legend As TGIS_ControlLegend
-        Private WithEvents btnExecute As Button
-        Private WithEvents btnReset As Button
-        Private WithEvents lbFilters As ListBox
+        Private GIS As TGIS_ViewerWnd              ' TatukGIS map viewer
+        Private pProgress As ProgressBar           ' Progress bar driven by filter BusyEvent
+        Private GIS_Legend As TGIS_ControlLegend   ' Layer legend panel
+        Private WithEvents btnExecute As Button    ' Apply the selected filter
+        Private WithEvents btnReset As Button      ' Reload the original raster
+        Private WithEvents lbFilters As ListBox    ' List of all available filter types
         Private lblFilters As Label
-        Private lblMask As Label
-        Private lblMaskSize As Label
-        Private WithEvents tbMaskSize As TrackBar
-        Private lblMaskSizeValue As Label
-        Private cbMask As ComboBox
-        Private lblStructuring As Label
-        Private cbStructuring As ComboBox
+        Private lblMask As Label                   ' Label for cbMask (Convolution only)
+        Private lblMaskSize As Label               ' Label for tbMaskSize (block-based filters)
+        Private WithEvents tbMaskSize As TrackBar  ' Block/kernel size slider
+        Private lblMaskSizeValue As Label          ' Displays current block size as "NxN"
+        Private cbMask As ComboBox                 ' Convolution kernel type selector
+        Private lblStructuring As Label            ' Label for cbStructuring (morphological)
+        Private cbStructuring As ComboBox          ' Structuring element shape selector
+        ''' <summary>
+        ''' True on the first Execute call; a fresh output layer is created.
+        ''' On subsequent calls the result is filtered in-place (output = input).
+        ''' </summary>
         Private bFirst As Boolean
         Private components As System.ComponentModel.IContainer
 
@@ -257,18 +305,32 @@ Namespace PixelFilters
             Application.Run(New WinForm())
         End Sub
 
+        ''' <summary>
+        ''' Loads (or reloads) the sample DEM raster layer into the viewer.
+        ''' AltitudeMapZones are cleared and GridShadow is disabled so the layer renders
+        ''' as a plain grey-scale elevation image, making filter effects easy to observe.
+        ''' <c>bFirst</c> is set to True so the next Execute creates a fresh output layer.
+        ''' </summary>
         Private Sub open()
             Dim ll As TGIS_LayerPixel
             GIS.Close()
+            ' GisCreateLayer() infers the layer type from the file extension/format
             ll = CType((TGIS_Utils.GisCreateLayer("", TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\San Bernardino\NED\w001001.adf")), TGIS_LayerPixel)
             ll.Open()
-            ll.Params.Pixel.AltitudeMapZones.Clear()
-            ll.Params.Pixel.GridShadow = False
+            ll.Params.Pixel.AltitudeMapZones.Clear()  ' Remove colour zones for a plain grey view
+            ll.Params.Pixel.GridShadow = False         ' Disable hillshade shadow
             GIS.Add(ll)
             GIS.FullExtent()
-            bFirst = True
+            bFirst = True  ' Signal that the next Execute() must create a fresh output layer
         End Sub
 
+        ''' <summary>
+        ''' Adjusts the visibility of parameter controls based on the selected filter type.
+        ''' Filters 0-2 (noise/threshold) have no user parameters.
+        ''' Filter 3 (Convolution) shows only the kernel-type combo box.
+        ''' Filters 4-22 (rank/statistical) show only the block-size track bar.
+        ''' Filters 23-28 (morphological) show both block size and structuring element.
+        ''' </summary>
         Private Sub onChange()
             If (lbFilters.SelectedIndex = 0) OrElse (lbFilters.SelectedIndex = 1) OrElse (lbFilters.SelectedIndex = 2) Then
                 cbStructuring.Visible = False
@@ -314,28 +376,50 @@ Namespace PixelFilters
             End If
         End Sub
 
+        ''' <summary>
+        ''' Handles Form Load: sets default selections and loads the raster layer.
+        ''' </summary>
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
-            lbFilters.SelectedIndex = 0
-            cbStructuring.SelectedIndex = 0
-            cbMask.SelectedIndex = 0
+            lbFilters.SelectedIndex = 0     ' Default: Threshold filter
+            cbStructuring.SelectedIndex = 0 ' Default SE shape: Square
+            cbMask.SelectedIndex = 0        ' Default kernel: Low-Pass 3x3
             onChange()
             open()
         End Sub
 
+        ''' <summary>
+        ''' Updates visible controls whenever the selected filter changes.
+        ''' </summary>
         Private Sub lbFilters_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles lbFilters.SelectedIndexChanged
             onChange()
         End Sub
 
+        ''' <summary>
+        ''' Updates the block-size label when the track bar value changes.
+        ''' The block size is always odd: 2 * trackBarValue + 1 (e.g. 1 -> 3x3).
+        ''' </summary>
         Private Sub tbMaskSize_ValueChanged(ByVal sender As Object, ByVal e As EventArgs) Handles tbMaskSize.ValueChanged
             Dim i As Integer
             i = 2 * tbMaskSize.Value + 1
             lblMaskSizeValue.Text = i & "x" & i
         End Sub
 
+        ''' <summary>
+        ''' Reloads the original raster layer, clearing any previously applied filters.
+        ''' </summary>
         Private Sub btnReset_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnReset.Click
             open()
         End Sub
 
+        ''' <summary>
+        ''' Constructs the selected filter, configures its parameters, wires it to
+        ''' source and destination layers, and calls Execute().
+        ''' On the first run (bFirst=True) a fresh in-memory output layer is created
+        ''' with Build() and swapped into the viewer in place of the input.
+        ''' Subsequent runs filter the layer in-place (output = input).
+        ''' The block size is 2 * tbMaskSize.Value + 1 (always an odd integer).
+        ''' The filter operates on Band=1 in HSL colour space (luminance channel).
+        ''' </summary>
         Private Sub btnExecute_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnExecute.Click
             Dim flrt As TGIS_PixelFilterAbstract = Nothing
             Dim input As TGIS_LayerPixel
@@ -659,14 +743,22 @@ Namespace PixelFilters
             GIS.InvalidateWholeMap()
         End Sub
 
+        ''' <summary>
+        ''' Progress callback invoked by the filter's Execute() method.
+        ''' _e.Pos = 0   : initialise the progress bar range.
+        ''' _e.Pos &lt; 0  : filter finished; set bar to maximum.
+        ''' otherwise    : update bar value every 100 steps.
+        ''' </summary>
         Private Sub doBusyEvent(ByVal _sender As Object, ByVal _e As TGIS_BusyEventArgs)
             If _e.Pos < 0 Then
-                pProgress.Value = pProgress.Maximum
+                pProgress.Value = pProgress.Maximum  ' Filter complete
             ElseIf _e.Pos = 0 Then
+                ' Initialise the range at the start of Execute()
                 pProgress.Minimum = 0
                 pProgress.Maximum = CInt(_e.EndPos)
                 pProgress.Value = 0
             Else
+                ' Update every 100 steps to avoid excessive UI overhead
                 If _e.Pos Mod 100 = 0 Then pProgress.Value = CInt(_e.Pos)
             End If
         End Sub

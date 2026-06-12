@@ -1,3 +1,27 @@
+'=============================================================================
+' This source code is a part of TatukGIS Developer Kernel.
+'=============================================================================
+'
+' SQLLayer Sample - VB.NET WinForms (TatukGIS NDK)
+' =================================================
+' Demonstrates how to open and display an SQL layer using TatukGIS DK11.
+'
+' An SQL layer (*.ttkls file) is a virtual layer definition that describes how
+' to retrieve spatial data from a relational database (e.g. PostgreSQL/PostGIS,
+' SQL Server, SQLite, Oracle Spatial) using a SQL query.  The .ttkls file
+' contains the connection string, the SQL statement, and field mappings; it
+' can be opened just like any other layer format supported by the DK.
+'
+' Key concepts shown:
+'   - Opening a .ttkls project with TGIS_ViewerWnd.Open
+'   - Fitting the view to the full data extent with FullExtent
+'   - Switching the viewer between Zoom and Drag interaction modes
+'
+' To adapt this sample to your own database:
+'   Edit gistest.ttkls to supply your connection string and SQL query.
+'   The file can also be opened in the TatukGIS Editor for visual configuration.
+'=============================================================================
+
 Imports Microsoft.VisualBasic
 Imports System
 Imports System.Drawing
@@ -5,28 +29,37 @@ Imports System.Collections
 Imports System.ComponentModel
 Imports System.Windows.Forms
 Imports System.Data
-Imports TatukGIS.NDK
-Imports TatukGIS.NDK.WinForms
+Imports TatukGIS.NDK           ' Core TatukGIS .NET SDK types
+Imports TatukGIS.NDK.WinForms  ' WinForms controls: TGIS_ViewerWnd, etc.
 
 Namespace SQLLayer
     ''' <summary>
-    ''' Summary description for WinForm.
+    ''' Main application form for the SQLLayer sample.
+    ''' Hosts a <see cref="TGIS_ViewerWnd"/> that renders data loaded from
+    ''' a .ttkls SQL layer definition file.
     ''' </summary>
     Public Class WinForm
         Inherits System.Windows.Forms.Form
-        ''' <summary>
-        ''' Required designer variable.
-        ''' </summary>
-        Private components As System.ComponentModel.IContainer
-        Private WithEvents toolBar1 As System.Windows.Forms.ToolStrip
-        Private btnFullExtent As System.Windows.Forms.ToolStripButton
-        Private toolBarButton1 As System.Windows.Forms.ToolStripButton
-        Private btnZoom As System.Windows.Forms.ToolStripButton
-        Private btnDrag As System.Windows.Forms.ToolStripButton
-        Private statusBar1 As System.Windows.Forms.StatusStrip
-        Private imageList1 As System.Windows.Forms.ImageList
-        Private GIS As TatukGIS.NDK.WinForms.TGIS_ViewerWnd
 
+        ' ------------------------------------------------------------------ '
+        '  Designer-managed fields (do not modify names/types)                '
+        ' ------------------------------------------------------------------ '
+
+        ''' <summary>Required designer variable.</summary>
+        Private components As System.ComponentModel.IContainer
+
+        Private WithEvents toolBar1 As System.Windows.Forms.ToolStrip  ' Main toolbar
+        Private btnFullExtent As System.Windows.Forms.ToolStripButton   ' Zoom to full extent
+        Private toolBarButton1 As System.Windows.Forms.ToolStripButton  ' Visual separator
+        Private btnZoom As System.Windows.Forms.ToolStripButton         ' Activate zoom mode
+        Private btnDrag As System.Windows.Forms.ToolStripButton         ' Activate drag/pan mode
+        Private statusBar1 As System.Windows.Forms.StatusStrip          ' Status bar
+        Private imageList1 As System.Windows.Forms.ImageList            ' Toolbar icon images
+        Private GIS As TatukGIS.NDK.WinForms.TGIS_ViewerWnd             ' TatukGIS map viewer
+
+        ''' <summary>
+        ''' Initialises the form and its child controls.
+        ''' </summary>
         Public Sub New()
             '
             ' Required for Windows Form Designer support
@@ -39,7 +72,7 @@ Namespace SQLLayer
         End Sub
 
         ''' <summary>
-        ''' Clean up any resources being used.
+        ''' Releases managed and unmanaged resources held by the form.
         ''' </summary>
         Protected Overloads Overrides Sub Dispose(ByVal disposing As Boolean)
             If disposing Then
@@ -70,10 +103,10 @@ Namespace SQLLayer
             '
             'toolBar1
             '
-            
+
             Me.toolBar1.AutoSize = False
             Me.toolBar1.Items.AddRange(New System.Windows.Forms.ToolStripButton() {Me.btnFullExtent, Me.toolBarButton1, Me.btnZoom, Me.btnDrag})
-            
+
             Me.toolBar1.ImageList = Me.imageList1
             Me.toolBar1.Location = New System.Drawing.Point(0, 0)
             Me.toolBar1.Name = "toolBar1"
@@ -90,7 +123,7 @@ Namespace SQLLayer
             'toolBarButton1
             '
             Me.toolBarButton1.Name = "toolBarButton1"
-            
+
             '
             'btnZoom
             '
@@ -153,7 +186,7 @@ Namespace SQLLayer
 #End Region
 
         ''' <summary>
-        ''' The main entry point for the application.
+        ''' Application entry point.  Configures visual styles and launches the form.
         ''' </summary>
         <STAThread>
         Shared Sub Main()
@@ -165,13 +198,29 @@ Namespace SQLLayer
             Application.Run(New WinForm())
         End Sub
 
+        ''' <summary>
+        ''' Handles the form Load event.
+        ''' Opens the SQL layer project file and zooms to the full data extent.
+        ''' </summary>
+        ''' <remarks>
+        ''' <see cref="TGIS_Utils.GisSamplesDataDirDownload"/> returns the path to
+        ''' the TatukGIS sample data directory.  The gistest.ttkls file defines the
+        ''' database connection string and SQL query that produce the virtual layer.
+        ''' Edit that file to point at your own database before running.
+        ''' </remarks>
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
-            ' open a project
+            ' Open the SQL layer definition file (.ttkls).
+            ' The viewer connects to the configured database and executes the
+            ' SQL query to create a virtual vector layer from the result set.
             GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "Samples\SQLLayers\gistest.ttkls")
 
+            ' Zoom the view so that all loaded features are visible.
             GIS.FullExtent()
         End Sub
 
+        ''' <summary>
+        ''' Changes the toolbar cursor to a hand pointer when over an active button.
+        ''' </summary>
         Private Sub toolBar1_MouseMove(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles toolBar1.MouseMove
             Dim p As Point = New Point(e.X, e.Y)
 
@@ -182,17 +231,21 @@ Namespace SQLLayer
             End If
         End Sub
 
+        ''' <summary>
+        ''' Handles clicks on all toolbar buttons through a single ItemClicked handler.
+        ''' Dispatches the appropriate viewer action based on the clicked item index.
+        ''' </summary>
         Private Sub toolBar1_ButtonClick(ByVal sender As Object, ByVal e As System.Windows.Forms.ToolStripItemClickedEventArgs) Handles toolBar1.ItemClicked
             Select Case toolBar1.Items.IndexOf(e.ClickedItem)
                 Case 0
-                    ' btnFullExt
+                    ' btnFullExtent — zoom to the full data extent
                     GIS.FullExtent()
                 Case 2
-                    ' btnZoom
+                    ' btnZoom — activate rubber-band zoom interaction mode
                     btnDrag.Checked = False
                     GIS.Mode = TGIS_ViewerMode.Zoom
                 Case 3
-                    ' btnDrag
+                    ' btnDrag — activate pan/drag interaction mode
                     btnZoom.Checked = False
                     GIS.Mode = TGIS_ViewerMode.Drag
             End Select

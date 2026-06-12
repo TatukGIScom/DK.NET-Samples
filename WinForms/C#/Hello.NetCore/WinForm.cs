@@ -1,3 +1,31 @@
+/*
+  HelloDK.NetCore sample — introductory demonstration of core TatukGIS DK workflows on .NET Core (C#/.NET WinForms).
+
+  What the sample shows:
+    - Opening a vector Shapefile (world map) into the GIS viewer
+    - Loading GIS data on .NET Core platform (cross-platform compatibility)
+    - Switching the viewer interaction mode: Zoom / Drag / Select
+    - Creating an in-memory editable vector layer with transparent polygon style
+    - Building a polygon shape programmatically by adding explicit vertices
+    - Click-to-select a feature using screen-to-map coordinate conversion
+    - Spatial proximity search via GIS.Locate to identify shapes near cursor
+    - Spatial containment query using DE-9IM matrix (topology predicates)
+    - SQL WHERE filtering to find shapes with attributes starting with 's'
+    - Full extent zoom and navigation buttons
+    - Cross-platform .NET Core support (Windows, Linux, macOS potential)
+
+  Key TatukGIS API concepts shown here:
+    TGIS_ViewerWnd              - main visual map control
+    TGIS_LayerVector            - vector layer (shapefile or in-memory)
+    TGIS_Shape                  - individual geographic feature
+    TGIS_ViewerMode             - interaction modes (Zoom, Drag, Select)
+    GIS.Locate()                - spatial proximity search at point
+    GIS.ScreenToMap()           - convert screen pixels to geographic coords
+    TGIS_LayerVector.Loop()     - spatial enumeration with DE-9IM filtering
+    Shape attributes / SQL WHERE - feature filtering and selection
+    .NET Core compatibility     - cross-platform TatukGIS deployment
+*/
+
 using System;
 using System.Drawing;
 using System.Collections;

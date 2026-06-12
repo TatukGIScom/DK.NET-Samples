@@ -12,7 +12,11 @@ Imports System.IO
 
 Namespace DirectWrite
     ''' <summary>
-    ''' Summary description for WinForm.
+    ''' DirectWrite sample — demonstrates five sequential low-level write techniques on
+    ''' TGIS_LayerSHP: Build (AddShape loop + SaveData), ImportLayerEx (spatial CONTAINS filter),
+    ''' MergeLayerEx (DISJOINT filter), TGIS_LayerVectorDirectWriteHelper (sequential
+    ''' high-performance write), and TGIS_LayerVectorMergeHelper (batch-commit write).
+    ''' Buttons unlock in sequence; output files go into a numbered Shapes{n} directory.
     ''' </summary>
     Public Class WinForm
         Inherits System.Windows.Forms.Form
@@ -161,6 +165,7 @@ Namespace DirectWrite
             Application.Run(New WinForm())
         End Sub
 
+        ''' <summary>Finds the next unused Shapes{n} directory number and creates it as the output destination.</summary>
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
             GIS.Mode = TGIS_ViewerMode.Zoom
             numb = 0
@@ -178,6 +183,8 @@ Namespace DirectWrite
 
         End Sub
 
+        ''' <summary>Creates a new SHP layer via Build(), opens the cities source, copies structure and
+        ''' coordinate system, loops all shapes with AddShape, then saves data.</summary>
         Private Sub btnBuild_Click(sender As Object, e As EventArgs) Handles btnBuild.Click
             Dim lv As TGIS_LayerSHP
             Dim ll As TGIS_LayerSHP
@@ -213,6 +220,8 @@ Namespace DirectWrite
             GIS.InvalidateWholeMap()
         End Sub
 
+        ''' <summary>Imports a spatially filtered subset of cities using ImportLayerEx with a CONTAINS
+        ''' WKT polygon (European bounding box); the imported layer is displayed in green.</summary>
         Private Sub btnImport_Click(sender As Object, e As EventArgs) Handles btnImport.Click
             Dim ll As TGIS_LayerSHP
             Dim lv As TGIS_LayerSHP
@@ -240,6 +249,8 @@ Namespace DirectWrite
             GIS.InvalidateWholeMap()
         End Sub
 
+        ''' <summary>Merges cities outside the European polygon using MergeLayerEx with a DISJOINT
+        ''' relation; the merged layer is displayed in green.</summary>
         Private Sub btnMergeLayer_Click(sender As Object, e As EventArgs) Handles btnMergeLayer.Click
             Dim ll As TGIS_LayerSHP
             Dim lv As TGIS_LayerSHP
@@ -266,6 +277,8 @@ Namespace DirectWrite
             GIS.InvalidateWholeMap()
         End Sub
 
+        ''' <summary>Writes all cities to a new SHP using TGIS_LayerVectorDirectWriteHelper
+        ''' (Build → AddShape loop → Close) for high-performance sequential writing.</summary>
         Private Sub btnWrite_Click(sender As Object, e As EventArgs) Handles btnWrite.Click
             Dim ll As TGIS_LayerSHP
             Dim lv As TGIS_LayerSHP
@@ -298,6 +311,8 @@ Namespace DirectWrite
             GIS.FullExtent()
         End Sub
 
+        ''' <summary>Writes all cities to a new SHP using TGIS_LayerVectorMergeHelper with Commit()
+        ''' per shape for batch-commit writing; resets all buttons on completion.</summary>
         Private Sub btnMergeHelper_Click(sender As Object, e As EventArgs) Handles btnMergeHelper.Click
             Dim ll As TGIS_LayerSHP
             Dim lv As TGIS_LayerSHP

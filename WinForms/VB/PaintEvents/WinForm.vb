@@ -1,3 +1,31 @@
+' PaintEvents sample — demonstrates custom rendering via paint event hooks (VB.NET/.NET WinForms).
+'
+' What the sample shows:
+'   - Loading a map dataset (countries shapefile) into the viewer
+'   - Implementing multiple paint event handlers for layered custom drawing
+'   - BeforePaint: draw custom elements under the map (background layer)
+'   - BeforePaintRenderer: customize rendering before layer features are drawn
+'   - PaintExtra: draw custom annotations and overlays on top of map
+'   - AfterPaintRenderer: modify appearance after layer rendering
+'   - AfterPaint: final annotation layer after all rendering complete
+'   - Handling different renderer types (raster, vector, pixel)
+'   - Rendering shapes, lines, and text via Graphics context
+'   - Combining GIS rendering with .NET Graphics API
+'   - Toggling paint events on/off to see cumulative effects
+'   - Printing map with or without custom paint events
+'
+' Key TatukGIS API concepts shown here:
+'   TGIS_ViewerWnd              - main visual map control
+'   OnBeforePaint               - pre-rendering hook (background layer)
+'   OnBeforePaintRenderer       - pre-renderer customization hook
+'   OnPaintExtra                - custom overlay annotation layer
+'   OnAfterPaintRenderer        - post-renderer customization hook
+'   OnAfterPaint                - final post-rendering hook
+'   TGIS_PaintEventArgs         - rendering context with Graphics object
+'   Graphics drawing            - .NET drawing to custom paint layer
+'   TGIS_Params                 - layer styling and appearance
+'   Renderer types              - vector, raster, pixel renderer hooks
+
 Imports Microsoft.VisualBasic
 Imports System
 Imports System.Drawing

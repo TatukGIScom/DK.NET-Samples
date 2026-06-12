@@ -1,3 +1,42 @@
+'=============================================================================
+' This source code is a part of TatukGIS Developer Kernel.
+'=============================================================================
+'
+' WMTSManager Sample - VB.NET WinForms (TatukGIS NDK)
+' ====================================================
+' Demonstrates connection to and management of Web Map Tile Service (WMTS) layers.
+'
+' What the sample shows:
+'   - Creating connections to WMTS servers via TGIS_LayerWMTS
+'   - Adding WMTS tile layers (e.g., OpenStreetMap, satellite imagery) to viewer
+'   - Managing multiple WMTS tile sources simultaneously
+'   - WMTS GetCapabilities request to discover available tile sets
+'   - Tile resolution and scale handling (zoom levels, tile matrix sets)
+'   - Layer visibility and transparency control
+'   - Interactive map navigation (zoom, pan, select) with tile layers
+'   - Legend display and layer property management (TGIS_ControlLegend)
+'   - Caching tile data for performance optimization
+'   - Handling WMTS tile request parameters (style, format, dimensions)
+'   - SSL/TLS security protocol configuration for secure endpoints
+'   - On-demand tile loading during map panning and zooming
+'   - Switching between different WMTS tile servers
+'
+' Key TatukGIS API concepts shown here:
+'   TGIS_ViewerWnd              - main visual map control
+'   TGIS_LayerWMTS              - Web Map Tile Service layer implementation
+'   TGIS_ControlLegend          - legend control for layer management
+'   TGIS_ViewerMode             - Zoom, Drag, Select interaction modes
+'   WMTS GetCapabilities        - discover tile sets from WMTS server
+'   WMTS GetTile                - fetch individual tiles by coordinates
+'   Tile matrix sets            - zoom level definitions (TMS, GoogleMapsCompatible)
+'   Layer style properties      - WMTS style identifiers
+'   Image format selection      - JPEG, PNG, WebP tile formats
+'   ServicePointManager         - SSL/TLS protocol configuration
+'   TGIS_Layer                  - abstract layer base class
+'   Extent fitting              - FullExtent to zoom to all layers
+'   Tile caching                - client-side tile storage
+'
+
 Imports System
 Imports System.Drawing
 Imports System.Collections
@@ -13,7 +52,9 @@ Imports System.Net
 Namespace WMTSManager
 
     ''' <summary>
-    ''' Summary description for WinForm.
+    ''' WMTSManager sample — demonstrates connection to and management of Web Map Tile Service (WMTS) layers.
+    ''' Handles WMTS server connections, discovers available tile sets, adds tile layers to the viewer,
+    ''' manages layer properties and caching, and provides interactive map navigation with multiple WMTS sources.
     ''' </summary>
     Public Class WinForm
         Inherits System.Windows.Forms.Form

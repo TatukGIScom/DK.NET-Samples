@@ -9,9 +9,38 @@ using TatukGIS.RTL;
 
 namespace DemOperations
 {
-    /// <summary>
-    /// Summary description for WinForm.
-    /// </summary>
+    /*
+    DemOperations sample — demonstrates terrain analysis derived from DEM raster (C#/.NET WinForms).
+
+    What the sample shows:
+      - Loading DEM (Digital Elevation Model) raster layers (ADF format)
+      - Performing terrain analysis operations on elevation grids
+      - Hillshade: shaded relief visualization
+      - Slope: steepness analysis
+      - Slope Hydro: hydrologically correct slope calculation
+      - Aspect: flow direction (N, NE, E, etc.)
+      - TRI: Terrain Ruggedness Index
+      - TPI: Topographic Position Index
+      - Roughness: local terrain roughness metric
+      - Total Curvature: curvature analysis
+      - Matrix Gain: gradient gain analysis
+      - Flow Direction: water flow direction
+      - Custom grid operations via GridOperationEvent callback
+      - Adjustable hillshade parameters (shadow, altitude)
+      - 3D visualization of results
+      - Legend display with colour ramps
+
+    Key TatukGIS API concepts shown here:
+      TGIS_ViewerWnd              - main visual map control
+      TGIS_LayerPixel             - raster/DEM layer
+      TGIS_DemGenerator           - terrain analysis engine
+      TGIS_LayerPixel.GridOperationEvent - custom grid processing callback
+      Terrain analysis operations - Hillshade, Slope, Aspect, TRI, TPI, etc.
+      Colour ramps                - visualization of terrain data
+      3D visualization            - elevation display
+      DEM processing              - grid-based raster operations
+      Spatial analysis            - terrain-derived metrics
+    */
     public class WinForm : System.Windows.Forms.Form
     {
         private Button btnOpen;
@@ -596,6 +625,9 @@ namespace DemOperations
             Application.Run(new WinForm());
         }
 
+        /// <summary>
+        /// Initialises the open-file filter and loads the default sample DEM on startup.
+        /// </summary>
         private void WinForm_Load(object sender, System.EventArgs e)
         {
             dlgOpen.Filter = TGIS_Utils.GisSupportedFiles(TGIS_FileType.All, false);
@@ -605,6 +637,14 @@ namespace DemOperations
             cbOperations_SelectedIndexChanged(sender, e);
         }
 
+        /// <summary>
+        /// Custom GridOperationEvent callback that computes a hillshade value for every
+        /// cell using a 3×3 neighbourhood (Horn's algorithm). Reads the nine-cell window
+        /// from <paramref name="_source"/>, calculates the cosine of the sun incidence
+        /// angle (cang), and writes the shaded value (1–255) to <paramref name="_output"/>.
+        /// Cells containing the layer's NoData value are passed through unchanged.
+        /// The sun azimuth is driven by the trbShadow track bar.
+        /// </summary>
         private Boolean changeDEM(
             Object _layer,
             TGIS_Extent _extent,
@@ -739,6 +779,7 @@ namespace DemOperations
             return final_result;
         }
 
+        /// <summary>Opens a file dialog and loads the chosen raster file into the viewer.</summary>
         private void btnOpen_Click(object sender, EventArgs e)
         {
             dlgOpen.ShowDialog();
@@ -746,6 +787,7 @@ namespace DemOperations
             GIS.Open(dlgOpen.FileName);
         }
 
+        /// <summary>Resets the viewer to show the full spatial extent of all loaded layers.</summary>
         private void btnFullExtent_Click(object sender, EventArgs e)
         {
             if (GIS.IsEmpty) return;
@@ -753,6 +795,7 @@ namespace DemOperations
             GIS.FullExtent();
         }
 
+        /// <summary>Switches the viewer interaction mode to zoom.</summary>
         private void btnZoom_Click(object sender, EventArgs e)
         {
             if (GIS.IsEmpty) return;
@@ -760,6 +803,7 @@ namespace DemOperations
             GIS.Mode = TGIS_ViewerMode.Zoom;
         }
 
+        /// <summary>Switches the viewer interaction mode to pan/drag.</summary>
         private void btnDrag_Click(object sender, EventArgs e)
         {
             if (GIS.IsEmpty) return;
@@ -767,6 +811,7 @@ namespace DemOperations
             GIS.Mode = TGIS_ViewerMode.Drag;
         }
 
+        /// <summary>Toggles the viewer between 2D map view and 3D perspective view.</summary>
         private void btn3D_Click(object sender, EventArgs e)
         {
             if (GIS.IsEmpty) return;
@@ -774,6 +819,10 @@ namespace DemOperations
             GIS.View3D = !GIS.View3D;
         }
 
+        /// <summary>
+        /// Updates the grid shadow angle on the source layer as the track bar position
+        /// changes, giving an interactive sun-position preview.
+        /// </summary>
         private void tbShadow_Scroll(object sender, EventArgs e)
         {
             TGIS_LayerPixel lp;
@@ -788,6 +837,11 @@ namespace DemOperations
                 GIS.InvalidateWholeMap();
         }
 
+        /// <summary>
+        /// Attaches or detaches the custom changeDEM hillshade callback on the source
+        /// layer when the checkbox state changes. When attached, the built-in grid
+        /// rendering is replaced by the manual hillshade computation.
+        /// </summary>
         private void cbCustomGrid_CheckedChanged(object sender, EventArgs e)
         {
             TGIS_LayerPixel lp;
@@ -810,6 +864,10 @@ namespace DemOperations
             GIS.InvalidateWholeMap();
         }
 
+        /// <summary>
+        /// Shows or hides the parameter sub-panels that are relevant to the currently
+        /// selected DEM operation (e.g. hillshade params, slope mode, curvature mode).
+        /// </summary>
         private void cbOperations_SelectedIndexChanged(object sender, EventArgs e)
         {
             gbHillShadeParams.Visible = false;
@@ -827,6 +885,11 @@ namespace DemOperations
             }
         }
 
+        /// <summary>
+        /// Creates an output grid layer matching the source DEM, instantiates the
+        /// DEM operation selected in cbOperations, runs TGIS_DemGenerator.Process,
+        /// and adds the result layer to the viewer.
+        /// </summary>
         private void btnRun_Click(object sender, EventArgs e)
         {
             TGIS_LayerPixel lp;
@@ -921,6 +984,10 @@ namespace DemOperations
 
         }
 
+        /// <summary>
+        /// Reports DEM processing progress on the progress bar. Shows and updates
+        /// the bar while EndPos &gt; 0, and hides it when the operation completes.
+        /// </summary>
         private void GIS_BusyEvent(object _sender, TGIS_BusyEventArgs _e)
         {
             if (_e.EndPos <= 0)

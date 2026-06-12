@@ -1,3 +1,31 @@
+/*
+  Rotation sample — demonstrates rotating map view and handling map rotation controls (C#/.NET WinForms).
+
+  What the sample shows:
+    - Loading a map dataset (countries shapefile) into the main viewer
+    - Creating a TGIS_ControlNorthArrow indicator showing current rotation angle
+    - Rotating the map view using a numeric input field (0-360 degrees)
+    - Creating four synchronized viewer windows displaying different rotation angles simultaneously
+    - Applying rotation to all viewers: north, east, south, west orientations
+    - Using OnRotationChanged event to update controls when map rotates
+    - Displaying compass rose / north arrow at current rotation angle
+    - Handling viewer extent synchronization across multiple rotated views
+    - Using TGIS_Lock for rotation behavior (extent vs projection lock)
+    - Controlling labels and symbol orientation under rotation
+
+  Key TatukGIS API concepts shown here:
+    TGIS_ViewerWnd              - main visual map control with rotation support
+    TGIS_ControlNorthArrow      - north arrow indicator showing rotation angle
+    Rotation angle              - numeric value in degrees (0-360)
+    OnRotationChanged           - event triggered when map rotates
+    SetRotation / GetRotation   - programmatic rotation control
+    Extent synchronization      - multi-window extent sharing
+    TGIS_Params                 - layer styling with rotation
+    TGIS_Lock                   - rotation locking modes
+    Symbol rotation             - orientation of point markers under map rotation
+    Label rotation              - text orientation matching map rotation
+*/
+
 using TatukGIS.NDK;
 using TatukGIS.NDK.WinForms;
 

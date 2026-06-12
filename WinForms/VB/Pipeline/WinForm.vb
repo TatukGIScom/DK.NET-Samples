@@ -8,6 +8,13 @@ Imports TatukGIS.NDK.WinForms
 Imports TatukGIS.RTL
 
 Namespace Pipeline
+    ''' <summary>
+    ''' Pipeline sample — demonstrates scripted GIS operations using TGIS_Pipeline.
+    ''' A .ttkpipeline file is loaded and parsed; the user can edit and execute pipeline
+    ''' commands (ETL operations like opening layers, filtering, contouring) via the
+    ''' code editor or by double-clicking commands in the list to open parameter dialogs.
+    ''' Progress bars show operation execution status in real-time.
+    ''' </summary>
     Public Class WinForm
         Inherits System.Windows.Forms.Form
 
@@ -260,6 +267,8 @@ Namespace Pipeline
             Application.Run(New WinForm())
         End Sub
 
+        ''' <summary>Loads a .ttkpipeline file, creates the TGIS_Pipeline object, and populates the
+        ''' command list with available pipeline operations.</summary>
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
             Dim i As Integer
 
@@ -331,6 +340,8 @@ Namespace Pipeline
             MessageBox.Show(_message)
         End Sub
 
+        ''' <summary>Updates dynamic progress bars and estimated time labels during pipeline
+        ''' operation execution.</summary>
         Private Sub doBusyEvent(ByVal _sender As Object, ByVal _args As TGIS_BusyEventArgs)
             Dim progressBar As ProgressBar
             Dim etlLabel As Label
@@ -402,6 +413,8 @@ Namespace Pipeline
             Application.DoEvents()
         End Sub
 
+        ''' <summary>Opens the TGIS_PipelineParamsEditor dialog for the selected operation and
+        ''' updates the operation code if OK is clicked.</summary>
         Private Sub doPipelineForm(ByVal _operation As TGIS_PipelineOperationAbstract)
             Dim frm As TGIS_PipelineParamsEditor
             frm = New TGIS_PipelineParamsEditor()
@@ -424,15 +437,18 @@ Namespace Pipeline
             System.Diagnostics.Process.Start(url)
         End Sub
 
+        ''' <summary>Executes the pipeline script from the code editor.</summary>
         Private Sub btnExecute_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnExecute.Click
             oPipeline.SourceCode = rtbCode.Text
             oPipeline.Execute()
         End Sub
 
+        ''' <summary>Exits the application.</summary>
         Private Sub btnExit_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnExit.Click
             Application.Exit()
         End Sub
 
+        ''' <summary>Opens a .ttkpipeline file and loads its contents into the code editor.</summary>
         Private Sub btnOpen_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnOpen.Click
 
             If dlgOpen.ShowDialog() = DialogResult.OK Then
@@ -440,6 +456,7 @@ Namespace Pipeline
             End If
         End Sub
 
+        ''' <summary>Loads pipeline code from a file into the code editor.</summary>
         Private Sub readFromFile(ByVal _str As String)
             Dim reader As StreamReader
             Dim line As String
@@ -456,6 +473,7 @@ Namespace Pipeline
             End Try
         End Sub
 
+        ''' <summary>Saves the current pipeline code to a .ttkpipeline file.</summary>
         Private Sub btnSave_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnSave.Click
             Dim lines As String()
             Dim file As String
@@ -476,6 +494,8 @@ Namespace Pipeline
             End If
         End Sub
 
+        ''' <summary>Handles double-click in code editor to open the parameter editor for the clicked
+        ''' line's operation.</summary>
         Private Sub rtbCode_DoubleClick(sender As Object, e As EventArgs) Handles rtbCode.DoubleClick
             oPipelineLine = rtbCode.GetLineFromCharIndex(rtbCode.SelectionStart) + 1
             rtbCode.[Select](rtbCode.GetFirstCharIndexFromLine(oPipelineLine - 1), rtbCode.Lines(oPipelineLine - 1).Length)
@@ -483,10 +503,13 @@ Namespace Pipeline
             oPipeline.ShowForm(oPipelineLine)
         End Sub
 
+        ''' <summary>Handles double-click in the command list to open the parameter editor for that
+        ''' operation.</summary>
         Private Sub lstCommands_DoubleClick(sender As Object, e As EventArgs) Handles lstCommands.DoubleClick
             oPipeline.ShowForm(lstCommands.SelectedItem.ToString(), rtbCode.GetLineFromCharIndex(rtbCode.SelectionStart))
         End Sub
 
+        ''' <summary>Updates the current line number when the user clicks in the code editor.</summary>
         Private Sub rtbCode_Click(sender As Object, e As EventArgs) Handles rtbCode.Click
             oPipelineLine = rtbCode.GetLineFromCharIndex(rtbCode.SelectionStart) + 1
         End Sub

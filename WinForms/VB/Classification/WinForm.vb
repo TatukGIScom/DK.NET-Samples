@@ -1,94 +1,164 @@
+'==============================================================================
+' This source code is a part of TatukGIS Developer Kernel.
+'==============================================================================
+'
+' Classification sample — demonstrates thematic data classification of vector
+' and raster (pixel) layers using the TatukGIS TGIS_ClassificationAbstract API.
+'
+' Key concepts shown:
+'   - Loading a layer with TGIS_ViewerWnd.Open
+'   - Creating a classifier with TGIS_ClassificationFactory.CreateClassifier,
+'     which returns the appropriate subclass for the layer type
+'     (TGIS_ClassificationVector or TGIS_ClassificationPixel)
+'   - Setting the classification target field (numeric attribute or band index)
+'   - Choosing a classification method from TGIS_ClassificationMethod:
+'       DefinedInterval, EqualInterval, GeometricalInterval, Manual,
+'       NaturalBreaks, KMeans, KMeansSpatial, Quantile, Quartile,
+'       StandardDeviation, StandardDeviationWithCentral, Unique
+'   - Controlling the visual output via:
+'       StartColor / EndColor       — color gradient endpoints
+'       NumClasses                  — number of class breaks (auto for some methods)
+'       Interval                    — interval size (DefinedInterval / StdDev methods)
+'       ColorRamp / ColorRampName   — named palette from GisColorRampList
+'       ColorRamp.DefaultColorMapMode — Continuous or Discrete color mapping
+'       ColorRamp.DefaultReverse    — reverse the ramp direction
+'   - Vector-specific properties via TGIS_ClassificationVector:
+'       RenderType      — Color, Size, OutlineWidth, or OutlineColor
+'       StartSize / EndSize — symbol size range for the Size render type
+'       ClassIdField    — optional field to store the class ID per feature
+'   - Managing layer statistics:
+'       ForceStatisticsCalculation — auto-calculate or prompt the user
+'       classifier.MustCalculateStatistics — check whether stats are needed
+'       layer.Statistics.Calculate — explicit statistics computation
+'   - Adding the classification result to TGIS_ControlLegend
+'   - Refreshing the map with GIS.InvalidateWholeMap
+'
+' The sample opens the California Counties shapefile from the TatukGIS sample
+' dataset by default, but allows the user to open any supported file.
+'==============================================================================
+
 Imports System
 Imports System.Drawing
 Imports System.Collections
 Imports System.ComponentModel
 Imports System.Windows.Forms
 Imports System.Data
-Imports TatukGIS.NDK
-Imports TatukGIS.NDK.WinForms
-Imports TatukGIS.NDK.Common
+Imports TatukGIS.NDK           ' Core TatukGIS types (TGIS_ClassificationAbstract, TGIS_Utils, …)
+Imports TatukGIS.NDK.WinForms  ' WinForms-specific controls (TGIS_ViewerWnd, TGIS_ControlLegend)
+Imports TatukGIS.NDK.Common    ' Shared NDK helpers
 
 Namespace Classification
+    ''' <summary>
+    ''' Main application form for the Classification sample.
+    ''' <para>
+    ''' Provides a toolbar row with field, method, render-by, class-count, interval,
+    ''' and color controls.  Any change to any control immediately re-runs
+    ''' <c>doClassify</c> so the map updates in real time.
+    ''' </para>
+    ''' <para>
+    ''' The left panel hosts a <c>TGIS_ControlLegend</c> that shows the class
+    ''' legend produced by the classifier.  The right area is the
+    ''' <c>TGIS_ViewerWnd</c> map viewer.
+    ''' </para>
+    ''' </summary>
     Public Class WinForm
         Inherits System.Windows.Forms.Form
 
-        Private pClassification As Panel
-        Private WithEvents cbRenderBy As ComboBox
-        Private WithEvents cbMethod As ComboBox
-        Private WithEvents cbField As ComboBox
+        ' ---------------------------------------------------------------
+        ' Designer-managed fields (do not rename — referenced by .resx)
+        ' ---------------------------------------------------------------
+        Private pClassification As Panel          ' Top toolbar panel: field/method/renderby/classes
+        Private WithEvents cbRenderBy As ComboBox ' Render type selector (Color, Size, …)
+        Private WithEvents cbMethod As ComboBox   ' Classification method selector
+        Private WithEvents cbField As ComboBox    ' Target field / band selector
         Private lblRenderBy As Label
         Private lblMethod As Label
         Private lblField As Label
-        Private WithEvents btnOpen As Button
-        Private pColor As Panel
-        Private WithEvents chkShowInLegend As CheckBox
-        Private WithEvents tbStartSize As TextBox
-        Private WithEvents tbClassIdField As TextBox
+        Private WithEvents btnOpen As Button       ' Opens a different layer file
+        Private pColor As Panel                    ' Second toolbar row: colors, sizes, legend toggle
+        Private WithEvents chkShowInLegend As CheckBox  ' Toggle legend population
+        Private WithEvents tbStartSize As TextBox  ' Min symbol size (Size render type)
+        Private WithEvents tbClassIdField As TextBox    ' Optional field name to persist class IDs
         Private lblClassIdField As Label
         Private lblEndSize As Label
         Private lblStartSize As Label
-        Private WithEvents pEndColor As Panel
+        Private WithEvents pEndColor As Panel      ' Color swatch for the highest-value class
         Private lblEndColor As Label
-        Private WithEvents pStartColor As Panel
+        Private WithEvents pStartColor As Panel    ' Color swatch for the lowest-value class
         Private lblStartColor As Label
-        Private WithEvents tbEndSize As TextBox
-        Private GISLegend As TGIS_ControlLegend
-        Private GIS As TGIS_ViewerWnd
-        Const RENDER_TYPE_SIZE As String = "Size / Width"
-        Const RENDER_TYPE_COLOR As String = "Color"
-        Const RENDER_TYPE_OUTLINE_WIDTH As String = "Outline width"
-        Const RENDER_TYPE_OUTLINE_COLOR As String = "Outline color"
-        Const STD_INTERVAL_ONE As String = "1 STDEV"
-        Const STD_INTERVAL_ONE_HALF As String = "1/2 STDEV"
-        Const STD_INTERVAL_ONE_THIRD As String = "1/3 STDEV"
+        Private WithEvents tbEndSize As TextBox    ' Max symbol size (Size render type)
+        Private GISLegend As TGIS_ControlLegend   ' Interactive layer legend panel
+        Private GIS As TGIS_ViewerWnd             ' TatukGIS map viewer control
+
+        ' ---------------------------------------------------------------
+        ' Classification method and render-type display-string constants.
+        ' These match the items in the combo boxes and are compared against
+        ' selected text to set TGIS_ClassificationMethod / RenderType values.
+        ' ---------------------------------------------------------------
+        Const RENDER_TYPE_SIZE          As String = "Size / Width"   ' Vary symbol size by class
+        Const RENDER_TYPE_COLOR         As String = "Color"           ' Vary fill color by class
+        Const RENDER_TYPE_OUTLINE_WIDTH As String = "Outline width"   ' Vary outline width by class
+        Const RENDER_TYPE_OUTLINE_COLOR As String = "Outline color"   ' Vary outline color by class
+
+        ' Standard deviation interval fraction display strings
+        Const STD_INTERVAL_ONE         As String = "1 STDEV"
+        Const STD_INTERVAL_ONE_HALF    As String = "1/2 STDEV"
+        Const STD_INTERVAL_ONE_THIRD   As String = "1/3 STDEV"
         Const STD_INTERVAL_ONE_QUARTER As String = "1/4 STDEV"
-        Const GIS_CLASSIFY_METHOD_DI As String = "Defined Interval"
-        Const GIS_CLASSIFY_METHOD_EI As String = "Equal Interval"
-        Const GIS_CLASSIFY_METHOD_GI As String = "Geometrical Interval"
-        Const GIS_CLASSIFY_METHOD_MN As String = "Manual"
-        Const GIS_CLASSIFY_METHOD_NB As String = "Natural Breaks"
-        Const GIS_CLASSIFY_METHOD_KM As String = "K-Means"
-        Const GIS_CLASSIFY_METHOD_KMS As String = "K-Means Spatial"
-        Const GIS_CLASSIFY_METHOD_QN As String = "Quantile"
-        Const GIS_CLASSIFY_METHOD_QR As String = "Quartile"
-        Const GIS_CLASSIFY_METHOD_SD As String = "Standard Deviation"
-        Const GIS_CLASSIFY_METHOD_SDC As String = "Standard Deviation with Central"
-        Const GIS_CLASSIFY_METHOD_UNQ As String = "Unique"
-        Private dlgColor As ColorDialog
-        Private dlgOpen As OpenFileDialog
-        Private WithEvents chkForceStatisticsCalculation As CheckBox
-        Private pnlManual As Panel
-        Private WithEvents btnAddManualBreak As Button
-        Private edtManualBreaks As TextBox
+
+        ' Classification method display strings (must match cbMethod items exactly)
+        Const GIS_CLASSIFY_METHOD_DI  As String = "Defined Interval"                ' Fixed-width interval classes
+        Const GIS_CLASSIFY_METHOD_EI  As String = "Equal Interval"                  ' Equal data-range intervals
+        Const GIS_CLASSIFY_METHOD_GI  As String = "Geometrical Interval"            ' Geometrically progressing breaks
+        Const GIS_CLASSIFY_METHOD_MN  As String = "Manual"                          ' User-specified break values
+        Const GIS_CLASSIFY_METHOD_NB  As String = "Natural Breaks"                  ' Jenks natural breaks
+        Const GIS_CLASSIFY_METHOD_KM  As String = "K-Means"                         ' K-means clustering
+        Const GIS_CLASSIFY_METHOD_KMS As String = "K-Means Spatial"                 ' Spatially aware K-means
+        Const GIS_CLASSIFY_METHOD_QN  As String = "Quantile"                        ' Equal-count quantile classes
+        Const GIS_CLASSIFY_METHOD_QR  As String = "Quartile"                        ' Four quartile classes
+        Const GIS_CLASSIFY_METHOD_SD  As String = "Standard Deviation"              ' Std-dev symmetric classes
+        Const GIS_CLASSIFY_METHOD_SDC As String = "Standard Deviation with Central" ' Std-dev with centre class
+        Const GIS_CLASSIFY_METHOD_UNQ As String = "Unique"                          ' One class per unique value
+
+        Private dlgColor As ColorDialog           ' System color-picker dialog
+        Private dlgOpen As OpenFileDialog         ' File-open dialog
+        Private WithEvents chkForceStatisticsCalculation As CheckBox  ' Auto-calc statistics
+        Private pnlManual As Panel                ' Panel: manual break entry controls
+        Private WithEvents btnAddManualBreak As Button  ' Apply manual breaks button
+        Private edtManualBreaks As TextBox        ' Comma-separated manual break values
         Private lblManual As Label
-        Private pnlInterval As Panel
-        Private WithEvents tbInterval As TextBox
-        Private WithEvents cbInterval As ComboBox
+        Private pnlInterval As Panel              ' Panel: interval or std-dev combo
+        Private WithEvents tbInterval As TextBox  ' Fixed interval value (DefinedInterval)
+        Private WithEvents cbInterval As ComboBox ' Std-dev interval fraction combo
         Private lblInterval As Label
-        Private pnlClasses As Panel
-        Private WithEvents cbClasses As ComboBox
+        Private pnlClasses As Panel               ' Panel: number-of-classes picker
+        Private WithEvents cbClasses As ComboBox  ' Class count selector (1–9)
         Private lblClasses As Label
-        Private pRamps As Panel
-        Private WithEvents chkColorRampName As CheckBox
-        Private WithEvents cbColorRamp As ComboBox
-        Private WithEvents chkColorRamp As CheckBox
-        Private WithEvents cbColorMapMode As ComboBox
+        Private pRamps As Panel                   ' Third toolbar row: color ramp controls
+        Private WithEvents chkColorRampName As CheckBox  ' Use ColorRampName string instead of object
+        Private WithEvents cbColorRamp As ComboBox       ' Named color ramp selector
+        Private WithEvents chkColorRamp As CheckBox      ' Enable color ramp override
+        Private WithEvents cbColorMapMode As ComboBox    ' Continuous vs. Discrete color mapping
         Private lblColorMapMode As Label
-        Private WithEvents chkReverse As CheckBox
+        Private WithEvents chkReverse As CheckBox        ' Reverse the ramp color order
         Private components As System.ComponentModel.IContainer
 
+        ''' <summary>
+        ''' Initialises the form components.
+        ''' Additional setup (opening the default layer, populating combos) happens
+        ''' in the WinForm_Load handler.
+        ''' </summary>
         Public Sub New()
             InitializeComponent()
         End Sub
 
+        ''' <summary>Clean up any resources being used.</summary>
         Protected Overrides Sub Dispose(ByVal disposing As Boolean)
             If disposing Then
-
                 If components IsNot Nothing Then
                     components.Dispose()
                 End If
             End If
-
             MyBase.Dispose(disposing)
         End Sub
 
@@ -370,6 +440,7 @@ Namespace Classification
             Me.lblStartSize.Size = New System.Drawing.Size(64, 16)
             Me.lblStartSize.TabIndex = 3
             Me.lblStartSize.Text = "Start size:"
+            ' pEndColor — color swatch for the highest-value class end color
             Me.pEndColor.BackColor = System.Drawing.Color.Green
             Me.pEndColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
             Me.pEndColor.Location = New System.Drawing.Point(158, 8)
@@ -385,7 +456,8 @@ Namespace Classification
             Me.lblEndColor.Size = New System.Drawing.Size(67, 16)
             Me.lblEndColor.TabIndex = 2
             Me.lblEndColor.Text = "End color:"
-            Me.pStartColor.BackColor = System.Drawing.Color.FromArgb((CInt(((CByte((233)))))), (CInt(((CByte((248)))))), (CInt(((CByte((237)))))))
+            ' pStartColor — color swatch for the lowest-value class start color
+            Me.pStartColor.BackColor = System.Drawing.Color.FromArgb((CInt(((CByte((233))))), (CInt(((CByte((248)))))), (CInt(((CByte((237))))))))
             Me.pStartColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
             Me.pStartColor.Location = New System.Drawing.Point(69, 8)
             Me.pStartColor.Margin = New System.Windows.Forms.Padding(2)
@@ -400,6 +472,7 @@ Namespace Classification
             Me.lblStartColor.Size = New System.Drawing.Size(70, 16)
             Me.lblStartColor.TabIndex = 0
             Me.lblStartColor.Text = "Start color:"
+            ' GISLegend — interactive legend linked to the GIS viewer
             Me.GISLegend.Anchor = (CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) Or System.Windows.Forms.AnchorStyles.Left)), System.Windows.Forms.AnchorStyles))
             tgiS_ControlLegendDialogOptions1.VectorWizardUniqueLimit = 256
             tgiS_ControlLegendDialogOptions1.VectorWizardUniqueSearchLimit = 16384
@@ -411,6 +484,7 @@ Namespace Classification
             Me.GISLegend.Options = (CType((((((((TatukGIS.NDK.TGIS_ControlLegendOption.AllowMove Or TatukGIS.NDK.TGIS_ControlLegendOption.AllowActive) Or TatukGIS.NDK.TGIS_ControlLegendOption.AllowExpand) Or TatukGIS.NDK.TGIS_ControlLegendOption.AllowParams) Or TatukGIS.NDK.TGIS_ControlLegendOption.AllowSelect) Or TatukGIS.NDK.TGIS_ControlLegendOption.ShowSubLayers) Or TatukGIS.NDK.TGIS_ControlLegendOption.AllowParamsVisible)), TatukGIS.NDK.TGIS_ControlLegendOption))
             Me.GISLegend.Size = New System.Drawing.Size(215, 630)
             Me.GISLegend.TabIndex = 2
+            ' GIS — TatukGIS WinForms map viewer control
             Me.GIS.Anchor = (CType(((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) Or System.Windows.Forms.AnchorStyles.Left) Or System.Windows.Forms.AnchorStyles.Right)), System.Windows.Forms.AnchorStyles))
             Me.GIS.AutoStyle = True
             Me.GIS.BackColor = System.Drawing.Color.FromArgb((CInt(((CByte((255)))))), (CInt(((CByte((255)))))), (CInt(((CByte((255)))))))
@@ -423,6 +497,7 @@ Namespace Classification
             Me.GIS.TabIndex = 3
             Me.GIS.TiledPaint = False
             Me.dlgOpen.FileName = "openFileDialog1"
+            ' pRamps — third toolbar row: color ramp controls
             Me.pRamps.Anchor = (CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) Or System.Windows.Forms.AnchorStyles.Right)), System.Windows.Forms.AnchorStyles))
             Me.pRamps.Controls.Add(Me.chkReverse)
             Me.pRamps.Controls.Add(Me.cbColorMapMode)
@@ -442,6 +517,7 @@ Namespace Classification
             Me.chkReverse.TabIndex = 19
             Me.chkReverse.Text = "Reverse"
             Me.chkReverse.UseVisualStyleBackColor = True
+            ' cbColorMapMode — Continuous: smooth gradient; Discrete: per-class solid colors
             Me.cbColorMapMode.FormattingEnabled = True
             Me.cbColorMapMode.Items.AddRange(New Object() {"Continuous", "Discrete"})
             Me.cbColorMapMode.Location = New System.Drawing.Point(628, 4)
@@ -455,6 +531,7 @@ Namespace Classification
             Me.lblColorMapMode.Size = New System.Drawing.Size(107, 16)
             Me.lblColorMapMode.TabIndex = 17
             Me.lblColorMapMode.Text = "Colormap Mode:"
+            ' chkColorRamp — enable/disable color ramp override
             Me.chkColorRamp.AutoSize = True
             Me.chkColorRamp.Checked = True
             Me.chkColorRamp.CheckState = System.Windows.Forms.CheckState.Checked
@@ -465,6 +542,7 @@ Namespace Classification
             Me.chkColorRamp.TabIndex = 16
             Me.chkColorRamp.Text = "Use ColorRamp"
             Me.chkColorRamp.UseVisualStyleBackColor = True
+            ' chkColorRampName — assign by name string rather than live ramp object
             Me.chkColorRampName.AutoSize = True
             Me.chkColorRampName.Checked = True
             Me.chkColorRampName.CheckState = System.Windows.Forms.CheckState.Checked
@@ -475,6 +553,7 @@ Namespace Classification
             Me.chkColorRampName.TabIndex = 15
             Me.chkColorRampName.Text = "Use ColorRampName"
             Me.chkColorRampName.UseVisualStyleBackColor = True
+            ' cbColorRamp — named color ramp picker populated from TGIS_Utils.GisColorRampList
             Me.cbColorRamp.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
             Me.cbColorRamp.FormattingEnabled = True
             Me.cbColorRamp.Location = New System.Drawing.Point(295, 6)
@@ -511,6 +590,10 @@ Namespace Classification
             Me.ResumeLayout(False)
         End Sub
 
+        ''' <summary>
+        ''' Application entry point.
+        ''' Configures DPI awareness and visual styles, then starts the message loop.
+        ''' </summary>
         <STAThread>
         Shared Sub Main()
 #If NET5_0_OR_GREATER Then
@@ -521,31 +604,71 @@ Namespace Classification
             Application.Run(New WinForm())
         End Sub
 
+        ''' <summary>
+        ''' Handles the Form.Load event.
+        ''' Positions overlay panels, builds the file-open filter, loads the
+        ''' default sample layer (California Counties shapefile), sets default
+        ''' control states, and populates the field and color-ramp pickers.
+        ''' <para>
+        ''' <c>TGIS_Utils.GisSamplesDataDirDownload()</c> returns the root path
+        ''' of the downloaded TatukGIS sample dataset.
+        ''' </para>
+        ''' </summary>
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
             Size = New System.Drawing.Size(1200, 800)
+
+            ' Overlay the interval and manual panels at the same location as the
+            ' classes panel; visibility is toggled depending on the chosen method.
             pnlInterval.Location = pnlClasses.Location
             pnlManual.Location = pnlClasses.Location
+
+            ' Build the file-open filter from all registered TatukGIS layer formats
             dlgOpen.Filter = TGIS_Utils.GisSupportedFiles(TGIS_FileType.All, False)
+
+            ' Open the default sample layer and zoom to its full extent
             GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\Counties.shp")
             GIS.FullExtent()
+
+            ' Set default selections: "Select …" placeholder, Color render type,
+            ' 5 classes, first std-dev interval fraction
             cbMethod.SelectedIndex = 0
-            cbRenderBy.SelectedIndex = 1
-            cbClasses.SelectedIndex = 4
-            cbInterval.SelectedIndex = 0
-            fillCbFields()
-            fillCbColorRamps()
+            cbRenderBy.SelectedIndex = 1   ' Color
+            cbClasses.SelectedIndex = 4    ' 5 classes
+            cbInterval.SelectedIndex = 0   ' 1 STDEV
+
+            fillCbFields()       ' Populate field picker from the loaded layer
+            fillCbColorRamps()   ' Populate ramp picker from TGIS_Utils.GisColorRampList
         End Sub
 
+        ''' <summary>
+        ''' Allows the user to open a different file for classification.
+        ''' After opening, zooms to the new layer's full extent and repopulates
+        ''' the field and color-ramp pickers.
+        ''' </summary>
         Private Sub btnOpen_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnOpen.Click
             Dim path As String
             If dlgOpen.ShowDialog() <> DialogResult.OK Then Return
             path = dlgOpen.FileName
             GIS.Open(path)
             GIS.FullExtent()
-            fillCbFields()
-            fillCbColorRamps()
+            fillCbFields()      ' Refresh field list for the new layer
+            fillCbColorRamps()  ' Ramp list is global but re-populate to ensure sync
         End Sub
 
+        ''' <summary>
+        ''' Populates <c>cbField</c> with classifiable fields from the current layer.
+        ''' <para>
+        ''' For vector layers (<c>TGIS_LayerVector</c>):
+        ''' always includes virtual fields (GIS_UID, GIS_AREA, GIS_LENGTH,
+        ''' GIS_CENTROID_X, GIS_CENTROID_Y), then adds numeric attribute fields
+        ''' of type <c>TGIS_FieldType.Number</c> or <c>TGIS_FieldType.Float</c>.
+        ''' </para>
+        ''' <para>
+        ''' For raster layers (<c>TGIS_LayerPixel</c>):
+        ''' adds one entry per band, since bands are the classifiable "fields"
+        ''' for pixel data.
+        ''' </para>
+        ''' </summary>
         Private Sub fillCbFields()
             Dim lyr As TGIS_Layer
             Dim lv As TGIS_LayerVector
@@ -555,14 +678,16 @@ Namespace Classification
 
             If TypeOf lyr Is TGIS_LayerVector Then
                 lv = TryCast(lyr, TGIS_LayerVector)
-                cbField.Items.Add("GIS_UID")
-                cbField.Items.Add("GIS_AREA")
-                cbField.Items.Add("GIS_LENGTH")
-                cbField.Items.Add("GIS_CENTROID_X")
-                cbField.Items.Add("GIS_CENTROID_Y")
 
+                ' Virtual fields — always available; computed on-the-fly by the engine
+                cbField.Items.Add("GIS_UID")        ' Unique feature identifier
+                cbField.Items.Add("GIS_AREA")       ' Feature area (polygon layers)
+                cbField.Items.Add("GIS_LENGTH")     ' Feature perimeter / line length
+                cbField.Items.Add("GIS_CENTROID_X") ' Centroid X coordinate
+                cbField.Items.Add("GIS_CENTROID_Y") ' Centroid Y coordinate
+
+                ' Add numeric attribute fields from the layer schema
                 For Each field As TGIS_FieldInfo In lv.Fields
-
                     Select Case field.FieldType
                         Case TGIS_FieldType.Number
                             cbField.Items.Add(field.Name)
@@ -571,8 +696,8 @@ Namespace Classification
                     End Select
                 Next
             ElseIf TypeOf lyr Is TGIS_LayerPixel Then
+                ' For raster layers each band index acts as a classifiable "field"
                 lp = TryCast(lyr, TGIS_LayerPixel)
-
                 For i As Integer = 1 To lp.BandsCount
                     cbField.Items.Add(i)
                 Next
@@ -581,108 +706,137 @@ Namespace Classification
             cbField.SelectedIndex = 0
         End Sub
 
+        ''' <summary>
+        ''' Enables or disables all color-ramp sub-controls as a unit.
+        ''' Called when <c>chkColorRamp</c> is toggled to keep the ramp-name
+        ''' checkbox, ramp picker, colormap mode, and reverse toggle in sync.
+        ''' </summary>
         Private Sub setColorRampControlEnabled(ByVal _enabled As Boolean)
-            cbColorRamp.Enabled = _enabled
+            cbColorRamp.Enabled      = _enabled
             chkColorRampName.Enabled = _enabled
-            cbColorMapMode.Enabled = _enabled
-            chkReverse.Enabled = _enabled
+            cbColorMapMode.Enabled   = _enabled
+            chkReverse.Enabled       = _enabled
         End Sub
 
+        ''' <summary>
+        ''' Populates <c>cbColorRamp</c> from the global
+        ''' <c>TGIS_Utils.GisColorRampList</c> registry.
+        ''' Pre-selects the "GreenBlue" ramp as the default.
+        ''' </summary>
         Private Sub fillCbColorRamps()
             Dim ramp_name As String
 
             For i As Integer = 0 To TGIS_Utils.GisColorRampList.Count - 1
                 ramp_name = TGIS_Utils.GisColorRampList(i).Name
                 cbColorRamp.Items.Add(ramp_name)
+                ' Pre-select GreenBlue as the default ramp
                 If ramp_name = "GreenBlue" Then cbColorRamp.SelectedIndex = i
             Next
         End Sub
 
+        ''' <summary>
+        ''' Returns the first layer in the viewer's layer collection, or
+        ''' <c>Nothing</c> if no layers have been loaded.
+        ''' Classification always operates on layer index 0.
+        ''' </summary>
         Private Function getLayer() As TGIS_Layer
             Dim res As TGIS_Layer = Nothing
             If GIS.Items.Count > 0 Then res = TryCast(GIS.Items(0), TGIS_Layer)
             Return res
         End Function
 
+        ' ---------------------------------------------------------------
+        ' Visibility helpers for optional control groups.
+        ' ---------------------------------------------------------------
+
+        ''' <summary>Shows or hides the fixed-interval text box and its label.</summary>
         Private Sub setInterval(ByVal _val As Boolean)
             tbInterval.Visible = _val
             lblInterval.Visible = _val
         End Sub
+        Private Sub showInterval() : setInterval(True) : End Sub
+        Private Sub hideInterval() : setInterval(False) : End Sub
 
-        Private Sub showInterval()
-            setInterval(True)
-        End Sub
-
-        Private Sub hideInterval()
-            setInterval(False)
-        End Sub
-
+        ''' <summary>Shows or hides the std-dev interval fraction combo and its label.</summary>
         Private Sub setStdDev(ByVal _val As Boolean)
             cbInterval.Visible = _val
             lblInterval.Visible = _val
         End Sub
+        Private Sub showStdDev() : setStdDev(True) : End Sub
+        Private Sub hideStdDev() : setStdDev(False) : End Sub
 
-        Private Sub showStdDev()
-            setStdDev(True)
-        End Sub
-
-        Private Sub hideStdDev()
-            setStdDev(False)
-        End Sub
-
+        ''' <summary>Shows or hides the number-of-classes combo and its label.</summary>
         Private Sub setClasses(ByVal _val As Boolean)
             cbClasses.Visible = _val
             lblClasses.Visible = _val
         End Sub
+        Private Sub showClasses() : setClasses(True) : End Sub
+        Private Sub hideClasses() : setClasses(False) : End Sub
 
-        Private Sub showClasses()
-            setClasses(True)
-        End Sub
-
-        Private Sub hideClasses()
-            setClasses(False)
-        End Sub
-
+        ''' <summary>Shows or hides the manual break entry controls.</summary>
         Private Sub setManual(ByVal _val As Boolean)
             edtManualBreaks.Visible = _val
             lblManual.Visible = _val
             btnAddManualBreak.Visible = _val
         End Sub
+        Private Sub showManual() : setManual(True) : End Sub
+        Private Sub hideManual() : setManual(False) : End Sub
 
-        Private Sub showManual()
-            setManual(True)
-        End Sub
-
-        Private Sub hideManual()
-            setManual(False)
-        End Sub
-
+        ''' <summary>
+        ''' Validates the text in a size/interval edit control and re-classifies
+        ''' when the value is a valid float.  Only triggers <c>doClassify</c> when
+        ''' the current method or render type makes the edited field meaningful.
+        ''' </summary>
         Private Sub validateEdit(ByVal sender As Object, ByVal e As EventArgs) Handles tbClassIdField.TextChanged, tbEndSize.TextChanged, tbStartSize.TextChanged
             Dim d As Single
             If (cbMethod.Text.Equals(GIS_CLASSIFY_METHOD_DI)) OrElse (cbRenderBy.Text.Equals(RENDER_TYPE_SIZE)) OrElse (cbRenderBy.Text.Equals(RENDER_TYPE_OUTLINE_WIDTH)) AndAlso (Single.TryParse((TryCast(sender, TextBox)).Text, d)) Then doClassify(sender, e)
         End Sub
 
+        ''' <summary>
+        ''' Opens the color picker and applies the chosen color as the
+        ''' classification start color (lowest-value class).
+        ''' </summary>
         Private Sub pStartColor_MouseClick(ByVal sender As Object, ByVal e As MouseEventArgs) Handles pStartColor.Click
             If dlgColor.ShowDialog() <> DialogResult.OK Then Return
             pStartColor.BackColor = dlgColor.Color
             doClassify(sender, e)
         End Sub
 
+        ''' <summary>
+        ''' Opens the color picker and applies the chosen color as the
+        ''' classification end color (highest-value class).
+        ''' </summary>
         Private Sub pEndColor_MouseClick(ByVal sender As Object, ByVal e As MouseEventArgs) Handles pEndColor.Click
             If dlgColor.ShowDialog() <> DialogResult.OK Then Return
             pEndColor.BackColor = dlgColor.Color
             doClassify(sender, e)
         End Sub
 
+        ''' <summary>Re-classifies when the target field selection changes.</summary>
         Private Sub cbField_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cbField.SelectedIndexChanged
             doClassify(sender, e)
         End Sub
 
+        ''' <summary>
+        ''' Handles classification method changes.
+        ''' Resets the interval text box, updates the default color ramp and
+        ''' colormap mode for the newly selected method, shows or hides the
+        ''' relevant optional controls (class count, interval, std-dev fraction,
+        ''' manual breaks), then calls <c>doClassify</c>.
+        ''' <para>
+        ''' Methods that determine their own class count automatically
+        ''' (DefinedInterval, Quartile, StandardDeviation variants) hide the
+        ''' class-count combo; all others show it.
+        ''' </para>
+        ''' </summary>
         Private Sub cbMethod_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cbMethod.SelectedIndexChanged
             Dim f As Single
             Dim method As String
+
+            ' Reset interval to default if the current text is not a valid number
             If Not Single.TryParse(tbInterval.Text, f) Then tbInterval.Text = "100"
 
+            ' "Select …" placeholder — hide all optional controls
             If cbMethod.SelectedIndex = 0 Then
                 pnlClasses.Visible = False
                 pnlInterval.Visible = False
@@ -690,56 +844,61 @@ Namespace Classification
                 Return
             End If
 
+            ' Reset defaults before applying method-specific overrides
             cbColorRamp.SelectedIndex = cbColorRamp.Items.IndexOf("GreenBlue")
             cbColorMapMode.SelectedItem = TatukGIS.NDK.__Global.GIS_COLORMAPMODE_CONTINUOUS
             method = cbMethod.SelectedItem.ToString()
 
             If cbMethod.SelectedIndex = 0 Then
-                hideInterval()
-                hideStdDev()
-                hideClasses()
-                hideManual()
+                ' Redundant guard — already handled above
+                hideInterval() : hideStdDev() : hideClasses() : hideManual()
             ElseIf method.Equals(GIS_CLASSIFY_METHOD_DI) Then
-                hideStdDev()
-                hideClasses()
-                hideManual()
+                ' Defined Interval: user specifies the interval width, class count is auto
+                hideStdDev() : hideClasses() : hideManual()
                 showInterval()
             ElseIf method.Equals(GIS_CLASSIFY_METHOD_MN) Then
-                hideInterval()
-                hideStdDev()
-                hideClasses()
+                ' Manual: user enters comma-separated break values
+                hideInterval() : hideStdDev() : hideClasses()
                 showManual()
             ElseIf method.Equals(GIS_CLASSIFY_METHOD_QR) Then
-                hideInterval()
-                hideStdDev()
-                hideClasses()
-                hideManual()
+                ' Quartile: always produces 4 classes — hide class count and interval
+                hideInterval() : hideStdDev() : hideClasses() : hideManual()
                 cbColorMapMode.SelectedItem = TatukGIS.NDK.TGIS_ColorRampNames.BrownGreen
             ElseIf (method.Equals(GIS_CLASSIFY_METHOD_SD)) OrElse (method.Equals(GIS_CLASSIFY_METHOD_SDC)) Then
-                hideInterval()
-                hideClasses()
-                hideManual()
+                ' Standard deviation variants: interval is a fraction of one std dev
+                hideInterval() : hideClasses() : hideManual()
                 showStdDev()
                 cbColorMapMode.SelectedItem = TatukGIS.NDK.TGIS_ColorRampNames.BrownGreen
             ElseIf method.Equals(GIS_CLASSIFY_METHOD_UNQ) Then
-                hideInterval()
-                hideClasses()
-                hideStdDev()
-                hideManual()
+                ' Unique: one class per distinct value — force discrete color mapping
+                hideInterval() : hideClasses() : hideStdDev() : hideManual()
                 setColorRampControlEnabled(True)
                 chkColorRamp.Checked = True
                 cbColorRamp.SelectedItem = TGIS_ColorRampNames.Unique
                 cbColorMapMode.SelectedItem = TatukGIS.NDK.__Global.GIS_COLORMAPMODE_DISCRETE
             Else
-                hideInterval()
-                hideStdDev()
-                hideManual()
+                ' All other methods allow the user to specify the number of classes
+                hideInterval() : hideStdDev() : hideManual()
                 showClasses()
             End If
 
             doClassify(sender, e)
         End Sub
 
+        ''' <summary>
+        ''' Core classification routine — called whenever any classification
+        ''' parameter changes.  Assembles a fully configured
+        ''' <c>TGIS_ClassificationAbstract</c> (or its
+        ''' <c>TGIS_ClassificationVector</c> subclass) and calls
+        ''' <c>Classify()</c> to apply the result to the layer's rendering
+        ''' parameters.
+        ''' <para>
+        ''' Workflow: validate inputs, optionally add ClassIdField, create
+        ''' classifier, set Target/NumClasses/colors/method/interval/breaks/
+        ''' ColorRamp, set vector-only params, handle statistics, call Classify,
+        ''' then repaint with GIS.InvalidateWholeMap.
+        ''' </para>
+        ''' </summary>
         Private Sub doClassify(ByVal sender As Object, ByVal e As EventArgs)
             Dim lyr As TGIS_Layer
             Dim lv As TGIS_LayerVector = Nothing
@@ -752,6 +911,8 @@ Namespace Classification
             Dim classifier As TGIS_ClassificationAbstract
             Dim classifier_vec As TGIS_ClassificationVector
             Dim colormap_mode As TGIS_ColorMapMode
+
+            ' Only proceed if the user has actually selected a method
             If cbMethod.SelectedIndex <= 0 Then Return
             create_field = False
             lyr = getLayer()
@@ -759,6 +920,9 @@ Namespace Classification
 
             If TypeOf lyr Is TGIS_LayerVector Then
                 lv = TryCast(lyr, TGIS_LayerVector)
+
+                ' If a class ID field name is provided, add it to the layer schema
+                ' (if it does not already exist) to store the class index per feature.
                 class_id_field = tbClassIdField.Text
                 create_field = class_id_field.Length > 0
                 If create_field AndAlso (lv.FindField(class_id_field) < 0) Then lv.AddField(class_id_field, TGIS_FieldType.Number, 3, 0)
@@ -766,14 +930,29 @@ Namespace Classification
                 MessageBox.Show(String.Format("Layer %s is not supported", (TryCast(lyr, TGIS_LayerPixel)).Name))
             End If
 
+            ' TGIS_ClassificationFactory.CreateClassifier inspects the layer type and
+            ' returns either TGIS_ClassificationVector or TGIS_ClassificationPixel.
             classifier = TGIS_ClassificationFactory.CreateClassifier(lyr)
+
+            ' --- Common properties ---
+
+            ' Target: the attribute field name (vector) or band index (pixel) to classify
             classifier.Target = cbField.SelectedItem.ToString()
+
+            ' NumClasses is automatically calculated (ignored) for methods that
+            ' determine their own class count: DefinedInterval, Quartile,
+            ' StandardDeviation, StandardDeviationWithCentral.
             classifier.NumClasses = cbClasses.SelectedIndex + 1
+
+            ' Color gradient: StartColor = lowest value, EndColor = highest value
             classifier.StartColor = TGIS_Color.FromRGB(pStartColor.BackColor.R, pStartColor.BackColor.G, pStartColor.BackColor.B)
-            classifier.EndColor = TGIS_Color.FromRGB(pEndColor.BackColor.R, pEndColor.BackColor.G, pEndColor.BackColor.B)
+            classifier.EndColor   = TGIS_Color.FromRGB(pEndColor.BackColor.R,   pEndColor.BackColor.G,   pEndColor.BackColor.B)
+
+            ' ShowLegend: whether to populate the layer's legend with class entries
             classifier.ShowLegend = chkShowInLegend.Checked
             method = cbMethod.SelectedItem.ToString()
 
+            ' --- Classification method ---
             If method = GIS_CLASSIFY_METHOD_DI Then
                 classifier.Method = TGIS_ClassificationMethod.DefinedInterval
             ElseIf method = GIS_CLASSIFY_METHOD_EI Then
@@ -802,13 +981,16 @@ Namespace Classification
                 classifier.Method = TGIS_ClassificationMethod.NaturalBreaks
             End If
 
+            ' --- Interval ---
+            ' For DefinedInterval: the fixed class width.
+            ' For StandardDeviation methods: overridden below with a fraction.
             Dim intervalVal As Single
             If Not Single.TryParse(tbInterval.Text, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.CreateSpecificCulture("en-GB"), intervalVal) Then Return
             classifier.Interval = intervalVal
 
             If (method = GIS_CLASSIFY_METHOD_SD) OrElse (method = GIS_CLASSIFY_METHOD_SDC) Then
+                ' Standard deviation: Interval is a fraction of one standard deviation
                 interval = cbInterval.SelectedItem.ToString()
-
                 If interval = STD_INTERVAL_ONE Then
                     classifier.Interval = 1.0
                 ElseIf interval = STD_INTERVAL_ONE_HALF Then
@@ -822,16 +1004,18 @@ Namespace Classification
                 End If
             End If
 
+            ' --- Manual class breaks ---
+            ' Parse comma-separated break values and add each to the classifier.
             Dim class_breaks_arr As String() = edtManualBreaks.Text.Split(","c)
-
             For Each class_break_str As String In class_breaks_arr
                 Dim class_break_val As Single
                 If Not Single.TryParse(class_break_str, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.CreateSpecificCulture("en-GB"), class_break_val) Then Return
                 classifier.AddClassBreak(class_break_val)
             Next
 
+            ' --- Color ramp (by name) ---
+            ' Assigning by name is preferred when serialising to a project file.
             If chkColorRampName.Checked Then
-
                 If cbColorRamp.Text.Equals("None") Then
                     classifier.ColorRampName = ""
                 Else
@@ -839,8 +1023,9 @@ Namespace Classification
                 End If
             End If
 
+            ' --- Color ramp (by object) ---
             If chkColorRamp.Checked Then
-
+                ' Determine whether to render as smooth gradient or per-class solid blocks
                 Select Case cbColorMapMode.SelectedItem
                     Case TatukGIS.NDK.__Global.GIS_COLORMAPMODE_CONTINUOUS
                         colormap_mode = TGIS_ColorMapMode.Continuous
@@ -849,26 +1034,28 @@ Namespace Classification
                 End Select
 
                 ramp_name = cbColorRamp.SelectedItem.ToString()
-
                 If chkColorRampName.Checked Then
                     classifier.ColorRampName = ramp_name
                 Else
+                    ' Assign the live ramp object from the global registry
                     classifier.ColorRamp = TatukGIS.NDK.__Global.GisColorRampList().ByName(ramp_name)
                 End If
 
                 classifier.ColorRamp.DefaultColorMapMode = colormap_mode
                 classifier.ColorRamp.DefaultReverse = chkReverse.Checked
             Else
-                classifier.ColorRamp = Nothing
+                classifier.ColorRamp = Nothing  ' Use plain StartColor/EndColor gradient
             End If
 
+            ' --- Vector-only parameters ---
             If TypeOf classifier Is TGIS_ClassificationVector Then
                 classifier_vec = TryCast(classifier, TGIS_ClassificationVector)
-                classifier_vec.StartSize = Integer.Parse(tbStartSize.Text)
-                classifier_vec.EndSize = Integer.Parse(tbEndSize.Text)
-                classifier_vec.ClassIdField = class_id_field
-                render_type = cbRenderBy.SelectedItem.ToString()
+                classifier_vec.StartSize    = Integer.Parse(tbStartSize.Text)  ' Min symbol size
+                classifier_vec.EndSize      = Integer.Parse(tbEndSize.Text)    ' Max symbol size
+                classifier_vec.ClassIdField = class_id_field                   ' Field to store class IDs
 
+                ' Render type: how the classification is visualised per class
+                render_type = cbRenderBy.SelectedItem.ToString()
                 If render_type.Equals(RENDER_TYPE_SIZE) Then
                     classifier_vec.RenderType = TGIS_ClassificationRenderType.Size
                 ElseIf render_type.Equals(RENDER_TYPE_COLOR) Then
@@ -882,91 +1069,124 @@ Namespace Classification
                 End If
             End If
 
+            ' --- Statistics management ---
+            ' ForceStatisticsCalculation = True (default): the classifier auto-recalculates.
+            ' ForceStatisticsCalculation = False: prompt the user if stats are stale.
             classifier.ForceStatisticsCalculation = chkForceStatisticsCalculation.Checked
 
             If Not classifier.ForceStatisticsCalculation AndAlso classifier.MustCalculateStatistics() Then
                 Dim res As DialogResult = MessageBox.Show("Statistics need to be calculated.", "Confirmation", MessageBoxButtons.OKCancel, MessageBoxIcon.Information)
-
                 If res.Equals(DialogResult.OK) Then
-                    lyr.Statistics.Calculate()
+                    lyr.Statistics.Calculate()    ' Compute statistics now
                 Else
-                    lyr.Statistics.ResetModified()
+                    lyr.Statistics.ResetModified() ' Discard the stale-statistics flag
                     Return
                 End If
             End If
 
+            ' Run the classification; if a ClassIdField was requested, persist the IDs.
             If classifier.Classify() AndAlso create_field AndAlso (lv IsNot Nothing) Then
                 lv.SaveData()
             End If
 
+            ' Repaint the viewer so the new classification colours are rendered
             GIS.InvalidateWholeMap()
         End Sub
 
+        ''' <summary>
+        ''' Validates the selected render type against the layer's geometry type.
+        ''' Size rendering is not meaningful for polygon layers, so it is disallowed.
+        ''' <c>ParamsList.ClearAndSetDefaults()</c> resets any previous classification
+        ''' styling before the new render type is applied.
+        ''' </summary>
         Private Sub cbRenderBy_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cbRenderBy.SelectedIndexChanged
             Dim ll As TGIS_Layer
             ll = getLayer()
 
             If TypeOf ll Is TGIS_LayerVector Then
+                ' Clear per-feature rendering parameters set by a previous classification
                 ll.ParamsList.ClearAndSetDefaults()
-
                 If ((TryCast(ll, TGIS_LayerVector)).DefaultShapeType = TGIS_ShapeType.Polygon) AndAlso (cbRenderBy.SelectedItem.ToString() = RENDER_TYPE_SIZE) Then
                     MessageBox.Show("Method not allowed for polygons")
-                    cbRenderBy.SelectedIndex = 1
+                    cbRenderBy.SelectedIndex = 1  ' Fall back to Color
                 End If
             End If
 
             doClassify(sender, e)
         End Sub
 
+        ' ---------------------------------------------------------------
+        ' Simple event-to-classify forwarders.
+        ' ---------------------------------------------------------------
+
+        ''' <summary>Re-classifies when the legend visibility toggle changes.</summary>
         Private Sub chkShowInLegend_CheckedChanged(ByVal sender As Object, ByVal e As EventArgs) Handles chkShowInLegend.CheckedChanged
             doClassify(sender, e)
         End Sub
 
+        ''' <summary>Re-classifies when the number-of-classes selection changes.</summary>
         Private Sub cbClasses_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cbClasses.SelectedIndexChanged
             doClassify(sender, e)
         End Sub
 
+        ''' <summary>Re-classifies when a different named color ramp is selected.</summary>
         Private Sub cbColorRamp_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cbColorRamp.SelectedIndexChanged
             doClassify(sender, e)
         End Sub
 
+        ''' <summary>Re-classifies when the interval text box value changes.</summary>
         Private Sub tbInterval_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles tbInterval.TextChanged
             doClassify(sender, e)
         End Sub
 
+        ''' <summary>Re-classifies (duplicate handler — VB event wiring).</summary>
         Private Sub cbClasses_SelectedIndexChanged_1(ByVal sender As Object, ByVal e As EventArgs) Handles cbClasses.SelectedIndexChanged
             doClassify(sender, e)
         End Sub
 
+        ''' <summary>Re-classifies when the std-dev interval fraction selection changes.</summary>
         Private Sub cbInterval_SelectedIndexChanged_1(ByVal sender As Object, ByVal e As EventArgs) Handles cbInterval.SelectedIndexChanged
             doClassify(sender, e)
         End Sub
 
+        ''' <summary>Re-classifies when the "Add" manual break button is clicked.</summary>
         Private Sub btnAddManualBreak_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAddManualBreak.Click
             doClassify(sender, e)
         End Sub
 
+        ''' <summary>
+        ''' Ensures the ramp combo is enabled when either the ramp-name checkbox
+        ''' or the main color-ramp checkbox is checked, then re-classifies.
+        ''' </summary>
         Private Sub chkColorRampName_CheckedChanged(ByVal sender As Object, ByVal e As EventArgs) Handles chkColorRampName.CheckedChanged
             cbColorRamp.Enabled = chkColorRampName.Checked OrElse chkColorRamp.Checked
             doClassify(sender, e)
         End Sub
 
+        ''' <summary>Re-classifies when the colormap mode (Continuous/Discrete) changes.</summary>
         Private Sub cbColorMapMode_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cbColorMapMode.SelectedIndexChanged
             doClassify(sender, e)
         End Sub
 
+        ''' <summary>Re-classifies when the Force Statistics Calculation toggle changes.</summary>
         Private Sub chkForceStatisticsCalculation_CheckedChanged(ByVal sender As Object, ByVal e As EventArgs) Handles chkForceStatisticsCalculation.CheckedChanged
             doClassify(sender, e)
         End Sub
 
+        ''' <summary>Re-classifies when the color ramp reverse toggle changes.</summary>
         Private Sub chkReverse_CheckedChanged(ByVal sender As Object, ByVal e As EventArgs) Handles chkReverse.CheckedChanged
             doClassify(sender, e)
         End Sub
 
+        ''' <summary>Re-classifies when a different named color ramp is selected (duplicate handler).</summary>
         Private Sub cbColorRamp_SelectedIndexChanged_1(ByVal sender As Object, ByVal e As EventArgs) Handles cbColorRamp.SelectedIndexChanged
             doClassify(sender, e)
         End Sub
 
+        ''' <summary>
+        ''' Enables or disables the ramp sub-controls when the main "Use ColorRamp"
+        ''' checkbox is toggled.
+        ''' </summary>
         Private Sub chkColorRamp_CheckedChanged(ByVal sender As Object, ByVal e As EventArgs) Handles chkColorRamp.CheckedChanged
             setColorRampControlEnabled(chkColorRamp.Checked)
         End Sub

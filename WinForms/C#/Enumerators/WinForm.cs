@@ -1,4 +1,29 @@
-﻿using System;
+﻿/*
+ * Enumerators sample — demonstrates using TGIS_LayerVector.Loop() enumerators to compute
+ * the neighbor count for every shape in a polygon layer.
+ *
+ * What the sample shows:
+ *   - Loading a polygon shapefile (California Counties) into the GIS viewer
+ *   - Using nested Loop() enumerators to iterate through all shapes and find neighbors
+ *   - The outer Loop() enumerates each county polygon
+ *   - The inner Loop(extent, "", shape, "****T", true) counts topologically adjacent neighbors
+ *     using the DE-9IM spatial relationship filter "****T" (touching boundary)
+ *   - Creating a new COUNT field via AddField and populating it with neighbor counts via MakeEditable
+ *   - Rendering the layer as a 5-zone white-to-red color ramp keyed on the COUNT field
+ *   - Displaying the COUNT value as labels on each county
+ *
+ * Key TatukGIS API concepts shown here:
+ *   TGIS_ViewerWnd              - main visual map control
+ *   TGIS_LayerVector            - vector layer with spatial indexing and enumeration
+ *   TGIS_LayerVector.Loop()    - returns enumerator for spatial iteration
+ *   TGIS_LayerVectorEnumerator  - iterator supporting MoveNext, Current
+ *   TGIS_Shape                  - geographic feature (county polygon)
+ *   TGIS_Shape.ProjectedExtent - bounding box for spatial queries
+ *   AddField / MakeEditable     - schema manipulation and feature editing
+ *   Params.Render.Expression    - value expression for color ramp rendering
+ */
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -199,6 +224,17 @@ namespace Enumerators
         }
     }
 
+    /// <summary>
+    /// Enumerators sample — demonstrates using <see cref="TGIS_LayerVector.Loop()"/> enumerators
+    /// to compute the neighbor count for every shape in a polygon layer.
+    ///
+    /// Loads the California Counties shapefile.  Clicking "Count Neighbors" runs
+    /// <see cref="actNeighbors"/>: an outer <c>Loop()</c> visits every county while an inner
+    /// <c>Loop(extent, "", shape, "****T", true)</c> counts topologically adjacent neighbors using
+    /// the DE-9IM "T" (touches/intersects) filter.  Each county's neighbor count is written to a
+    /// "COUNT" field via <see cref="TGIS_Shape.MakeEditable"/>, then the layer is rendered as a
+    /// 5-zone white-to-red color ramp keyed on that field.
+    /// </summary>
     public partial class frmMain : Form
     {
         public frmMain()
@@ -206,6 +242,10 @@ namespace Enumerators
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Counts topological neighbors for every county and visualizes the result as a
+        /// 5-zone white-to-red color ramp.  The COUNT field is added if it does not yet exist.
+        /// </summary>
         private void actNeighbors()
         {
             int cnt;
@@ -257,6 +297,7 @@ namespace Enumerators
             }
         }
 
+        /// <summary>Loads the California Counties shapefile and fits the viewer to its full extent.</summary>
         private void frmMain_Load(object sender, EventArgs e)
         {
             // add states layer
@@ -267,6 +308,9 @@ namespace Enumerators
             GIS.FullExtent();
         }
 
+        /// <summary>
+        /// Dispatches toolbar button clicks: Full Extent, Zoom In/Out, Drag toggle, Count Neighbors.
+        /// </summary>
         private void tlbr1_ButtonClick(object sender, System.EventArgs e)
         {
             if (sender == btnFullExtent)

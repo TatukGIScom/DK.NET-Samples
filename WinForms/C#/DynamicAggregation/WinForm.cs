@@ -9,9 +9,35 @@ using TatukGIS.NDK.WinForms;
 
 namespace DynamicAggregation
 {
-    /// <summary>
-    /// Summary description for WinForm.
-    /// </summary>
+    /*
+    DynamicAggregation sample — demonstrates real-time point clustering/aggregation (C#/.NET WinForms).
+
+    What the sample shows:
+      - Loading a point layer (cities) from TatukGIS project
+      - Real-time point aggregation using TGIS_DynamicAggregatorFactory
+      - Aggregation methods: Off, ShapeReduction, Clustering
+      - Configurable radius parameter (5-80 pt screen distance)
+      - Configurable threshold parameter (0-10 cluster membership)
+      - Dynamic aggregator installation/removal
+      - Interactive control panel for method selection
+      - Real-time visualization updates as parameters change
+      - Aggregating points into clusters for visualization
+      - Reducing visual clutter on dense point layers
+      - Supporting zoom-dependent aggregation
+      - Interactive parameter adjustment
+
+    Key TatukGIS API concepts shown here:
+      TGIS_ViewerWnd              - main visual map control
+      TGIS_LayerVector            - point layer for aggregation
+      TGIS_DynamicAggregatorFactory - factory for creating aggregators
+      TGIS_DynamicAggregator      - real-time aggregation engine
+      ShapeReduction              - simplification-based aggregation
+      Clustering                  - distance-based point grouping
+      Radius parameter            - aggregation search distance
+      Threshold parameter         - cluster membership criteria
+      Interactive controls        - method and parameter selection
+      Real-time visualization     - dynamic layer updates
+    */
     public class WinForm : System.Windows.Forms.Form
     {
         private Panel pMenu;
@@ -203,6 +229,8 @@ namespace DynamicAggregation
             Application.Run(new WinForm());
         }
 
+        /// <summary>Opens the project, populates the method combo with all registered aggregator names, and
+        /// sets initial selections with Radius and Threshold disabled.</summary>
         private void WinForm_Load(object sender, System.EventArgs e)
         {
             GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"Samples\Aggregation\Aggregation.ttkproject");
@@ -218,6 +246,8 @@ namespace DynamicAggregation
             cbxThreshhold.Enabled = false;
         }
         
+        /// <summary>Sets a sensible default radius index when the method changes: index 0 (5 pt) for
+        /// ShapeReduction, index 3 (40 pt) for all other methods.</summary>
         private void readDeafaultValues()
         {
             if (cbxMethod.SelectedItem.ToString().Equals("ShapeReduction"))
@@ -226,6 +256,8 @@ namespace DynamicAggregation
                 cbxRadius.SelectedIndex = 3;
         }
 
+        /// <summary>Installs or removes the selected TGIS_DynamicAggregator on the "cities" layer,
+        /// applies the current Radius and Threshold, and redraws the map.</summary>
         private void changeAggregation()
         {
             String dyn_agg_name = cbxMethod.SelectedItem.ToString();
@@ -250,17 +282,20 @@ namespace DynamicAggregation
             GIS.InvalidateWholeMap();
         }
 
+        /// <summary>Resets the default radius for the chosen method, then applies the new aggregator.</summary>
         private void cbxMethod_SelectedIndexChanged(object sender, EventArgs e)
         {
             readDeafaultValues();
             changeAggregation();
         }
 
+        /// <summary>Re-applies the aggregator with the newly selected radius.</summary>
         private void cbxRadius_SelectedIndexChanged(object sender, EventArgs e)
         {
             changeAggregation();
         }
 
+        /// <summary>Re-applies the aggregator with the newly selected threshold.</summary>
         private void cbxThreshhold_SelectedIndexChanged(object sender, EventArgs e)
         {
             changeAggregation();

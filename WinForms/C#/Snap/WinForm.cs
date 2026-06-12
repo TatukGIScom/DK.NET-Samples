@@ -9,9 +9,36 @@ using TatukGIS.NDK.WinForms;
 
 namespace Snap
 {
-    /// <summary>
-    /// Summary description for WinForm.
-    /// </summary>
+    /*
+    Snap sample — demonstrates snapping functionality during shape editing (C#/.NET WinForms).
+
+    What the sample shows:
+      - Loading map layer with road network
+      - Creating animated tracking of a moving point (vehicle marker)
+      - Two tracking modes:
+        * Free movement: point moves without constraint
+        * Snapped movement: point automatically snaps to nearest road feature
+      - Using TGIS_Shape.SetPosition() with optional target layer parameter
+      - Snap tolerance distance configuration
+      - Real-time snapping during animation
+      - Comparing free vs. snapped trajectory visually
+      - Animating point along predefined path
+      - Handling snap failures (no valid snap target)
+      - Using timer for smooth animation updates
+      - Displaying movement statistics
+
+    Key TatukGIS API concepts shown here:
+      TGIS_ViewerWnd              - main visual map control
+      TGIS_LayerVector            - source layer with features for snapping
+      TGIS_Shape.SetPosition()    - update shape location (with or without snap)
+      Snap target layer           - features to snap to
+      Snap tolerance              - search radius for snap candidates
+      Coordinate snapping         - automatic point projection onto target geometry
+      Animation timer             - periodic position updates
+      Trajectory visualization    - comparing movement paths
+      Free vs. snapped movement   - demonstrating snap effect
+      Snap-to-feature            - alignment with road network or boundaries
+    */
     public class WinForm : System.Windows.Forms.Form
     {
         /// <summary>

@@ -9,10 +9,35 @@ Imports System.Threading
 Imports TatukGIS.NDK
 Imports TatukGIS.NDK.WinForms
 
+' InMemory sample — demonstrates programmatic creation of vector layers at runtime (VB.NET).
+'
+' What the sample shows:
+'   - Creating an in-memory TGIS_LayerVector layer without file I/O
+'   - Dynamically adding point shapes with random coordinates
+'   - Dynamically adding polyline shapes with random line segments
+'   - Dynamically adding polygon shapes with random boundaries
+'   - Custom symbol styling for different geometry types
+'   - Assigning random colours to individual shapes
+'   - Rotating shapes via rotation parameter
+'   - Building layers entirely at runtime from computed geometry
+'   - Real-time data visualization without file persistence
+'   - Interactive editing and feature creation workflows
+'   - Useful for dynamic data, simulations, and real-time updates
+'
+' Key TatukGIS API concepts shown here:
+'   TGIS_ViewerWnd              - main visual map control
+'   TGIS_LayerVector            - in-memory vector layer
+'   TGIS_Shape                  - individual geographic feature
+'   TGIS_Shape.Add() methods    - add vertices to shape geometry
+'   Point shapes                - TGIS_ShapePoint with location/rotation
+'   Polyline shapes             - TGIS_ShapePolyline with segments
+'   Polygon shapes              - TGIS_ShapePolygon with boundaries
+'   TGIS_Params                 - shape styling (symbol, colour, line width)
+'   TGIS_Color                  - shape colour assignment
+'   TGIS_LayerVector.Add()      - add shape to layer
+'   Random coordinate generation - dynamic geometry creation
+
 Namespace InMemory
-    ''' <summary>
-    ''' Summary description for WinForm.
-    ''' </summary>
     Public Class WinForm
         Inherits System.Windows.Forms.Form
         ''' <summary>

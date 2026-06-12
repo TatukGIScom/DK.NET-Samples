@@ -1,3 +1,31 @@
+' TemplatePrint sample — demonstrates printing maps using pre-designed print templates (VB.NET/.NET WinForms).
+'
+' What the sample shows:
+'   - Loading a TatukGIS project with predefined print templates
+'   - Selecting different print template layouts (portrait, landscape, multi-map)
+'   - Configuring print parameters (scale, title, subtitle, date)
+'   - Adding map frame with specific position and size on template
+'   - Incorporating legend, scale bar, and north arrow in template
+'   - Setting margins and safe area constraints for printing
+'   - Previewing template layout before printing
+'   - Printing template to physical printer or PDF export
+'   - Handling multi-page templates for large map areas
+'   - Managing template-to-map extent mapping and scaling
+'   - Supporting custom template editing and creation
+'
+' Key TatukGIS API concepts shown here:
+'   TGIS_ViewerWnd              - main interactive map viewer
+'   TGIS_ControlScale           - scale bar display on print
+'   TGIS_ControlLegend          - legend inclusion in print template
+'   Print template              - predefined layout with frames and placeholders
+'   Map frame                   - positioned area for map display
+'   Template parameters         - scale, orientation, margins
+'   Scale calculation           - automatic scale bar generation
+'   North arrow                 - orientation indicator on template
+'   Multi-page printing         - large area coverage across pages
+'   Print preview               - layout validation before printing
+'   PDF export                  - non-paper output option
+
 Imports Microsoft.VisualBasic
 Imports System
 Imports System.Drawing

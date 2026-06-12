@@ -1,3 +1,32 @@
+/*
+  SplitbyArc sample — demonstrates polygon splitting using line/arc geometry (C#/.NET WinForms).
+
+  What the sample shows:
+    - Loading a polygon feature (county boundary) as source geometry
+    - Interactively drawing an arc/line to define split boundary
+    - Using TGIS_Topology.Split to divide polygon by line
+    - Handling polygon-line intersection detection
+    - Extracting resulting polygons from split operation
+    - Displaying original and split geometries in different colours
+    - Storing result geometries in in-memory layer
+    - Handling edge cases (non-intersecting line, complex polygons)
+    - Supporting both straight lines and curves as splitting tools
+    - Iterating through split result geometries
+    - Updating display and UI with operation results
+
+  Key TatukGIS API concepts shown here:
+    TGIS_ViewerWnd              - main visual map control
+    TGIS_LayerVector            - in-memory layer for result geometries
+    TGIS_Shape / TGIS_ShapePolygon - polygon feature being split
+    TGIS_ShapeArc               - line/arc used as split boundary
+    TGIS_Topology.Split()       - polygon division operation
+    Polygon intersection        - detecting line-polygon overlap
+    Result geometry handling    - processing split output shapes
+    Multi-part geometry         - handling complex split results
+    Spatial operations          - polygon topology
+    User interaction            - drawing line for split operation
+*/
+
 using System;
 using System.Drawing;
 using System.Collections;

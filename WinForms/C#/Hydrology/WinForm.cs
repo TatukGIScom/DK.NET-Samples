@@ -1,3 +1,34 @@
+/* Hydrology sample — demonstrates complete hydrological analysis workflow on DEM data.
+
+   What the sample shows:
+     - Loading a DEM (Digital Elevation Model) raster grid
+     - Identifying DEM problems: sink and flat area detection
+     - Filling sinks: raising depressions for hydrological conditioning
+     - Flow Direction calculation: steepest-descent direction per cell (D8 method)
+     - Flow Accumulation: counting upstream cells to identify streams
+     - Outlet (pour point) placement for watershed delineation
+     - Watershed delineation: drainage area upstream of each outlet
+     - Basin partitioning: independent drainage basin identification
+     - Strahler Stream Order assignment for stream network hierarchy
+     - Raster-to-vector conversion: polygons and polylines from grids
+     - 3D visualization: stream network draped over DEM surface
+     - Sequential button unlock pattern showing pipeline progression
+
+   Key TatukGIS API concepts shown here:
+     TGIS_ViewerWnd              - main visual map control
+     TGIS_LayerPixel             - raster/DEM layer (source data)
+     TGIS_Hydrology              - hydrological analysis engine
+     TGIS_Hydrology.Sink()       - identify depressions and flat areas
+     TGIS_Hydrology.FillSinks()  - condition DEM for flow analysis
+     TGIS_Hydrology.FlowDir()    - compute flow direction grid
+     TGIS_Hydrology.FlowAccum()  - compute flow accumulation grid
+     TGIS_Hydrology.Watershed()  - delineate drainage areas
+     TGIS_Hydrology.Basin()      - partition into drainage basins
+     TGIS_Hydrology.StreamOrder() - assign Strahler stream order
+     GridToPolygon/GridToPoint   - raster-to-vector conversion
+     TGIS_Viewer3D               - 3D visualization support
+*/
+
 using System;
 using System.Drawing;
 using System.Collections;
@@ -10,7 +41,9 @@ using TatukGIS.NDK.WinForms;
 namespace AddLayer
 {
     /// <summary>
-    /// Summary description for WinForm.
+    /// Main form for the Hydrology sample.
+    /// Hosts the GIS viewer, pipeline action buttons, progress bar, and legend.
+    /// Each button click runs the next hydrological analysis step in sequence.
     /// </summary>
     public class WinForm : System.Windows.Forms.Form
     {
@@ -387,6 +420,12 @@ namespace AddLayer
             Application.Run(new WinForm());
         }
 
+        /// <summary>
+        /// Progress callback for TGIS_Hydrology and TGIS_GridToPolygon operations.
+        /// _e.Pos == 0: initialises the progress bar (0..100 range).
+        /// _e.Pos &lt; 0: resets the bar to zero after the operation completes.
+        /// _e.Pos &gt; 0: advances the bar to the current percentage value.
+        /// </summary>
         private void doBusyEvent(Object _sender, TGIS_BusyEventArgs _e)
         {
             if (_e.Pos < 0)
@@ -404,7 +443,11 @@ namespace AddLayer
             }
         }
 
-        // Creates a new grid layer with the same parameters as input DEM and a given name
+        /// <summary>
+        /// Creates an in-memory TGIS_LayerPixel grid whose extent, coordinate system,
+        /// and cell dimensions match those of the reference DEM layer.
+        /// Anti-aliasing and hillshading are disabled so raw cell values remain visible.
+        /// </summary>
         public TGIS_LayerPixel CreateLayerPix(TGIS_LayerPixel _dem, String _name)
         {
             TGIS_LayerPixel res = new TGIS_LayerPixel();
@@ -415,7 +458,10 @@ namespace AddLayer
             return res;
         }
 
-        // Creates a new vector layer wita a given name, cs and type
+        /// <summary>
+        /// Creates an empty in-memory TGIS_LayerVector with the given name, coordinate
+        /// system, and default shape type. Opens the layer so shapes can be added immediately.
+        /// </summary>
         public TGIS_LayerVector CreateLayerVec(String _name, TGIS_CSCoordinateSystem _cs, TGIS_ShapeType _type)
         {
             TGIS_LayerVector res = new TGIS_LayerVector();
@@ -426,18 +472,23 @@ namespace AddLayer
             return res;
         }
 
-        // Gets a pixel layer with a given name from GIS
+        /// <summary>Retrieves a TGIS_LayerPixel from the viewer by name.</summary>
         public TGIS_LayerPixel GetLayerGrd(String _name)
         {
             return GIS.Get(_name) as TGIS_LayerPixel;
         }
 
-        // Gets a vector layer with a given name from GIS
+        /// <summary>Retrieves a TGIS_LayerVector from the viewer by name.</summary>
         public TGIS_LayerVector GetLayerVec(String _name)
         {
             return GIS.Get(_name) as TGIS_LayerVector;
         }
 
+        /// <summary>
+        /// Loads the DEM raster (Bytowski County GeoTIFF) into the viewer,
+        /// stores a reference to the base DEM layer and its spatial extent for
+        /// subsequent hydrology operations, and creates the TGIS_Hydrology toolset.
+        /// </summary>
         private void WinForm_Load(object sender, System.EventArgs e)
         {
             GIS.Mode = TGIS_ViewerMode.Zoom;
@@ -455,6 +506,12 @@ namespace AddLayer
             hydrologyToolset.BusyEvent += doBusyEvent;
         }
 
+        /// <summary>
+        /// Step 1 — Identify DEM problems.
+        /// Runs TGIS_Hydrology.Sink on the raw DEM to produce a grid where non-zero
+        /// cells mark sinks (isolated depressions) and flat areas that would prevent
+        /// proper flow routing. Colours the result in red for easy identification.
+        /// </summary>
         private void button1_Click(object sender, EventArgs e)
         {
             btnSink.Enabled = false;
@@ -478,6 +535,13 @@ namespace AddLayer
             btnFillSinks.Enabled = true;
         }
 
+        /// <summary>
+        /// Step 2 — Fill sinks.
+        /// Runs TGIS_Hydrology.Fill on the raw DEM to raise all depressions to the
+        /// level of their lowest outlet, producing a hydrologically conditioned DEM
+        /// in which water flows continuously downhill to the grid edge.
+        /// Applies a YellowGreen colour ramp with hillshading for visualisation.
+        /// </summary>
         private void btnFillSinks_Click(object sender, EventArgs e)
         {
             btnFillSinks.Enabled = false;
@@ -507,6 +571,13 @@ namespace AddLayer
             btnFlowDirection.Enabled = true;
         }
 
+        /// <summary>
+        /// Step 3 — Flow Direction.
+        /// Runs TGIS_Hydrology.FlowDirection on the conditioned DEM.
+        /// Each output cell receives a power-of-two code (1, 2, 4, 8, 16, 32, 64, 128)
+        /// indicating the D8 steepest-descent direction.
+        /// A turbo colour ramp makes the eight directions visually distinct.
+        /// </summary>
         private void btnFlowDirection_Click(object sender, EventArgs e)
         {
             btnFlowDirection.Enabled = false;
@@ -537,6 +608,13 @@ namespace AddLayer
             btnFlowAccumulation.Enabled = true;
         }
 
+        /// <summary>
+        /// Step 4 — Flow Accumulation.
+        /// Runs TGIS_Hydrology.FlowAccumulation using the flow direction grid.
+        /// Each output cell value equals the number of upstream cells that drain
+        /// into it; high values reveal the stream network. A geometric-interval
+        /// classification on the Bathymetry2 ramp improves visualisation.
+        /// </summary>
         private void btnFlowAccumulation_Click(object sender, EventArgs e)
         {
             btnFlowAccumulation.Enabled = false;
@@ -576,6 +654,12 @@ namespace AddLayer
         }
 
 
+        /// <summary>
+        /// Step 5 — Add outlets (pour points).
+        /// Creates a vector point layer and places two hardcoded sample outlet points
+        /// at map coordinates known to lie on high-accumulation stream cells.
+        /// These outlets define the downstream boundary for the Watershed step.
+        /// </summary>
         private void btnAddOutlets_Click(object sender, EventArgs e)
         {
             btnAddOutlets.Enabled = false;
@@ -607,6 +691,12 @@ namespace AddLayer
             btnWatershed.Enabled = true;
         }
 
+        /// <summary>
+        /// Step 6 — Watershed.
+        /// Runs TGIS_Hydrology.Watershed using the flow direction grid and the outlet
+        /// points layer. Each output cell is labelled with the ID of the outlet whose
+        /// catchment it belongs to, delineating the drainage area upstream of each outlet.
+        /// </summary>
         private void btnWatershed_Click(object sender, EventArgs e)
         {
             btnWatershed.Enabled = false;
@@ -634,6 +724,13 @@ namespace AddLayer
             btnBasin.Enabled = true;
         }
 
+        /// <summary>
+        /// Step 7 — Basin.
+        /// Runs TGIS_Hydrology.Basin to partition the entire DEM into independent
+        /// drainage basins. The minimum accumulation threshold is set to 1% of the
+        /// maximum accumulation value to filter out minor basins.
+        /// A unique-value classifier on the UniquePastel ramp colours each basin.
+        /// </summary>
         private void btnBasin_Click(object sender, EventArgs e)
         {
             btnBasin.Enabled = false;
@@ -676,6 +773,12 @@ namespace AddLayer
         }
 
 
+        /// <summary>
+        /// Step 8 — Stream Order (Strahler).
+        /// Runs TGIS_Hydrology.StreamOrder using the flow direction and accumulation grids.
+        /// Each stream cell receives a Strahler order (1 = headwater, higher = larger river).
+        /// A Blues colour ramp shows the order hierarchy.
+        /// </summary>
         private void btnStreamOrderStrahler_Click(object sender, EventArgs e)
         {
             btnStreamOrderStrahler.Enabled = false;
@@ -702,6 +805,13 @@ namespace AddLayer
             btnVectorize.Enabled = true;
         }
 
+        /// <summary>
+        /// Step 9 — Convert to vector.
+        /// Converts the raster basin grid to a polygon layer (TGIS_GridToPolygon)
+        /// and the raster stream-order grid to a polyline layer (StreamToPolyline).
+        /// Line width is driven by the ORDER field via the renderer, so wider rivers
+        /// draw thicker. Labels follow the polyline curves.
+        /// </summary>
         private void btnVectorize_Click(object sender, EventArgs e)
         {
             btnVectorize.Enabled = false;
@@ -779,6 +889,12 @@ namespace AddLayer
             btn3D.Enabled = true;
         }
 
+        /// <summary>
+        /// Step 10 — View in 3D / return to 2D.
+        /// Toggles the viewer between 2D and 3D mode. In 3D mode the conditioned DEM
+        /// is used as the elevation surface (ScaleZ = 1, NormalizedZ = Range) with
+        /// lighting and shadows enabled. Stream labels are hidden in 3D to reduce clutter.
+        /// </summary>
         private void btn3D_Click(object sender, EventArgs e)
         {
             if (GIS.View3D)

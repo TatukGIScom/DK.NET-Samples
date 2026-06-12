@@ -1,3 +1,32 @@
+/*
+  Reclassification sample — demonstrates raster reclassification and value remapping (C#/.NET WinForms).
+
+  What the sample shows:
+    - Loading a raster layer (DEM/grid) into the viewer
+    - Creating reclassification rules to remap pixel values to new ranges
+    - Two reclassification strategies:
+      * Table-based: specifying input range (min/max) -> output value mappings in a data grid
+      * Altitude zones: using predefined elevation zones (sea level, low, mid, high, alpine)
+    - Applying reclassification rules to generate a new classified raster layer
+    - Handling "no data" values (pixels with no valid data) during reclassification
+    - Displaying progress during reclassification (ProgressBar)
+    - Visualizing the reclassified result with a legend showing new classes
+    - Comparing original raster with reclassified output side-by-side
+    - Using data grid interface for interactive rule definition
+    - Supporting both manual and preset classification schemes
+
+  Key TatukGIS API concepts shown here:
+    TGIS_LayerPixel             - raster/pixel layer for input grid
+    TGIS_LayerPixel.Reclassify  - reclassification operation with rule table
+    TGIS_Params                 - output layer rendering parameters
+    Reclassification rules      - value range mapping definitions
+    Altitude/elevation zones    - predefined DEM classification scheme
+    No data handling            - pixel value filtering
+    TGIS_ControlLegend          - legend showing reclassified categories
+    Data transformation         - pixel value remapping
+    Progress notification       - BusyEvent for long-running operations
+*/
+
 using System;
 using System.Net.NetworkInformation;
 using System.Reflection.Emit;

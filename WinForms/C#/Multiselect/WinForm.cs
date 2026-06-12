@@ -9,9 +9,37 @@ using TatukGIS.NDK.WinForms;
 
 namespace Multiselect
 {
-    /// <summary>
-    /// Summary description for WinForm.
-    /// </summary>
+    /*
+    Multiselect sample — demonstrates selecting and filtering multiple features using
+    spatial and attribute-based queries (C#/.NET WinForms).
+
+    What the sample shows:
+      - Selecting features via click or drag rectangle
+      - Multi-feature selection with Ctrl+click for additive selection
+      - Spatial selection (box, polygon, or radius)
+      - Filtering selected features by attribute criteria
+      - Viewing selected feature attributes in detail grid
+      - Listing selected features in a listbox
+      - Highlighting selected features with color
+      - Clearing selection
+      - Zoom to selected features
+      - Counting and displaying selection statistics
+      - Using TGIS_ControlAttributes for attribute viewing
+      - Full extent zoom navigation
+      - Support for Ctrl key modifiers for selection modes
+
+    Key TatukGIS API concepts shown here:
+      TGIS_ViewerWnd              - main visual map control
+      TGIS_LayerVector            - vector layer with features
+      TGIS_ControlAttributes      - attribute grid display
+      Selection mode              - rectangular or point-based picking
+      Multi-feature selection     - Ctrl+click for additive selection
+      Attribute filtering         - SQL WHERE clause for selection
+      Visual highlighting         - color-coded selected features
+      Selection statistics        - count and summary display
+      Feature iteration           - accessing all selected shapes
+      Spatial queries             - rectangle or polygon selection
+    */
     public class WinForm : System.Windows.Forms.Form
     {
         /// <summary>

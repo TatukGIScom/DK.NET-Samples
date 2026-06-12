@@ -9,9 +9,29 @@ using TatukGIS.NDK.WinForms;
 
 namespace BitmapFill
 {
-    /// <summary>
-    /// Summary description for WinForm.
-    /// </summary>
+    /* BitmapFill sample — demonstrates per-shape bitmap fill using a custom
+       TGIS_LayerVector.PaintShapeEvent callback.
+
+       What the sample shows:
+         - Loading a vector shapefile (California Counties) into the GIS viewer
+         - Implementing custom shape rendering via PaintShapeEvent callback
+         - Assigning per-shape bitmap textures based on attribute values
+         - Using combo boxes to switch between different rendering criteria
+           (population density vs. raw population)
+         - Toggling feature labels (none, FIPS code, name) dynamically
+         - Five different texture bitmaps demonstrating visual variety
+         - Integration of bitmap resources with shape rendering pipeline
+
+       Key TatukGIS API concepts shown here:
+         TGIS_ViewerWnd              - main visual map control
+         TGIS_LayerVector            - vector layer with custom paint callbacks
+         TGIS_LayerSHP               - ESRI Shapefile layer (California Counties)
+         PaintShapeEvent callback    - custom per-shape rendering hook
+         TGIS_Shape                  - individual geographic feature
+         TGIS_Params.Marker          - shape visualization parameters
+         Bitmap resources            - texture fill patterns
+         Shape attributes            - field-based rendering criteria
+    */
     public class WinForm : System.Windows.Forms.Form
     {
         /// <summary>
@@ -326,6 +346,7 @@ namespace BitmapFill
             Application.Run(new WinForm());
         }
 
+        /// <summary>Loads the California Counties shapefile and wires up the custom paint callback on startup.</summary>
         private void WinForm_Load(object sender, System.EventArgs e)
         {
             TGIS_LayerSHP ll;
@@ -346,6 +367,11 @@ namespace BitmapFill
             GIS.FullExtent();
         }
 
+        /// <summary>
+        /// Custom per-shape paint callback.  Assigns one of five texture bitmaps to the county fill
+        /// based on the active statistic (population density or raw population), then calls
+        /// <see cref="TGIS_Shape.Draw"/> to render it with a dark-grey outline.
+        /// </summary>
         private void PaintShape(object _sender, TGIS_ShapeEventArgs _e)
         {
             double population;
@@ -399,6 +425,7 @@ namespace BitmapFill
             shape.Params.Area.Bitmap.NativeBitmap = oldBitmap;
         }
 
+        /// <summary>Toggles county labels between none, FIPS code (CNTYIDFP), and name (NAME).</summary>
         private void ComboLabels_SelectedIndexChanged(object sender, System.EventArgs e)
         {
             TGIS_LayerVector ll;
@@ -417,6 +444,7 @@ namespace BitmapFill
             GIS.InvalidateWholeMap();
         }
 
+        /// <summary>Handles Full Extent, Zoom In, and Zoom Out toolbar button clicks.</summary>
         private void toolStrip1_ButtonClick(object sender, EventArgs e)
         {
             if (sender == btnFullExtent)
@@ -434,6 +462,7 @@ namespace BitmapFill
 
         }
 
+        /// <summary>Redraws the map when the statistic mode (population / density) changes.</summary>
         private void ComboStatistic_SelectedIndexChanged(object sender, System.EventArgs e)
         {
             GIS.InvalidateWholeMap();

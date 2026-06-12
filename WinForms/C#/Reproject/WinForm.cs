@@ -9,9 +9,34 @@ using TatukGIS.NDK.WinForms;
 
 namespace Reproject
 {
-    /// <summary>
-    /// Summary description for WinForm.
-    /// </summary>
+    /* Reproject sample — demonstrates coordinate system transformation and reprojection of geospatial data.
+
+       What the sample shows:
+         - Loading a shapefile into the GIS viewer
+         - Accessing the projection catalogue via TGIS_Utils.CSProjList
+         - Creating/building custom coordinate systems from projection methods
+         - Selecting a target map projection (UTM, Mercator, Geographic, etc.)
+         - Reprojecting layer geometry to target coordinate system
+         - Exporting reprojected data to a new file (SaveAs)
+         - Displaying reprojected layer in the viewer
+         - Real-time preview of reprojected data
+         - Spatial reference assignment and transformation
+         - Coordinate system metadata display
+
+       Key TatukGIS API concepts shown here:
+         TGIS_ViewerWnd              - main visual map control
+         TGIS_LayerVector            - vector layer for spatial data
+         TGIS_LayerSHP               - shapefile layer implementation
+         TGIS_CSCoordinateSystem      - coordinate system definition
+         TGIS_Utils.CSProjList        - projection catalogue lookup
+         TGIS_Utils.CSBuilder         - builds coordinate systems
+         TGIS_Projection              - projection method instantiation
+         TGIS_Layer.Reproject()       - transform layer to new coordinate system
+         TGIS_Layer.SaveAs()          - export reprojected data to new file
+         EPSG codes                   - international coordinate system identifiers
+         On-demand reprojection       - transform geometry during save
+    */
+
     public class WinForm : System.Windows.Forms.Form
     {
         /// <summary>

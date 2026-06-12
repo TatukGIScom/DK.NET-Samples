@@ -9,9 +9,28 @@ using TatukGIS.NDK.WinForms;
 
 namespace Locate
 {
-    /// <summary>
-    /// Summary description for WinForm.
-    /// </summary>
+    /* Locate sample — demonstrates feature identification and location by finding shapes at
+       the cursor position using spatial queries and coordinate conversion.
+
+       What the sample shows:
+         - Loading a polygon shapefile (California Counties) into the GIS viewer
+         - Feature location: finding which shape is at a given position
+         - Screen-to-map coordinate conversion via ScreenToMap
+         - Spatial tolerance: pixel screen tolerance for easier feature selection
+         - GIS.Locate: queries features at a geographic position
+         - Shape attributes: retrieving field values from selected features
+         - Shape flashing: visual feedback highlighting the selected shape
+         - Dynamic status bar: real-time display of feature attributes
+
+       Key TatukGIS API concepts shown here:
+         TGIS_ViewerWnd              - main visual map control
+         TGIS_ViewerWnd.ScreenToMap  - convert screen pixel to geographic coordinate
+         TGIS_ViewerWnd.Locate       - find topmost shape at location with tolerance
+         TGIS_Shape                  - geographic feature with field access
+         TGIS_Shape.Flash()          - briefly highlight shape for visual feedback
+         OnMouseMove / OnMouseDown   - user interaction event handling
+         TGIS_ControlLegend          - layer list/legend panel
+    */
     public class WinForm : System.Windows.Forms.Form
     {
         /// <summary>
@@ -170,11 +189,21 @@ namespace Locate
             Application.Run(new WinForm());
         }
 
+        /// <summary>
+        /// Loads the sample data (California counties shapefile) into the viewer on form initialization.
+        /// The data path is obtained from GisSamplesDataDirDownload() to support both local and
+        /// downloaded sample data directories.
+        /// </summary>
         private void WinForm_Load(object sender, System.EventArgs e)
         {
             GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\USA\States\California\Counties.shp");
         }
 
+        /// <summary>
+        /// Handles mouse down events to locate and highlight (flash) the shape at the clicked position.
+        /// Converts screen coordinates to map coordinates, uses GIS.Locate with 5-pixel tolerance
+        /// to find the underlying shape, and calls Flash() to highlight the selected feature.
+        /// </summary>
         private void GIS_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             TGIS_Point ptg;
@@ -183,13 +212,18 @@ namespace Locate
             if (GIS.IsEmpty) return;
             if (GIS.IsEmpty) return;
 
-            // if selected shape found, flash it
             ptg = GIS.ScreenToMap(new Point(e.X, e.Y));
             shp = (TGIS_Shape)GIS.Locate(ptg, 5 / GIS.Zoom); // 5 pixels precision
             if (shp != null)
                 shp.Flash();
         }
 
+        /// <summary>
+        /// Handles mouse move events to locate features and display their attributes.
+        /// Continuously locates the shape at the current cursor position and displays the
+        /// "name" field value in the status bar. If no shape is found, the status bar is cleared.
+        /// Skips location during map painting to avoid performance issues.
+        /// </summary>
         private void GIS_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             TGIS_Point ptg;
@@ -198,7 +232,6 @@ namespace Locate
 
             if (GIS.IsEmpty) return;
 
-            // locate a position
             ptg = GIS.ScreenToMap(new Point(e.X, e.Y));
             if (!GIS.InPaint)
                 shp = (TGIS_Shape)GIS.Locate(ptg, 5 / GIS.Zoom); // 5 pixels precision
@@ -213,6 +246,11 @@ namespace Locate
             }
         }
 
+        /// <summary>
+        /// Handles toolbar button clicks for map navigation and view control.
+        /// FullExtent button zooms to show all data; ZoomIn button doubles the zoom level;
+        /// ZoomOut button halves the zoom level. Coordinates are automatically centered on current view.
+        /// </summary>
         private void toolStrip1_ButtonClick(object sender, System.EventArgs e)
         {
             if (sender == btnFullExtent)
@@ -229,6 +267,11 @@ namespace Locate
             }
         }
 
+        /// <summary>
+        /// Updates the toolbar cursor based on mouse position. When hovering over toolbar buttons,
+        /// the cursor changes to a hand pointer; otherwise, it returns to the default cursor.
+        /// This provides visual feedback that buttons are interactive.
+        /// </summary>
         private void toolStrip1_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             Point p = new Point(e.X, e.Y);

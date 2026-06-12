@@ -1,4 +1,32 @@
-﻿using System;
+﻿/*
+  OnlineServices sample — demonstrates integrating online/web mapping services (C#/.NET WinForms).
+
+  What the sample shows:
+    - Loading online tile-based map services (WMS, WMSc, Bing Maps, Google Maps, etc.)
+    - Supporting multiple map styles: International, English, Hillshade variants
+    - Caching tiles locally for offline viewing after initial download
+    - Integrating vector layers with online raster basemaps
+    - Handling layer transparency and blending with basemap
+    - Controlling online service parameters (style, zoom levels, resolution)
+    - Managing online service connection and fallback behavior
+    - Displaying map attribution and credits from service providers
+    - Supporting real-time service switching via UI controls
+    - Handling network errors gracefully during tile download
+
+  Key TatukGIS API concepts shown here:
+    TGIS_ViewerWnd              - main visual map control
+    TGIS_LayerWMS               - WMS (Web Map Service) layer wrapper
+    TGIS_LayerWMSc              - WMS cached variant
+    TGIS_LayerBing              - Bing Maps tile service
+    TGIS_LayerGoogle            - Google Maps tile service
+    Tile cache                  - local storage of downloaded map tiles
+    Layer transparency          - blending online basemap with local layers
+    Map styles                  - International, English, Hillshade, Satellite options
+    Network service             - online data retrieval and caching
+    Attribution                 - service provider credits and terms
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using TatukGIS.RTL;

@@ -10,9 +10,27 @@ Imports TatukGIS.NDK.WinForms
 Imports TatukGIS.RTL
 
 Namespace CuttingPolygon
-    ''' <summary>
-    ''' Summary description for WinForm.
-    ''' </summary>
+    ' CuttingPolygon sample — demonstrates how to clip a raster (pixel) layer's rendering to
+    ' within an arbitrary polygon boundary using TGIS_LayerPixel.CuttingPolygon.
+    '
+    ' What the sample shows:
+    '   - Loading a raster image (world map) into the GIS viewer
+    '   - Creating an in-memory vector layer with a custom polygon
+    '   - Implementing raster clipping/masking via CuttingPolygon property
+    '   - Assigning a triangular polygon as the cutting mask
+    '   - Toggling clipping on/off via button click (Do Cutting)
+    '   - Raster rendering constrained to polygon boundary
+    '   - Remaining regions outside polygon are not rendered
+    '   - Interactive zoom and pan with clipped raster display
+    '
+    ' Key TatukGIS API concepts shown here:
+    '   TGIS_ViewerWnd              - main visual map control
+    '   TGIS_LayerPixel             - raster/image layer
+    '   TGIS_LayerVector            - in-memory vector layer
+    '   TGIS_LayerPixel.CuttingPolygon - masking/clipping property
+    '   TGIS_Shape                  - polygon geometry for clipping
+    '   TGIS_ControlLegend          - layer list/legend panel
+    '   OnLoad event                - initialization workflow
     Public Class WinForm
         Inherits System.Windows.Forms.Form
         ''' <summary>
@@ -156,6 +174,8 @@ Namespace CuttingPolygon
             Application.Run(New WinForm())
         End Sub
 
+        ''' <summary>Opens the world raster image, creates an in-memory vector layer named "shape",
+        ''' and adds a triangular polygon shape to it.</summary>
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
             Dim shp As TGIS_Shape
 
@@ -173,6 +193,8 @@ Namespace CuttingPolygon
             shp.Unlock()
         End Sub
 
+        ''' <summary>Assigns the "shape" layer's first polygon as the raster layer's CuttingPolygon
+        ''' (converting to the raster's coordinate system), then hides the vector layer.</summary>
         Private Sub btnCutting_Click(sender As Object, e As EventArgs) Handles btnCutting.Click
             lp = CType((GIS.Items(0)), TGIS_LayerPixel)
             lp.CuttingPolygon = CType((ll.GetShape(1).CreateCopyCS(lp.CS)), TGIS_ShapePolygon)
@@ -180,6 +202,7 @@ Namespace CuttingPolygon
             GIS.InvalidateWholeMap()
         End Sub
 
+        ''' <summary>Switches the viewer to Zoom mode.</summary>
         Private Sub btnZoom_Click(sender As Object, e As EventArgs) Handles btnZoom.Click
             GIS.Mode = TGIS_ViewerMode.Zoom
         End Sub

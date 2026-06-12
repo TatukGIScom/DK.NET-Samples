@@ -1,3 +1,42 @@
+// =============================================================================
+// This source code is a part of TatukGIS Developer Kernel.
+// =============================================================================
+//
+// PixelFilters - demonstrates how to apply image-processing filters to raster
+// (pixel) layers using TatukGIS.
+//
+// The sample loads a DEM (Digital Elevation Model) in ESRI ADF format and lets
+// the user pick a filter from a list box, configure its parameters, and execute
+// it against the layer.  The filtered result is displayed in the viewer.
+//
+// Supported filter categories:
+//   - Intensity / threshold  : Threshold, Salt-and-Pepper Noise, Gaussian Noise
+//   - Convolution kernels    : Low-Pass, High-Pass, Gaussian, Laplacian, Gradient
+//                              direction, Point Detector, Line Detectors
+//   - Rank / statistical     : Sobel Magnitude, Range, Midpoint, Minimum, Maximum,
+//                              Arithmetic Mean, Alpha-Trimmed Mean,
+//                              Contra-Harmonic Mean, Geometric Mean, Harmonic Mean,
+//                              Weighted Mean, Yp Mean, Majority, Minority, Median,
+//                              Weighted Median, Sum, Standard Deviation, Unique Count
+//   - Morphological          : Erosion, Dilation, Opening, Closing, Top-Hat, Bottom-Hat
+//
+// Key TatukGIS API concepts shown here:
+//   - TGIS_LayerPixel              : base class for raster layers; the filter input
+//   - TGIS_PixelFilterAbstract     : abstract base class for all pixel filters;
+//                                    set SourceLayer, DestinationLayer, Band,
+//                                    ColorSpace, BusyEvent, then call Execute()
+//   - TGIS_PixelFilterConvolution  : applies a predefined kernel matrix; type set
+//                                    via MaskType (TGIS_PixelFilterMaskType enum)
+//   - TGIS_PixelFilterStructuringElementType : SE shape for morphological operations
+//   - TGIS_PixelFilterColorSpace   : colour space in which the filter operates;
+//                                    HSL here so the filter acts on luminance
+//   - TGIS_LayerPixel.Build()      : creates an in-memory output layer matching the
+//                                    input layer's CRS and pixel dimensions
+//   - filter.BusyEvent             : progress callback during Execute()
+//   - bFirst flag                  : on the first run a fresh output layer is created
+//                                    and swapped in; subsequent runs are in-place
+// =============================================================================
+
 using System;
 using System.Drawing;
 using System.Collections;
@@ -10,24 +49,30 @@ using TatukGIS.NDK.WinForms;
 namespace PixelFilters
 {
     /// <summary>
-    /// Summary description for WinForm.
+    /// Main form for the PixelFilters sample application.
+    /// Provides a filter list, parameter controls, and Execute/Reset buttons to
+    /// demonstrate applying TatukGIS pixel filters to a DEM raster layer.
     /// </summary>
     public class WinForm : System.Windows.Forms.Form
     {
-        private TGIS_ViewerWnd GIS;
-        private ProgressBar pProgress;
-        private TGIS_ControlLegend GIS_Legend;
-        private Button btnExecute;
-        private Button btnReset;
-        private ListBox lbFilters;
+        private TGIS_ViewerWnd GIS;             // TatukGIS map viewer
+        private ProgressBar pProgress;          // Progress bar driven by filter BusyEvent
+        private TGIS_ControlLegend GIS_Legend;  // Layer legend panel
+        private Button btnExecute;              // Apply the selected filter
+        private Button btnReset;                // Reload the original raster
+        private ListBox lbFilters;              // List of all available filter types
         private Label lblFilters;
-        private Label lblMask;
-        private Label lblMaskSize;
-        private TrackBar tbMaskSize;
-        private Label lblMaskSizeValue;
-        private ComboBox cbMask;
-        private Label lblStructuring;
-        private ComboBox cbStructuring;
+        private Label lblMask;                  // Label for cbMask (Convolution only)
+        private Label lblMaskSize;              // Label for tbMaskSize (block-based filters)
+        private TrackBar tbMaskSize;            // Block/kernel size slider
+        private Label lblMaskSizeValue;         // Displays current block size as "NxN"
+        private ComboBox cbMask;                // Convolution kernel type (Convolution filter only)
+        private Label lblStructuring;           // Label for cbStructuring (morphological only)
+        private ComboBox cbStructuring;         // Structuring element shape (morphological filters)
+        /// <summary>
+        /// True on the first Execute call; on subsequent calls the result is
+        /// filtered in-place (output == input).
+        /// </summary>
         private Boolean bFirst;
 
         /// <summary>
@@ -353,25 +398,44 @@ namespace PixelFilters
             Application.Run(new WinForm());
         }
 
+        /// <summary>
+        /// Loads (or reloads) the sample DEM raster layer into the viewer.
+        /// The ADF file is a DEM covering part of San Bernardino County, California.
+        /// AltitudeMapZones are cleared and GridShadow is disabled so the layer
+        /// renders as a plain grey-scale elevation image rather than a colourised
+        /// hillshade, making filter effects easy to observe.
+        /// <c>bFirst</c> is set to true so the next Execute creates a fresh output layer.
+        /// </summary>
         private void open()
         {
             TGIS_LayerPixel ll;
 
-            GIS.Close(); ;
+            GIS.Close();
+            // GisCreateLayer() infers the layer type from the file extension/format
             ll = (TGIS_LayerPixel)(
             TGIS_Utils.GisCreateLayer("", TGIS_Utils.GisSamplesDataDirDownload() +
               @"World\Countries\USA\States\California\San Bernardino\NED\w001001.adf")
             );
             ll.Open();
-            ll.Params.Pixel.AltitudeMapZones.Clear();
-            ll.Params.Pixel.GridShadow = false;
+            ll.Params.Pixel.AltitudeMapZones.Clear();  // Remove colour zones for a plain grey view
+            ll.Params.Pixel.GridShadow = false;        // Disable hillshade shadow
 
             GIS.Add(ll);
             GIS.FullExtent();
 
-            bFirst = true;
+            bFirst = true;  // Signal that the next Execute() must create a fresh output layer
         }
 
+        /// <summary>
+        /// Adjusts the visibility of the Mask, Mask Size, and Structuring Element
+        /// controls to show only the parameters relevant to the selected filter.
+        /// <list type="bullet">
+        ///   <item>Filters 0-2 (noise/threshold): no configurable parameters.</item>
+        ///   <item>Filter 3 (Convolution): shows the kernel-type combo box only.</item>
+        ///   <item>Filters 4-22 (rank/statistical): shows the block-size track bar.</item>
+        ///   <item>Filters 23-28 (morphological): shows block size and structuring element.</item>
+        /// </list>
+        /// </summary>
         private void onChange()
         {
             if ((lbFilters.SelectedIndex == 0) ||
@@ -435,21 +499,31 @@ namespace PixelFilters
             }
         }
 
+        /// <summary>
+        /// Handles Form Load: sets default selections and loads the raster layer.
+        /// </summary>
         private void WinForm_Load(object sender, System.EventArgs e)
         {
-            lbFilters.SelectedIndex = 0 ;
-            cbStructuring.SelectedIndex = 0;
-            cbMask.SelectedIndex = 0;
+            lbFilters.SelectedIndex = 0 ;   // Default: Threshold filter
+            cbStructuring.SelectedIndex = 0; // Default SE shape: Square
+            cbMask.SelectedIndex = 0;        // Default kernel: Low-Pass 3x3
 
             onChange();
             open();
         }
 
+        /// <summary>
+        /// Updates visible controls whenever the selected filter changes.
+        /// </summary>
         private void lbFilters_SelectedIndexChanged(object sender, EventArgs e)
         {
             onChange();
         }
 
+        /// <summary>
+        /// Updates the block-size label when the track bar value changes.
+        /// The block size is always odd: 2 * trackBarValue + 1 (e.g. 1 -> 3x3).
+        /// </summary>
         private void tbMaskSize_ValueChanged(object sender, EventArgs e)
         {
             int i;
@@ -457,11 +531,30 @@ namespace PixelFilters
             lblMaskSizeValue.Text = i + "x" + i;
         }
 
+        /// <summary>
+        /// Reloads the original raster layer, clearing any previously applied filters.
+        /// </summary>
         private void btnReset_Click(object sender, EventArgs e)
         {
             open();
         }
 
+        /// <summary>
+        /// Constructs the selected filter object, configures its parameters, wires
+        /// it to the source and destination layers, and calls Execute().
+        /// <para>
+        /// On the first run (<c>bFirst=true</c>) a new in-memory output layer is
+        /// created with Build() matching the input's CRS and pixel dimensions.
+        /// The input is then removed from the viewer and the output is added in its
+        /// place.  On subsequent runs the output IS the input (in-place filtering).
+        /// </para>
+        /// <para>
+        /// The block size is derived from the track bar: <c>block = 2 * value + 1</c>,
+        /// always yielding an odd number as required by symmetric neighbourhood kernels.
+        /// The filter operates on Band=1 in HSL colour space, meaning it acts on the
+        /// luminance channel of the raster.
+        /// </para>
+        /// </summary>
         private void btnExecute_Click(object sender, EventArgs e)
         {
             TGIS_PixelFilterAbstract flrt = null;
@@ -867,19 +960,30 @@ namespace PixelFilters
             GIS.InvalidateWholeMap() ;
         }
 
+        /// <summary>
+        /// Progress callback invoked by the filter's Execute() method.
+        /// <list type="bullet">
+        ///   <item><c>_e.Pos == 0</c>  : initialise the progress bar range.</item>
+        ///   <item><c>_e.Pos &lt; 0</c> : filter finished; set bar to maximum.</item>
+        ///   <item>otherwise           : update bar value every 100 steps to reduce
+        ///                               UI overhead for large rasters.</item>
+        /// </list>
+        /// </summary>
         private void doBusyEvent(Object _sender, TGIS_BusyEventArgs _e)
         {
             if (_e.Pos < 0)
-                pProgress.Value = pProgress.Maximum;
+                pProgress.Value = pProgress.Maximum;  // Filter complete
             else
             if (_e.Pos == 0)
             {
+                // Initialise the range at the start of Execute()
                 pProgress.Minimum = 0;
                 pProgress.Maximum = (int)_e.EndPos;
                 pProgress.Value = 0;
             }
             else
             {
+                // Update every 100 steps to avoid excessive UI overhead
                 if (_e.Pos % 100 == 0)
                     pProgress.Value = (int)_e.Pos;
             }

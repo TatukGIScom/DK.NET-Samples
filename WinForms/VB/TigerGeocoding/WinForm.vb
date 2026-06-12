@@ -1,3 +1,42 @@
+'=============================================================================
+' This source code is a part of TatukGIS Developer Kernel.
+'=============================================================================
+'
+' TigerGeocoding Sample - VB.NET WinForms (TatukGIS NDK)
+' =======================================================
+' Demonstrates address geocoding on US Census TIGER/Line files and
+' shortest-path routing to display the route between addresses.
+'
+' What the sample shows:
+'   - Loading TIGER/Line shapefile (US road network with address ranges)
+'   - Creating a TGIS_Geocoding object from a vector layer
+'   - Parsing human-readable street addresses into geographic coordinates
+'   - Using TGIS_Utils.GisSamplesDataDirDownload to locate sample data
+'   - Loading geocoding formula files (*.geo files with field mappings)
+'   - Address field configuration (FULLNAME, LFROMADD, LTOADD, RFROMADD, RTOADD)
+'   - Finding first match vs all matches for an address query
+'   - Displaying geocoding results in a list box
+'   - Drawing matched address locations as point markers on the map
+'   - Computing shortest paths between two address points
+'   - Visualizing routes as polylines in a separate display layer
+'   - Handling TIGER feature class codes (MTFCC) for road type classification
+'   - Progress feedback during long geocoding operations
+'   - Multiple match disambiguation and selection
+'
+' Key TatukGIS API concepts shown here:
+'   TGIS_ViewerWnd              - main visual map control
+'   TGIS_LayerVector            - source TIGER/Line layer and result layer
+'   TGIS_Geocoding              - address-to-coordinate converter
+'   TGIS_Geocoding.LoadFormulas - loads .geo field mapping files
+'   TGIS_ShortestPath           - computes path between two points
+'   TIGER/Line format           - US Census Bureau road network standard
+'   Address ranges              - LFROMADD/LTOADD/RFROMADD/RTOADD fields
+'   MTFCC codes                 - road type classification
+'   Route visualization         - polyline rendering on map
+'   TGIS_BusyEvent              - progress callback for long operations
+'   TGIS_ControlScale           - scale bar display
+'
+
 Imports Microsoft.VisualBasic
 Imports System
 Imports System.Drawing
@@ -10,7 +49,10 @@ Imports TatukGIS.NDK.WinForms
 
 Namespace TigerGeocoding
     ''' <summary>
-    ''' Summary description for WinForm.
+    ''' TigerGeocoding sample — demonstrates address geocoding on US Census TIGER/Line files
+    ''' and shortest-path routing to display the route between addresses. Loads TIGER road network
+    ''' data with address ranges, creates a geocoding object, parses addresses to coordinates,
+    ''' and visualizes routing results as polylines on the map.
     ''' </summary>
     Public Class WinForm
         Inherits System.Windows.Forms.Form

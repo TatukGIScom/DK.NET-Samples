@@ -1,3 +1,37 @@
+' =============================================================================
+' This source code is a part of TatukGIS Developer Kernel.
+' =============================================================================
+'
+' Transform sample - Polynomial georeferencing of a raster image.
+' VB.NET / .NET WinForms edition.
+'
+' This sample demonstrates how to georeference (rectify) an unregistered
+' raster image using the TatukGIS DK polynomial transform API:
+'
+'   TGIS_TransformPolynomial
+'     Maps pixel (source) coordinates to real-world (target) coordinates using
+'     ground-control points (GCPs) and a fitted polynomial.  Polynomial order:
+'       First (affine):     translation, rotation, scale, shear.  Min 3 GCPs.
+'       Second (quadratic): corrects gentle curvature.  Min 6 GCPs.
+'       Third (cubic):      corrects stronger distortions.  Min 10 GCPs.
+'
+'   TGIS_LayerPixel.Transform
+'     Assigning a transform to a raster layer causes the DK to warp it
+'     on-the-fly at render time, without modifying the source file.
+'
+'   TGIS_TransformPolynomial.CuttingPolygon
+'     Optional WKT polygon in source/pixel coordinates that masks the
+'     visible area of the raster to a region of interest.
+'
+' Workflow:
+'   btnTransform  - 4-GCP first-order polynomial + CRS assignment (EPSG 102748).
+'   btnCutting    - Same GCPs + CuttingPolygon masking the image.
+'   btnSave       - Save current transform to a ".trn" sidecar file.
+'   btnRead       - Reload a previously saved transform sidecar.
+'
+' Data: Samples\Rectify\satellite.jpg  (an unrectified aerial/satellite image)
+' =============================================================================
+
 Imports System
 Imports System.Drawing
 Imports System.Collections
@@ -10,24 +44,24 @@ Imports TatukGIS.RTL
 Namespace Transform
 
     ''' <summary>
-    ''' Summary description for WinForm.
+    ''' Main form for the Transform sample.
+    ''' Demonstrates polynomial georeferencing of a raster image using
+    ''' TGIS_TransformPolynomial and TGIS_LayerPixel.Transform.
     ''' </summary>
     Public Class WinForm
         Inherits System.Windows.Forms.Form
 
-        Private WithEvents btnTransform As Button
+        Private WithEvents btnTransform As Button  ' Apply 4-GCP first-order polynomial transform
+        Private WithEvents btnCutting As Button    ' Apply transform with CuttingPolygon mask
+        Private WithEvents btnSave As Button       ' Save transform to .trn sidecar file
+        Private WithEvents btnRead As Button       ' Load transform from .trn sidecar file
+        Private WithEvents GIS As TatukGIS.NDK.WinForms.TGIS_ViewerWnd  ' Map viewer control
 
-        Private WithEvents btnCutting As Button
-
-        Private WithEvents btnSave As Button
-
-        Private WithEvents btnRead As Button
-
-        Private WithEvents GIS As TatukGIS.NDK.WinForms.TGIS_ViewerWnd
-
+        ' Extension for transform sidecar files.
+        ' Convention: "<image_path>.trn" stores polynomial GCP data.
         Private GIS_TRN_EXT As String = ".trn"
 
-        Private lbCoords As Label
+        Private lbCoords As Label  ' Status label showing cursor map coordinates
 
         ''' <summary>
         ''' Required designer variable.
@@ -167,36 +201,78 @@ Namespace Transform
             Application.Run(New WinForm())
         End Sub
 
+        ''' <summary>
+        ''' Opens the unrectified satellite image on form load.
+        ''' No transform is applied at startup; the user clicks buttons to georeference.
+        ''' </summary>
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
+            ' GisSamplesDataDirDownload resolves the shared sample data folder
             GIS.Open((TGIS_Utils.GisSamplesDataDirDownload() & "Samples\Rectify\satellite.jpg"))
         End Sub
 
+        ''' <summary>
+        ''' Applies a first-order polynomial georeference to the satellite image.
+        '''
+        ''' 1. Creates TGIS_TransformPolynomial and adds four corner GCPs.
+        ''' 2. Fits a first-order (affine) polynomial via Prepare().
+        ''' 3. Assigns the transform to the raster layer and activates warping.
+        ''' 4. Declares the CRS (EPSG 102748 = NAD83 / Washington South State Plane).
+        ''' 5. Recomputes the layer extent and zooms to full extent.
+        ''' </summary>
         Private Sub btnTransform_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnTransform.Click
             Dim trn As TGIS_TransformPolynomial
             Dim lp As TGIS_LayerPixel
+
+            ' Access the first (and only) layer, which is the satellite image
             lp = CType(GIS.Items(0), TGIS_LayerPixel)
+
             trn = New TGIS_TransformPolynomial
+
+            ' Add four corner ground-control points (GCPs).
+            ' Source: pixel coordinates (Y negative = image bottom).
+            ' Target: State Plane CRS (EPSG 102748), units in feet.
             trn.AddPoint(TGIS_Utils.GisPoint(-0.5, -944.5), TGIS_Utils.GisPoint(1273285.84090909, 239703.615056818), 0, True)
             trn.AddPoint(TGIS_Utils.GisPoint(-0.5, 0.5), TGIS_Utils.GisPoint(1273285.84090909, 244759.524147727), 1, True)
             trn.AddPoint(TGIS_Utils.GisPoint(1246.5, 0.5), TGIS_Utils.GisPoint(1279722.65909091, 245859.524147727), 2, True)
             trn.AddPoint(TGIS_Utils.GisPoint(1246.5, -944.5), TGIS_Utils.GisPoint(1279744.93181818, 239725.887784091), 3, True)
+
+            ' Fit the polynomial (First = affine: translation, rotation, scale, shear)
             trn.Prepare(TGIS_PolynomialOrder.First)
+
+            ' Assign the transform to the layer and activate on-the-fly warping
             lp.Transform = trn
             lp.Transform.Active = True
+
+            ' Declare the CRS so the viewer knows the real-world coordinate space
             lp.SetCSByEPSG(102748)
+
+            ' Recompute extent in the new CRS and zoom to show the whole image
             GIS.RecalcExtent()
             GIS.FullExtent()
         End Sub
 
+        ''' <summary>
+        ''' Applies a first-order polynomial transform with a CuttingPolygon mask.
+        '''
+        ''' Identical GCPs to btnTransform_Click but adds a CuttingPolygon in
+        ''' pixel (source) coordinates.  Only the area inside the polygon is
+        ''' rendered after warping; the rest of the image is clipped out.
+        ''' </summary>
         Private Sub btnCutting_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnCutting.Click
             Dim trn As TGIS_TransformPolynomial
             Dim lp As TGIS_LayerPixel
+
             lp = CType(GIS.Items(0), TGIS_LayerPixel)
             trn = New TGIS_TransformPolynomial
+
+            ' Four corner GCPs (same pixel-to-world mapping as btnTransform_Click)
             trn.AddPoint(TGIS_Utils.GisPoint(-0.5, -944.5), TGIS_Utils.GisPoint(1273285.84090909, 239703.615056818), 0, True)
             trn.AddPoint(TGIS_Utils.GisPoint(-0.5, 0.5), TGIS_Utils.GisPoint(1273285.84090909, 244759.524147727), 1, True)
             trn.AddPoint(TGIS_Utils.GisPoint(1246.5, 0.5), TGIS_Utils.GisPoint(1279722.65909091, 244759.524147727), 2, True)
             trn.AddPoint(TGIS_Utils.GisPoint(1246.5, -944.5), TGIS_Utils.GisPoint(1279744.93181818, 239725.887784091), 3, True)
+
+            ' WKT polygon in SOURCE (pixel) coordinates that masks the visible region.
+            ' Pixels outside this polygon are not rendered after the warp is applied.
             trn.CuttingPolygon = "POLYGON((421.508902077151 -320.017804154303," +
                                  "518.161721068249 -223.364985163205," +
                                  "688.725519287834 -210.572700296736," +
@@ -212,26 +288,43 @@ Namespace Transform
             trn.Prepare(TGIS_PolynomialOrder.First)
             lp.Transform = trn
             lp.Transform.Active = True
+
             GIS.RecalcExtent()
             GIS.FullExtent()
         End Sub
 
+        ''' <summary>
+        ''' Saves the current polynomial transform to a ".trn" sidecar file.
+        ''' The sidecar stores all GCPs and coefficients so the georeferencing
+        ''' can be reloaded later without re-entering data.
+        ''' This is a no-op if no transform has been assigned yet.
+        ''' </summary>
         Private Sub btnSave_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnSave.Click
             Dim lp As TGIS_LayerPixel
             lp = CType(GIS.Items(0), TGIS_LayerPixel)
+
+            ' Guard: only save if a transform has been assigned to the layer
             If (Not (lp.Transform) Is Nothing) Then
                 lp.Transform.SaveToFile(("satellite.jpg" + GIS_TRN_EXT))
             End If
 
         End Sub
 
+        ''' <summary>
+        ''' Loads a polynomial transform from a ".trn" sidecar file and applies it.
+        ''' Creates a new TGIS_TransformPolynomial, loads from file, assigns to
+        ''' the raster layer, activates warping, and zooms to fit.
+        ''' </summary>
         Private Sub btnRead_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnRead.Click
             Dim lp As TGIS_LayerPixel
             Dim trn As TGIS_TransformPolynomial
             lp = CType(GIS.Items(0), TGIS_LayerPixel)
-            
+
+            ' Create a transform and load all GCPs and coefficients from the sidecar
             trn = New TGIS_TransformPolynomial
             trn.LoadFromFile(("satellite.jpg" + GIS_TRN_EXT))
+
+            ' Assign to the layer and activate on-the-fly warping
             lp.Transform = trn
             lp.Transform.Active = True
 
@@ -239,14 +332,21 @@ Namespace Transform
             GIS.FullExtent()
         End Sub
 
+        ''' <summary>
+        ''' Converts the cursor screen position to map coordinates and displays
+        ''' them in the status label.  Gives real-time coordinate feedback as the
+        ''' user moves the mouse over the georeferenced image.
+        ''' </summary>
         Private Sub GIS_MouseMove(ByVal sender As Object, ByVal e As MouseEventArgs) Handles GIS.MouseMove
             Dim ptg As TGIS_Point
             If GIS.IsEmpty Then
                 Return
             End If
 
+            ' Convert screen pixel to map coordinate using the current view transform
             ptg = GIS.ScreenToMap(New Point(e.X, e.Y))
-            ' lbCoords.Text = "X: " + ptg.X + " | Y:" + ptg.Y;
+
+            ' Display coordinates formatted to 4 decimal places
             lbCoords.Text = String.Format("X: {0:0.0000} | Y: {1:0.0000}", ptg.X, ptg.Y)
         End Sub
     End Class

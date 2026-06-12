@@ -1,3 +1,21 @@
+'==============================================================================
+' This source code is a part of TatukGIS Developer Kernel.
+'==============================================================================
+'
+' Renderer sample — demonstrates how to load and display a TatukGIS project
+' file that contains pre-configured custom rendering rules.
+'
+' Key concepts shown:
+'   - Opening a .ttkproject file with TGIS_ViewerWnd.Open
+'   - Switching the viewer interaction mode between Zoom and Drag using the
+'     TGIS_ViewerMode enumeration
+'   - Restoring the full map extent with TGIS_ViewerWnd.FullExtent
+'
+' The rendering definitions (symbol styles, color ramps, scale-dependent
+' rules, etc.) are stored inside renderer.ttkproject.  This form simply loads
+' that project and wires up the toolbar buttons for map navigation.
+'==============================================================================
+
 Imports Microsoft.VisualBasic
 Imports System
 Imports System.Drawing
@@ -5,28 +23,37 @@ Imports System.Collections
 Imports System.ComponentModel
 Imports System.Windows.Forms
 Imports System.Data
-Imports TatukGIS.NDK
-Imports TatukGIS.NDK.WinForms
+Imports TatukGIS.NDK           ' Core TatukGIS types (TGIS_ViewerMode, TGIS_Utils, …)
+Imports TatukGIS.NDK.WinForms  ' WinForms-specific controls (TGIS_ViewerWnd)
 
 Namespace Renderer
     ''' <summary>
-    ''' Summary description for WinForm.
+    ''' Main application form for the Renderer sample.
+    ''' Hosts the TGIS_ViewerWnd map control together with a navigation toolbar
+    ''' and a status strip.  On load it opens the pre-configured renderer
+    ''' project file and displays it at full extent.
     ''' </summary>
     Public Class WinForm
         Inherits System.Windows.Forms.Form
-        ''' <summary>
-        ''' Required designer variable.
-        ''' </summary>
-        Private components As System.ComponentModel.IContainer
-        Private WithEvents toolBar1 As System.Windows.Forms.ToolStrip
-        Private btnFullExtent As System.Windows.Forms.ToolStripButton
-        Private toolBarButton1 As System.Windows.Forms.ToolStripButton
-        Private btnZoom As System.Windows.Forms.ToolStripButton
-        Private btnDrag As System.Windows.Forms.ToolStripButton
-        Private GIS As TatukGIS.NDK.WinForms.TGIS_ViewerWnd
-        Private statusBar1 As System.Windows.Forms.StatusStrip
-        Private imageList1 As System.Windows.Forms.ImageList
 
+        ' ---------------------------------------------------------------
+        ' Designer-managed fields (do not rename — referenced by .resx)
+        ' ---------------------------------------------------------------
+        ''' <summary>Required designer variable.</summary>
+        Private components As System.ComponentModel.IContainer
+        Private WithEvents toolBar1 As System.Windows.Forms.ToolStrip         ' Navigation toolbar
+        Private btnFullExtent As System.Windows.Forms.ToolStripButton          ' Full-extent button
+        Private toolBarButton1 As System.Windows.Forms.ToolStripButton         ' Toolbar separator placeholder
+        Private btnZoom As System.Windows.Forms.ToolStripButton                ' Zoom-mode toggle button
+        Private btnDrag As System.Windows.Forms.ToolStripButton                ' Drag/pan-mode toggle button
+        Private GIS As TatukGIS.NDK.WinForms.TGIS_ViewerWnd                   ' TatukGIS map viewer control
+        Private statusBar1 As System.Windows.Forms.StatusStrip                 ' Status bar
+        Private imageList1 As System.Windows.Forms.ImageList                   ' Toolbar button icons
+
+        ''' <summary>
+        ''' Initialises the form components and sets the map viewer as the
+        ''' initially focused control so keyboard shortcuts work immediately.
+        ''' </summary>
         Public Sub New()
             '
             ' Required for Windows Form Designer support
@@ -36,6 +63,7 @@ Namespace Renderer
             '
             ' TODO: Add any constructor code after InitializeComponent call
             '
+            ' Give the map viewer focus so keyboard navigation is active at once.
             Me.ActiveControl = GIS
         End Sub
 
@@ -71,11 +99,8 @@ Namespace Renderer
             '
             'toolBar1
             '
-            
             Me.toolBar1.AutoSize = False
             Me.toolBar1.Items.AddRange(New System.Windows.Forms.ToolStripButton() {Me.btnFullExtent, Me.toolBarButton1, Me.btnZoom, Me.btnDrag})
-            
-            
             Me.toolBar1.ImageList = Me.imageList1
             Me.toolBar1.Location = New System.Drawing.Point(0, 0)
             Me.toolBar1.Name = "toolBar1"
@@ -92,7 +117,6 @@ Namespace Renderer
             'toolBarButton1
             '
             Me.toolBarButton1.Name = "toolBarButton1"
-            
             '
             'btnZoom
             '
@@ -106,7 +130,6 @@ Namespace Renderer
             '
             Me.btnDrag.ImageIndex = 2
             Me.btnDrag.Name = "btnDrag"
-            
             Me.btnDrag.ToolTipText = "Drag Mode"
             '
             'imageList1
@@ -117,7 +140,7 @@ Namespace Renderer
             Me.imageList1.Images.SetKeyName(1, "")
             Me.imageList1.Images.SetKeyName(2, "")
             '
-            'GIS
+            'GIS — TatukGIS WinForms map viewer
             '
             Me.GIS.BackColor = System.Drawing.SystemColors.Control
             Me.GIS.Dock = System.Windows.Forms.DockStyle.Fill
@@ -134,7 +157,6 @@ Namespace Renderer
             '
             Me.statusBar1.Location = New System.Drawing.Point(0, 447)
             Me.statusBar1.Name = "statusBar1"
-            
             Me.statusBar1.Size = New System.Drawing.Size(592, 19)
             Me.statusBar1.TabIndex = 2
             '
@@ -157,7 +179,9 @@ Namespace Renderer
 #End Region
 
         ''' <summary>
-        ''' The main entry point for the application.
+        ''' Application entry point.
+        ''' Configures DPI awareness and visual styles, then starts the message
+        ''' loop with the main form.
         ''' </summary>
         <STAThread>
         Shared Sub Main()
@@ -169,26 +193,48 @@ Namespace Renderer
             Application.Run(New WinForm())
         End Sub
 
+        ''' <summary>
+        ''' Handles the Form.Load event.
+        ''' Opens the renderer project file (which contains all pre-configured
+        ''' layer rendering settings).  The viewer's default mode is Zoom, as
+        ''' set in InitializeComponent.
+        '''
+        ''' TGIS_Utils.GisSamplesDataDirDownload() returns the root path of the
+        ''' downloaded TatukGIS sample dataset.
+        ''' </summary>
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
+            ' Open the pre-built renderer project; layer styles are defined
+            ' inside the .ttkproject XML file — no code-level styling needed.
             GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "Samples\Projects\renderer.ttkproject")
         End Sub
 
+        ''' <summary>
+        ''' Handles toolbar button clicks using the ItemClicked event.
+        ''' Determines which button was clicked by its index position in the
+        ''' toolbar's Items collection and performs the corresponding action.
+        '''
+        ''' Index 0 — Full Extent: zoom out to fit all layers
+        ''' Index 2 — Zoom mode: rubber-band / scroll-wheel zoom
+        ''' Index 3 — Drag mode: click-and-drag panning
+        ''' </summary>
         Private Sub toolBar1_ButtonClick(ByVal sender As Object, ByVal e As System.Windows.Forms.ToolStripItemClickedEventArgs) Handles toolBar1.ItemClicked
             Select Case toolBar1.Items.IndexOf(e.ClickedItem)
-        ' btnFullExt
-                Case 0
+                Case 0  ' btnFullExtent — restore the full-data extent
                     GIS.FullExtent()
-        ' btnZoom
-                Case 2
+                Case 2  ' btnZoom — switch to zoom interaction mode
                     btnDrag.Checked = False
                     GIS.Mode = TGIS_ViewerMode.Zoom
-        ' btnDrag
-                Case 3
+                Case 3  ' btnDrag — switch to pan/drag interaction mode
                     btnZoom.Checked = False
                     GIS.Mode = TGIS_ViewerMode.Drag
             End Select
         End Sub
 
+        ''' <summary>
+        ''' Changes the toolbar cursor to a hand when the pointer hovers over
+        ''' an active button, providing a visual affordance for clickable items.
+        ''' Items 0, 2, 3 are active buttons; item 1 is the separator.
+        ''' </summary>
         Private Sub toolBar1_MouseMove(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles toolBar1.MouseMove
             Dim p As Point = New Point(e.X, e.Y)
 

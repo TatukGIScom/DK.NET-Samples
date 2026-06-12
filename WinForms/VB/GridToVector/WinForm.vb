@@ -7,6 +7,32 @@ Imports System.Data
 Imports TatukGIS.NDK
 Imports TatukGIS.NDK.WinForms
 
+' GridToVector sample — demonstrates raster-to-vector conversion (VB.NET).
+'
+' What the sample shows:
+'   - Loading raster data: Land Cover TIFF (Corine CLC2018) and DEM elevation grid
+'   - Converting raster grids to vector polygons using TGIS_GridToPolygon
+'   - Converting raster grids to vector points using TGIS_GridToPoint
+'   - Controlling polygon simplification via tolerance parameter
+'   - Ignoring NoData cells during vectorization
+'   - Point spacing control for point-based vectorization
+'   - Colorizing DEM grid with blue-lime-red colour ramp before vectorization
+'   - Interactive shape selection to display attributes
+'   - Polygon splitting options for complex raster regions
+'   - Progress feedback during vectorization operations
+'
+' Key TatukGIS API concepts shown here:
+'   TGIS_ViewerWnd              - main visual map control
+'   TGIS_LayerPixel             - raster layer (source data)
+'   TGIS_LayerVector            - vector layer (output format)
+'   TGIS_GridToPolygon          - raster-to-polygon converter
+'   TGIS_GridToPoint            - raster-to-point converter
+'   TGIS_Topology               - spatial operations (used during conversion)
+'   Tolerance parameter         - polygon simplification control
+'   NoData handling             - ignore empty/missing raster cells
+'   Point spacing               - vertex density for point conversion
+'   TGIS_ControlAttributes      - attribute panel for feature inspection
+
 Namespace GridToVector
     Public Class WinForm
         Inherits System.Windows.Forms.Form
@@ -288,17 +314,23 @@ Namespace GridToVector
             Application.Run(New WinForm())
         End Sub
 
+        ''' <summary>Loads the Land Cover dataset by default and sets the viewer to select mode on startup.</summary>
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
             btnLoadLand.PerformClick()
             GIS.Mode = TGIS_ViewerMode.[Select]
         End Sub
 
+        ''' <summary>Loads the Corine Land Cover 2018 TIFF for Luxembourg and sets default tolerance/spacing values.</summary>
         Private Sub btnLoadLand_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnLoadLand.Click
             GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\Luxembourg\CLC2018_CLC2018_V2018_20_Luxembourg.tif")
             tbTolerance.Text = "1"
             tbPointSpacing.Text = "1000"
         End Sub
 
+        ''' <summary>
+        ''' Loads an elevation grid, applies a blue-lime-red HSL colour ramp across the
+        ''' full elevation range, and sets default tolerance/spacing values.
+        ''' </summary>
         Private Sub btnLoadDEM_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnLoadDEM.Click
             Dim lp As TGIS_LayerPixel
             GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "Samples\3D\elevation.grd")
@@ -309,6 +341,10 @@ Namespace GridToVector
             tbPointSpacing.Text = "200"
         End Sub
 
+        ''' <summary>
+        ''' Reports rasterisation progress on the progress bar.
+        ''' Pos == 0 initialises the bar; Pos == -1 resets it; otherwise the bar is updated.
+        ''' </summary>
         Private Sub doBusyEvent(ByVal sender As Object, ByVal e As TGIS_BusyEventArgs)
             Select Case e.Pos
                 Case 0
@@ -322,6 +358,10 @@ Namespace GridToVector
             End Select
         End Sub
 
+        ''' <summary>
+        ''' Locates the shape under the mouse cursor on click, selects it, and shows
+        ''' its attributes in the TGIS_ControlAttributes panel.
+        ''' </summary>
         Private Sub GIS_MouseDown(ByVal sender As Object, ByVal e As MouseEventArgs) Handles GIS.MouseDown
             Dim shp As TGIS_Shape
 
@@ -340,6 +380,7 @@ Namespace GridToVector
             GIS_Attr.ShowShape(shp)
         End Sub
 
+        ''' <summary>Zooms in or out centred on the cursor position in response to mouse-wheel events.</summary>
         Private Sub GIS_MouseWheel(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs)
             If GIS.IsEmpty Then Return
 
@@ -350,6 +391,11 @@ Namespace GridToVector
             End If
         End Sub
 
+        ''' <summary>
+        ''' Converts the source raster layer to a polygon vector layer using TGIS_GridToPolygon
+        ''' with the tolerance and split-shapes settings.  Any existing result layer is removed first.
+        ''' The output is added with 50% transparency and a black outline.
+        ''' </summary>
         Private Sub btnGridToPolygon_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGridToPolygon.Click
             Dim lp As TGIS_LayerPixel
             Dim lv As TGIS_LayerVector
@@ -377,6 +423,11 @@ Namespace GridToVector
             GIS.InvalidateWholeMap()
         End Sub
 
+        ''' <summary>
+        ''' Converts the source raster layer to a point vector layer using TGIS_GridToPoint
+        ''' with the tolerance, point-spacing, and ignore-NoData settings.
+        ''' Points are styled as small black circles with 75% transparency.
+        ''' </summary>
         Private Sub btnGridToPoint_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGridToPoint.Click
             Dim lp As TGIS_LayerPixel = TryCast(GIS.Items(0), TGIS_LayerPixel)
             If GIS.[Get](LV_NAME) IsNot Nothing Then GIS.Delete(LV_NAME)

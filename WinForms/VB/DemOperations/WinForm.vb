@@ -10,8 +10,39 @@ Imports TatukGIS.NDK.WinForms
 Imports TatukGIS.RTL
 
 Namespace DemOperations
-    ''' <summary>
-    ''' Summary description for WinForm.
+    ' DemOperations sample — demonstrates terrain analysis derived from DEM raster (VB.NET/.NET WinForms).
+    '
+    ' What the sample shows:
+    '   - Loading DEM (Digital Elevation Model) raster layers (ADF format)
+    '   - Performing terrain analysis operations on elevation grids
+    '   - Hillshade: shaded relief visualization
+    '   - Slope: steepness analysis
+    '   - Slope Hydro: hydrologically correct slope calculation
+    '   - Aspect: flow direction (N, NE, E, etc.)
+    '   - TRI: Terrain Ruggedness Index
+    '   - TPI: Topographic Position Index
+    '   - Roughness: local terrain roughness metric
+    '   - Total Curvature: curvature analysis
+    '   - Matrix Gain: gradient gain analysis
+    '   - Flow Direction: water flow direction
+    '   - Custom grid operations via GridOperationEvent callback
+    '   - Adjustable hillshade parameters (shadow, altitude)
+    '   - 3D visualization of results
+    '   - Legend display with colour ramps
+    '
+    ' Key TatukGIS API concepts shown here:
+    '   TGIS_ViewerWnd              - main visual map control
+    '   TGIS_LayerPixel             - raster/DEM layer
+    '   TGIS_DemGenerator           - terrain analysis engine
+    '   TGIS_LayerPixel.GridOperationEvent - custom grid processing callback
+    '   Terrain analysis operations - Hillshade, Slope, Aspect, TRI, TPI, etc.
+    '   Colour ramps                - visualization of terrain data
+    '   3D visualization            - elevation display
+    '   DEM processing              - grid-based raster operations
+    '   Spatial analysis            - terrain-derived metrics
+    '
+    ''' A custom hillshade implementation (ChangeDem) is also provided to demonstrate
+    ''' the TGIS_LayerPixel.GridOperationEvent callback mechanism.
     ''' </summary>
     Public Class WinForm
         Inherits System.Windows.Forms.Form
@@ -565,12 +596,19 @@ Namespace DemOperations
             Application.Run(New WinForm())
         End Sub
 
+        ''' <summary>Initialises the open-file filter and loads the default sample DEM on startup.</summary>
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
             dlgOpen.Filter = TGIS_Utils.GisSupportedFiles(TGIS_FileType.All, False)
             GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\San Bernardino\NED\w001001.adf")
             GIS.FullExtent()
         End Sub
 
+        ''' <summary>
+        ''' Custom <see cref="TGIS_LayerPixel.GridOperationEvent"/> callback that computes a hillshade
+        ''' value for every cell using Horn's 3x3 neighbourhood algorithm.
+        ''' NoData cells (and any cell whose neighbourhood contains NoData) are passed through unchanged.
+        ''' The sun azimuth is read live from <c>trbShadow.Value</c> so the result updates interactively.
+        ''' </summary>
         Private Function ChangeDem(ByVal _layer As Object,
                                    ByVal _extent As TGIS_Extent,
                                    ByVal _source As Single()(),
@@ -700,35 +738,44 @@ Namespace DemOperations
 
         End Function
 
+        ''' <summary>Opens a file dialog and loads the chosen raster file into the viewer.</summary>
         Private Sub btnOpen_Click(sender As Object, e As EventArgs) Handles btnOpen.Click
             dlgOpen.ShowDialog()
             GIS.Open(dlgOpen.FileName)
         End Sub
 
+        ''' <summary>Resets the viewer to show the full spatial extent of all loaded layers.</summary>
         Private Sub btnFullExtent_Click(sender As Object, e As EventArgs) Handles btnFullExtent.Click
             If (GIS.IsEmpty) Then Return
 
             GIS.FullExtent()
         End Sub
 
+        ''' <summary>Switches the viewer interaction mode to zoom.</summary>
         Private Sub btnZoom_Click(sender As Object, e As EventArgs) Handles btnZoom.Click
             If (GIS.IsEmpty) Then Return
 
             GIS.Mode = TGIS_ViewerMode.Zoom
         End Sub
 
+        ''' <summary>Switches the viewer interaction mode to pan/drag.</summary>
         Private Sub btnDrag_Click(sender As Object, e As EventArgs) Handles btnDrag.Click
             If (GIS.IsEmpty) Then Return
 
             GIS.Mode = TGIS_ViewerMode.Drag
         End Sub
 
+        ''' <summary>Toggles the viewer between 2D map view and 3D perspective view.</summary>
         Private Sub btn3D_Click(sender As Object, e As EventArgs) Handles btn3D.Click
             If (GIS.IsEmpty) Then Return
 
             GIS.View3D = Not GIS.View3D
         End Sub
 
+        ''' <summary>
+        ''' Updates the grid shadow angle on the source layer as the track bar position changes,
+        ''' giving an interactive sun-position preview.
+        ''' </summary>
         Private Sub trbShadow_Scroll(sender As Object, e As EventArgs) Handles trbShadow.Scroll
             Dim lp As TGIS_LayerPixel
 
@@ -742,6 +789,11 @@ Namespace DemOperations
             End If
         End Sub
 
+        ''' <summary>
+        ''' Attaches or detaches the custom <see cref="ChangeDem"/> hillshade callback on the source
+        ''' layer when the checkbox state changes.  Checking enables the custom callback and disables
+        ''' the built-in grid shadow; unchecking restores the built-in shadow.
+        ''' </summary>
         Private Sub cbxCustomGrid_CheckedChanged(sender As Object, e As EventArgs) Handles cbxCustomGrid.CheckedChanged
             Dim lp As TGIS_LayerPixel
 
@@ -760,6 +812,11 @@ Namespace DemOperations
             GIS.InvalidateWholeMap()
         End Sub
 
+        ''' <summary>
+        ''' Shows or hides the parameter sub-panels that are relevant to the currently selected
+        ''' DEM operation (Hillshade params, Slope/SlopeHydro params, Aspect angle checkbox,
+        ''' or Total Curvature mode).
+        ''' </summary>
         Private Sub cbOperations_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbOperations.SelectedIndexChanged
             gbHillShadeParams.Visible = False
             gbCurvature.Visible = False
@@ -775,6 +832,12 @@ Namespace DemOperations
             End Select
         End Sub
 
+        ''' <summary>
+        ''' Creates an output grid layer matching the source DEM, instantiates the
+        ''' <see cref="TGIS_DemOperation"/> subclass selected in <c>cbOperations</c>, runs
+        ''' <see cref="TGIS_DemGenerator.Process"/>, and adds the result layer to the viewer.
+        ''' Any previous result layer with the same name is removed before the new one is added.
+        ''' </summary>
         Private Sub btnRun_Click(sender As Object, e As EventArgs) Handles btnRun.Click
             Dim lp As TGIS_LayerPixel
             Dim ld As TGIS_LayerPixel
@@ -851,6 +914,10 @@ Namespace DemOperations
             GIS.InvalidateWholeMap()
         End Sub
 
+        ''' <summary>
+        ''' Reports DEM processing progress on the progress bar.
+        ''' Shows and updates the bar while <c>EndPos</c> &gt; 0, and hides it when the operation completes.
+        ''' </summary>
         Private Sub GIS_BusyEvent(_sender As Object, _e As TGIS_BusyEventArgs) Handles GIS.BusyEvent
             If _e.EndPos <= 0 Then
                 pbProgress.Visible = False

@@ -1,4 +1,44 @@
-﻿Imports System
+' =============================================================================
+' This source code is a part of TatukGIS Developer Kernel.
+' =============================================================================
+'
+' Triangulation Sample – Demonstrates Delaunay triangulation and Voronoi diagrams.
+'
+' This sample opens a point shapefile (Polish cities) and uses two specialised
+' TGIS_LayerVector subclasses from the TatukGIS NDK to compute geometric structures
+' derived from the point distribution:
+'
+'   Delaunay Triangulation
+'     Connects input points into triangles such that no point lies inside the
+'     circumscribed circle of any triangle.  Produces a TIN (Triangulated
+'     Irregular Network) suitable for surface modelling and proximity analysis.
+'
+'   Voronoi Diagram
+'     Partitions the plane into one region per input point, where each region
+'     contains all locations closer to that point than to any other input point.
+'     The Voronoi diagram is the geometric dual of the Delaunay triangulation.
+'
+' After generation the result layer is colour-graduated by polygon area
+' (GIS_AREA attribute) over a white-to-red (Voronoi) or white-to-blue (Delaunay)
+' gradient rendered across 10 equal-interval zones.  This highlights relative
+' cell / triangle area variation across the study region.
+'
+' User interaction:
+'   - Click a point on the map to display its attributes in the Attributes panel
+'   - Radio buttons select Delaunay vs Voronoi mode before generation
+'   - "Generate" adds the result layer; duplicate layer names are rejected
+'   - Toolbar buttons provide Full Extent, Zoom In, and Zoom Out navigation
+'
+' Key TatukGIS NDK classes used:
+'   TGIS_LayerDelaunay       - generates and stores a Delaunay triangulation
+'   TGIS_LayerVoronoi        - generates and stores a Voronoi diagram
+'   TGIS_LayerVector         - base class; ImportLayer() copies source point data
+'   TGIS_ControlAttributes   - side panel that shows shape attribute data on click
+'   TGIS_ControlLegend       - layer legend / style control panel
+'   TGIS_ViewerWnd           - WinForms map viewer control
+' =============================================================================
+
+Imports System
 Imports System.Windows.Forms
 Imports System.Drawing
 Imports TatukGIS.NDK
@@ -6,39 +46,46 @@ Imports TatukGIS.NDK.WinForms
 
 Namespace Triangulation
 
+    ''' <summary>
+    ''' Main form for the Triangulation sample application.
+    '''
+    ''' Demonstrates Delaunay triangulation and Voronoi diagram generation using
+    ''' <see cref="TGIS_LayerDelaunay"/> and <see cref="TGIS_LayerVoronoi"/>.
+    ''' The result layer is colour-graduated by polygon area (GIS_AREA attribute)
+    ''' to give an immediate visual impression of size variation across the plane.
+    ''' </summary>
     Public Class frmMain
         Inherits System.Windows.Forms.Form
 
-        Friend WithEvents StatusBar1 As System.Windows.Forms.StatusStrip
-        Friend WithEvents Panel1 As System.Windows.Forms.Panel
-        Friend WithEvents imglst As System.Windows.Forms.ImageList
-        Friend WithEvents tlbr As System.Windows.Forms.ToolStrip
-        Friend WithEvents btnFullExtent As System.Windows.Forms.ToolStripButton
-        Friend WithEvents btnZoomIn As System.Windows.Forms.ToolStripButton
-        Friend WithEvents btnZoomOut As System.Windows.Forms.ToolStripButton
-        Friend WithEvents GIS_Attributes As TatukGIS.NDK.WinForms.TGIS_ControlAttributes
-        Friend WithEvents grpbxResult As System.Windows.Forms.GroupBox
-        Friend WithEvents edtLayer As System.Windows.Forms.TextBox
-        Friend WithEvents lblLayer As System.Windows.Forms.Label
-        Friend WithEvents rbtnDelaunay As System.Windows.Forms.RadioButton
-        Friend WithEvents rbtnVoronoi As System.Windows.Forms.RadioButton
-        Friend WithEvents GIS_Legend As TatukGIS.NDK.WinForms.TGIS_ControlLegend
-        Friend WithEvents btnGenerate As System.Windows.Forms.Button
-        Friend WithEvents GIS As TatukGIS.NDK.WinForms.TGIS_ViewerWnd
+        ' --- Designer-declared controls ---
+        Friend WithEvents StatusBar1 As System.Windows.Forms.StatusStrip          ' Status bar at the bottom
+        Friend WithEvents Panel1 As System.Windows.Forms.Panel                    ' Panel hosting the toolbar
+        Friend WithEvents imglst As System.Windows.Forms.ImageList                ' Toolbar button images
+        Friend WithEvents tlbr As System.Windows.Forms.ToolStrip                  ' Navigation toolbar
+        Friend WithEvents btnFullExtent As System.Windows.Forms.ToolStripButton   ' Zoom to fit all layers
+        Friend WithEvents btnZoomIn As System.Windows.Forms.ToolStripButton       ' Double the zoom factor
+        Friend WithEvents btnZoomOut As System.Windows.Forms.ToolStripButton      ' Halve the zoom factor
+        Friend WithEvents GIS_Attributes As TatukGIS.NDK.WinForms.TGIS_ControlAttributes ' Shape attribute panel
+        Friend WithEvents grpbxResult As System.Windows.Forms.GroupBox            ' Groups mode/name controls
+        Friend WithEvents edtLayer As System.Windows.Forms.TextBox                ' Editable output layer name
+        Friend WithEvents lblLayer As System.Windows.Forms.Label                  ' "Layer name:" label
+        Friend WithEvents rbtnDelaunay As System.Windows.Forms.RadioButton        ' Select Delaunay mode
+        Friend WithEvents rbtnVoronoi As System.Windows.Forms.RadioButton         ' Select Voronoi mode
+        Friend WithEvents GIS_Legend As TatukGIS.NDK.WinForms.TGIS_ControlLegend ' Layer legend panel
+        Friend WithEvents btnGenerate As System.Windows.Forms.Button              ' Trigger triangulation/diagram
+        Friend WithEvents GIS As TatukGIS.NDK.WinForms.TGIS_ViewerWnd            ' Map viewer control
 
+        ''' <summary>Initialises WinForms designer components.</summary>
         Public Sub New()
             '
             ' Required for Windows Form Designer support
             '
             InitializeComponent()
 
-            '
-            ' TODO: Add any constructor code after InitializeComponent call
-            '
             Me.ActiveControl = GIS
         End Sub
 
-        'Form overrides dispose to clean up the component list.
+        ''' <summary>Clean up any resources being used.</summary>
         Protected Overrides Sub Dispose(ByVal disposing As Boolean)
             Try
                 If disposing AndAlso components IsNot Nothing Then
@@ -273,6 +320,7 @@ Namespace Triangulation
         End Sub
 #End Region
 
+        ''' <summary>The main entry point for the application.</summary>
         <STAThread>
         Shared Sub Main()
 #If NET5_0_OR_GREATER Then
@@ -283,45 +331,74 @@ Namespace Triangulation
             Application.Run(New frmMain())
         End Sub
 
+        ''' <summary>
+        ''' Loads the Polish city point shapefile on form startup and configures
+        ''' the city marker style.
+        '''
+        ''' A second "selected" param set is registered so that shapes shown in the
+        ''' Attributes panel receive a distinct blue area fill, making the selected
+        ''' shape easy to identify on the map.
+        ''' </summary>
         Private Sub frmMain_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
             Dim lv As TGIS_LayerVector
 
-            ' open a file
+            ' Open the Polish city point data – this layer provides the seed
+            ' point set for both the Delaunay and Voronoi algorithms.
             GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\Poland\DCW\city.shp")
 
-            ' and add a new parametr
+            ' Retrieve the freshly loaded vector layer and customise its marker style
             lv = CType(GIS.Items(0), TGIS_LayerVector)
             lv.Params.Marker.Color = TGIS_Color.FromARGB(ColorTranslator.FromWin32(&H4080FF).A, ColorTranslator.FromWin32(&H4080FF).R, ColorTranslator.FromWin32(&H4080FF).G, ColorTranslator.FromWin32(&H4080FF).B)
             lv.Params.Marker.OutlineWidth = 2
             lv.Params.Marker.Style = TGIS_MarkerStyle.Circle
 
+            ' Add a second named param set; shapes displayed in the attribute panel
+            ' use the "selected" style so they stand out on the map.
             lv.ParamsList.Add()
             lv.Params.Style = "selected"
             lv.Params.Area.OutlineWidth = 1
             lv.Params.Area.Color = TGIS_Color.Blue
 
-            GIS_Legend.Update()
+            GIS_Legend.Update()  ' Refresh legend to show the new layer style
         End Sub
 
+        ''' <summary>
+        ''' Handles toolbar button clicks for map navigation.
+        ''' Dispatches to the appropriate viewer method based on which item was clicked.
+        ''' </summary>
         Private Sub tlbr_ButtonClick(ByVal sender As System.Object, ByVal e As System.Windows.Forms.ToolStripItemClickedEventArgs) Handles tlbr.ItemClicked
             Select Case tlbr.Items.IndexOf(e.ClickedItem)
                 Case 0
-                    GIS.FullExtent()
+                    GIS.FullExtent()        ' Zoom to fit all layers
                 Case 1
-                    GIS.Zoom = GIS.Zoom * 2
+                    GIS.Zoom = GIS.Zoom * 2  ' Double zoom factor
                 Case 2
-                    GIS.Zoom = GIS.Zoom / 2
+                    GIS.Zoom = GIS.Zoom / 2  ' Halve zoom factor
             End Select
         End Sub
 
+        ''' <summary>
+        ''' Pre-fills the output layer name when the user selects Voronoi mode.
+        ''' </summary>
         Private Sub rbtnVoronoi_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles rbtnVoronoi.Click
             edtLayer.Text = "Voronoi"
         End Sub
 
+        ''' <summary>
+        ''' Pre-fills the output layer name when the user selects Delaunay mode.
+        ''' </summary>
         Private Sub rbtnDelaunay_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles rbtnDelaunay.Click
             edtLayer.Text = "Delaunay"
         End Sub
 
+        ''' <summary>
+        ''' Hit-tests the map on mouse press to find the nearest shape and displays
+        ''' its attribute data in the GIS_Attributes side panel.
+        '''
+        ''' ScreenToMap converts pixel coordinates to geographic (map) coordinates.
+        ''' Locate searches all layers for the nearest shape within a tolerance of
+        ''' 5 screen pixels (converted to map units by dividing by the zoom factor).
+        ''' </summary>
         Private Sub GIS_MouseDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles GIS.MouseDown
             Dim ptg As TGIS_Point
             Dim shp As TGIS_Shape
@@ -330,52 +407,80 @@ Namespace Triangulation
                 Exit Sub
             End If
             If GIS.InPaint Then
-                Return
+                Return  ' Avoid reentrancy during a repaint cycle
             End If
 
-            ' let's locate a shape after click
+            ' Convert screen pixel position to geographic map coordinates
             ptg = GIS.ScreenToMap(New Point(e.X, e.Y))
+            ' Locate the nearest shape within a 5-pixel screen tolerance
             shp = CType(GIS.Locate(ptg, 5 / GIS.Zoom), TGIS_Shape) ' 5 pixels precision
             If Not shp Is Nothing Then
-                GIS_Attributes.ShowShape(shp)
+                GIS_Attributes.ShowShape(shp)  ' Populate the attribute panel
             End If
         End Sub
 
+        ''' <summary>
+        ''' Creates either a <see cref="TGIS_LayerVoronoi"/> or
+        ''' <see cref="TGIS_LayerDelaunay"/> layer, imports the city point data as
+        ''' input, configures a graduated colour render style, and adds the result
+        ''' to the viewer.
+        '''
+        ''' ImportLayer copies all features from the source layer into the new
+        ''' triangulation layer and runs the algorithm immediately; after the call
+        ''' the layer contains fully formed polygon shapes ready for display.
+        '''
+        ''' The GIS_AREA attribute (computed automatically by the triangulation engine)
+        ''' drives a white-to-colour gradient over 10 equal-interval zones.
+        ''' Voronoi uses red as the end colour; Delaunay uses blue.
+        ''' </summary>
         Private Sub btnGenerate_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnGenerate.Click
             Dim lv As TGIS_LayerVector
 
+            ' Prevent overwriting an existing layer with the same name
             If Not GIS.Get(edtLayer.Text) Is Nothing Then
                 MessageBox.Show("Result layer already exists. Use different name.")
                 Exit Sub
             End If
 
+            ' Instantiate the correct layer type based on the radio button selection
             If rbtnVoronoi.Checked Then
-                lv = New TGIS_LayerVoronoi()
+                lv = New TGIS_LayerVoronoi()   ' Voronoi diagram
             Else
-                lv = New TGIS_LayerDelaunay()
+                lv = New TGIS_LayerDelaunay()   ' Delaunay triangulation
             End If
 
             lv.Name = edtLayer.Text
-            lv.ImportLayer(CType(GIS.Items(0), TGIS_LayerVector), GIS.Extent, TGIS_ShapeType.Unknown, "", False)
-            lv.Transparency = 60
 
+            ' ImportLayer reads all point features from the source layer and uses them
+            ' as the input seed set for the triangulation / diagram computation.
+            ' TGIS_ShapeType.Unknown lets the engine infer the output shape type automatically.
+            lv.ImportLayer(CType(GIS.Items(0), TGIS_LayerVector), GIS.Extent, TGIS_ShapeType.Unknown, "", False)
+            lv.Transparency = 60  ' Semi-transparent so the source city layer shows through
+
+            ' Configure graduated colour rendering keyed on the built-in GIS_AREA attribute.
+            ' GIS_AREA holds the area of each output polygon in map coordinate units squared.
             lv.Params.Render.Expression = "GIS_AREA"
-            lv.Params.Render.MinVal = 10000000
-            lv.Params.Render.MaxVal = 1300000000
+            lv.Params.Render.MinVal = 10000000      ' ~10 km² lower bound
+            lv.Params.Render.MaxVal = 1300000000    ' ~1300 km² upper bound
             lv.Params.Render.StartColor = TGIS_Color.White
+            ' Differentiate Voronoi (red) from Delaunay (blue) visually
             If rbtnVoronoi.Checked Then
                 lv.Params.Render.EndColor = TGIS_Color.Red
             Else
                 lv.Params.Render.EndColor = TGIS_Color.Blue
             End If
 
-            lv.Params.Render.Zones = 10
+            lv.Params.Render.Zones = 10  ' Divide the colour range into 10 equal steps
+            ' TGIS_Color.RenderColor instructs the renderer to substitute the
+            ' computed gradient colour for the polygon fill during painting.
             lv.Params.Area.Color = TGIS_Color.RenderColor
+
+            ' Inherit the coordinate system from the source layer so all layers align
             lv.CS = GIS.CS
 
             GIS.Add(lv)
-            GIS.InvalidateWholeMap()
-            GIS_Legend.Invalidate()
+            GIS.InvalidateWholeMap()   ' Repaint the viewer
+            GIS_Legend.Invalidate()    ' Refresh the legend to show the new layer
         End Sub
     End Class
 End Namespace

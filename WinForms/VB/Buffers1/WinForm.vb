@@ -1,3 +1,31 @@
+' Buffers1 sample — demonstrates spatial buffer operations for proximity analysis (VB.NET).
+'
+' What the sample shows:
+'   - Opening vector shapefiles into the GIS viewer
+'   - Creating in-memory vector layer to hold buffer results
+'   - Letting user click on shapes to select them as buffer source
+'   - Using TGIS_Topology.MakeBuffer to compute buffer polygons around shapes
+'   - Interactive buffer distance control via trackbar (range -50 to +50 km)
+'   - Negative buffer values produce inward/erosion buffers instead of expansion
+'   - Adding result shapes to buffer layer with automatic view refresh
+'   - Hit-testing with GIS.Locate to find clicked shapes
+'   - Converting pixel coordinates to map coordinates with ScreenToMap
+'   - Clearing previous buffer results with RevertAll before adding new ones
+'   - Zooming to show complete buffer result with FullExtent
+'
+' Key TatukGIS API concepts shown here:
+'   TGIS_ViewerWnd          - main visual map control
+'   TGIS_LayerVector        - in-memory or file-backed vector layer
+'   TGIS_Topology           - spatial operations (MakeBuffer, Intersection, Union, etc.)
+'   TGIS_Shape              - individual geographic feature (point, line, polygon)
+'   TGIS_Topology.MakeBuffer() - compute proximity buffer around shape
+'   GIS.Locate()            - hit-test at point to find topmost shape
+'   GIS.ScreenToMap()       - convert screen pixels to geographic coordinates
+'   TGIS_LayerVector.RevertAll() - clear all shapes from layer
+'   TGIS_LayerVector.Add()  - add result shape to layer
+'   GIS.FullExtent()        - zoom to show all loaded layers
+' =============================================================================
+
 Imports Microsoft.VisualBasic
 Imports System
 Imports System.Drawing
@@ -10,7 +38,9 @@ Imports TatukGIS.NDK.WinForms
 
 Namespace Buffers1
     ''' <summary>
-    ''' Summary description for WinForm.
+    ''' Main form for the Buffers1 sample.
+    ''' Loads a topology shapefile, lets the user click a shape to select it,
+    ''' then renders a buffer polygon around it at a distance chosen via a slider.
     ''' </summary>
     Public Class WinForm
         Inherits System.Windows.Forms.Form
@@ -21,14 +51,15 @@ Namespace Buffers1
         Private imageList1 As System.Windows.Forms.ImageList
         Private statusBar1 As System.Windows.Forms.StatusStrip
         Private statusBarPanel1 As System.Windows.Forms.ToolStripStatusLabel
-        Private WithEvents GIS As TatukGIS.NDK.WinForms.TGIS_ViewerWnd
+        Private WithEvents GIS As TatukGIS.NDK.WinForms.TGIS_ViewerWnd  ' map viewer
+        ''' <summary>shp_id stores the Uid of the currently selected shape.</summary>
         Private shp_id As Integer
         Private panel1 As System.Windows.Forms.Panel
-        Private WithEvents trackBar1 As System.Windows.Forms.TrackBar
-        Private btnPlus As System.Windows.Forms.ToolStripButton
+        Private WithEvents trackBar1 As System.Windows.Forms.TrackBar  ' -50..+50 km
+        Private btnPlus As System.Windows.Forms.ToolStripButton        ' increment slider
         Private panel2 As System.Windows.Forms.Panel
         Private WithEvents toolBar1 As System.Windows.Forms.ToolStrip
-        Private btnMinus As System.Windows.Forms.ToolStripButton
+        Private btnMinus As System.Windows.Forms.ToolStripButton       ' decrement slider
         Private panel3 As System.Windows.Forms.Panel
         Private toolBar2 As System.Windows.Forms.ToolStrip
         Private panel4 As System.Windows.Forms.Panel
@@ -79,7 +110,7 @@ Namespace Buffers1
             Me.panel2 = New System.Windows.Forms.Panel()
             Me.toolBar1 = New System.Windows.Forms.ToolStrip()
             Me.btnMinus = New System.Windows.Forms.ToolStripButton()
-            
+
             Me.panel1.SuspendLayout()
             Me.panel4.SuspendLayout()
             Me.panel3.SuspendLayout()
@@ -99,7 +130,7 @@ Namespace Buffers1
             Me.statusBar1.Location = New System.Drawing.Point(0, 447)
             Me.statusBar1.Name = "statusBar1"
             Me.statusBar1.Items.AddRange(New System.Windows.Forms.ToolStripStatusLabel() {Me.statusBarPanel1})
-            
+
             Me.statusBar1.Size = New System.Drawing.Size(592, 19)
             Me.statusBar1.TabIndex = 1
             '
@@ -144,10 +175,10 @@ Namespace Buffers1
             '
             'toolBar3
             '
-            
+
             Me.toolBar3.AutoSize = False
             Me.toolBar3.Items.AddRange(New System.Windows.Forms.ToolStripButton() {Me.btnPlus})
-            
+
             Me.toolBar3.ImageList = Me.imageList1
             Me.toolBar3.Location = New System.Drawing.Point(0, 0)
             Me.toolBar3.Name = "toolBar3"
@@ -183,7 +214,7 @@ Namespace Buffers1
             '
             'toolBar2
             '
-            
+
             Me.toolBar2.Location = New System.Drawing.Point(0, 0)
             Me.toolBar2.Name = "toolBar2"
             Me.toolBar2.ShowItemToolTips = True
@@ -201,10 +232,10 @@ Namespace Buffers1
             '
             'toolBar1
             '
-            
+
             Me.toolBar1.AutoSize = False
             Me.toolBar1.Items.AddRange(New System.Windows.Forms.ToolStripButton() {Me.btnMinus})
-            
+
             Me.toolBar1.ImageList = Me.imageList1
             Me.toolBar1.Location = New System.Drawing.Point(0, 0)
             Me.toolBar1.Name = "toolBar1"
@@ -230,7 +261,7 @@ Namespace Buffers1
             Me.Name = "WinForm"
             Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
             Me.Text = "TatukGIS Samples - Buffers1"
-            
+
             Me.panel1.ResumeLayout(False)
             Me.panel4.ResumeLayout(False)
             Me.panel3.ResumeLayout(False)
@@ -255,6 +286,15 @@ Namespace Buffers1
             Application.Run(New WinForm())
         End Sub
 
+        ''' <summary>
+        ''' Initialises the map when the form loads.
+        '''
+        ''' Locks the viewer, opens the topology sample shapefile, creates an empty
+        ''' in-memory "buffer" overlay layer (50 % transparent, red fill), adds it to
+        ''' the viewer, then unlocks and zooms to the full extent.
+        ''' shp_id is pre-set to 2 so that a buffer can be computed even before the
+        ''' user clicks a shape.
+        ''' </summary>
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
             Dim lb As TGIS_LayerVector
 
@@ -265,13 +305,21 @@ Namespace Buffers1
             ' create a layer for buffer
             lb = New TGIS_LayerVector()
             lb.Name = "buffer"
-            lb.Transparency = 50
+            lb.Transparency = 50            ' 50 % transparent so source shapes remain visible
             lb.Params.Area.Color = TGIS_Color.Red
             GIS.Add(lb)
             GIS.Unlock()
             GIS.FullExtent()
         End Sub
 
+        ''' <summary>
+        ''' Handles mouse clicks on the map to select the shape that will be buffered.
+        '''
+        ''' Converts pixel coordinates to map coordinates using GIS.ScreenToMap, then
+        ''' calls GIS.Locate with a 5-pixel tolerance (in map units = 5/GIS.Zoom) to
+        ''' find the topmost shape at the click position.  The shape's Uid is stored
+        ''' in shp_id and the shape briefly flashes to confirm the selection.
+        ''' </summary>
         Private Sub GIS_MouseDown(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles GIS.MouseDown
             Dim ptg As TGIS_Point
             Dim shp As TGIS_Shape
@@ -289,16 +337,25 @@ Namespace Buffers1
             ' remember id to use buffer on selected shape
             If Not shp Is Nothing Then
                 shp_id = shp.Uid
-                shp.Flash()
+                shp.Flash()  ' visual confirmation that the shape was selected
             End If
         End Sub
 
+        ''' <summary>
+        ''' Recomputes the buffer polygon each time the slider is moved.
+        '''
+        ''' The trackBar value is in kilometres (-50..+50); it is multiplied by 1000
+        ''' to convert to metres for TGIS_Topology.MakeBuffer.  Negative values
+        ''' shrink the shape (erosion / negative buffer).
+        ''' RevertAll clears the buffer layer before adding the new result so that
+        ''' the overlay always contains exactly one buffer polygon.
+        ''' </summary>
         Private Sub trackBar1_Scroll(ByVal sender As Object, ByVal e As System.EventArgs) Handles trackBar1.Scroll
-            Dim ll As TGIS_LayerVector
-            Dim lb As TGIS_LayerVector
-            Dim shp As TGIS_Shape
-            Dim tmp As TGIS_Shape
-            Dim tpl As TGIS_Topology
+            Dim ll As TGIS_LayerVector   ' source layer (index 0 in the viewer)
+            Dim lb As TGIS_LayerVector   ' "buffer" overlay layer
+            Dim shp As TGIS_Shape        ' shape being buffered
+            Dim tmp As TGIS_Shape        ' temporary result from MakeBuffer
+            Dim tpl As TGIS_Topology     ' topology engine
 
             ll = CType(GIS.Items(0), TGIS_LayerVector)
             If ll Is Nothing Then
@@ -318,7 +375,9 @@ Namespace Buffers1
             ' create a buffer using topology
             tpl = New TGIS_Topology()
             Try
-                lb.RevertAll()
+                lb.RevertAll()  ' discard previous buffer result
+                ' MakeBuffer computes a polygon at the given distance (metres) around shp.
+                ' trackBar1.Value * 1000 converts kilometres to metres.
                 tmp = tpl.MakeBuffer(shp, trackBar1.Value * 1000)
                 If Not tmp Is Nothing Then
                     lb.AddShape(tmp)
@@ -334,6 +393,10 @@ Namespace Buffers1
             End Try
         End Sub
 
+        ''' <summary>
+        ''' Handles the minus button: decrements the slider by 1 step and triggers a
+        ''' buffer recompute by calling trackBar1_Scroll directly.
+        ''' </summary>
         Private Sub toolBar1_ButtonClick(ByVal sender As Object, ByVal e As System.Windows.Forms.ToolStripItemClickedEventArgs) Handles toolBar1.ItemClicked
             Select Case toolBar1.Items.IndexOf(e.ClickedItem)
                 Case 0
@@ -345,6 +408,10 @@ Namespace Buffers1
             End Select
         End Sub
 
+        ''' <summary>
+        ''' Handles the plus button: increments the slider by 1 step and triggers a
+        ''' buffer recompute by calling trackBar1_Scroll directly.
+        ''' </summary>
         Private Sub toolBar3_ButtonClick(ByVal sender As Object, ByVal e As System.Windows.Forms.ToolStripItemClickedEventArgs) Handles toolBar3.ItemClicked
             Select Case toolBar3.Items.IndexOf(e.ClickedItem)
                 Case 0

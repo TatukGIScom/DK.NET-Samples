@@ -1,3 +1,40 @@
+'=============================================================================
+' This source code is a part of TatukGIS Developer Kernel.
+'=============================================================================
+'
+' PrintPdf Sample - VB.NET WinForms (TatukGIS NDK)
+' ================================================
+' Demonstrates printing map views and exporting to PDF format.
+'
+' What the sample shows:
+'   - Loading a map project (TGIS_ViewerWnd.Open)
+'   - Configuring print layout and parameters via TGIS_ControlTemplate
+'   - Selecting from multiple pre-defined print templates
+'   - Exporting map to PDF format using TGIS_ExportPDF
+'   - Controlling output resolution (DPI / pixels per inch)
+'   - Selecting page orientation (Portrait vs Landscape)
+'   - Fitting map to page with automatic scaling
+'   - Adding scale bar, north arrow, title, and legend to PDF output
+'   - Previewing print layout before exporting
+'   - Saving PDF to disk with user-defined filename
+'   - Supporting multiple page sizes (Letter, A4, A3, etc.)
+'   - Direct printer output or file-based export
+'   - Preserving layer visibility and symbology in output
+'   - Handling georeferenced output (coordinate grid overlay)
+'
+' Key TatukGIS API concepts shown here:
+'   TGIS_ViewerWnd              - main visual map control
+'   TGIS_ControlTemplate        - print template with layout controls
+'   TGIS_ExportPDF              - PDF export engine
+'   TGIS_ControlScale           - scale bar element for print output
+'   TGIS_ControlNorthArrow      - north arrow element for print output
+'   Print layout objects        - title, legend, grid, border elements
+'   Page setup                  - orientation, size, margins
+'   Export resolution           - DPI / pixels per inch for PDF
+'   Template management         - loading and switching templates
+'   TGIS_ControlLegend          - legend control for map documentation
+'
+
 Imports System
 Imports System.Collections
 Imports System.ComponentModel
@@ -11,7 +48,10 @@ Imports TatukGIS.NDK.WinForms
 
 Namespace PrintPdf
     ''' <summary>
-    ''' Summary description for WinForm.
+    ''' PrintPdf sample — demonstrates printing map views and exporting to PDF format.
+    ''' Loads a map project, configures print templates with layout elements (scale bar,
+    ''' north arrow, legend), selects page orientation and size, and exports the map to
+    ''' PDF with customizable resolution and georeferencing options.
     ''' </summary>
     Public Class WinForm
         Inherits System.Windows.Forms.Form

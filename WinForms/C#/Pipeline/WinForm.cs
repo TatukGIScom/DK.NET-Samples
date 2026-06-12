@@ -11,7 +11,11 @@ using TatukGIS.RTL;
 namespace Pipeline
 {
     /// <summary>
-    /// Summary description for WinForm.
+    /// Pipeline sample — demonstrates scripted GIS operations using TGIS_Pipeline.
+    /// A .ttkpipeline file is loaded and parsed; the user can edit and execute pipeline
+    /// commands (ETL operations like opening layers, filtering, contouring) via the
+    /// code editor or by double-clicking commands in the list to open parameter dialogs.
+    /// Progress bars show operation execution status in real-time.
     /// </summary>
     public class WinForm : System.Windows.Forms.Form
     {
@@ -299,6 +303,8 @@ namespace Pipeline
             Application.Run(new WinForm());
         }
 
+        /// <summary>Loads a .ttkpipeline file, creates the TGIS_Pipeline object, and populates the
+        /// command list with available pipeline operations.</summary>
         private void WinForm_Load(object sender, System.EventArgs e)
         {
             int i;
@@ -335,6 +341,8 @@ namespace Pipeline
             }
         }
 
+        /// <summary>Updates dynamic progress bars and estimated time labels during pipeline
+        /// operation execution.</summary>
         private void doBusyEvent( Object _sender, TGIS_BusyEventArgs _args)
         {
             ProgressBar progressBar;
@@ -473,6 +481,8 @@ namespace Pipeline
             MessageBox.Show( _message );
         }
 
+        /// <summary>Opens the TGIS_PipelineParamsEditor dialog for the selected operation and
+        /// updates the operation code if OK is clicked.</summary>
         private void doPipelineForm( TGIS_PipelineOperationAbstract _operation)
         {
             TGIS_PipelineParamsEditor frm;
@@ -503,12 +513,15 @@ namespace Pipeline
             System.Diagnostics.Process.Start(url);
         }
 
+        /// <summary>Executes the pipeline script from the code editor.</summary>
         private void btnExecute_Click(object sender, EventArgs e)
         {
             oPipeline.SourceCode = rtbCode.Text;
             oPipeline.Execute();
         }
 
+        /// <summary>Handles double-click in code editor to open the parameter editor for the clicked
+        /// line's operation.</summary>
         private void rtbCode_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             oPipelineLine = rtbCode.GetLineFromCharIndex( rtbCode.SelectionStart ) + 1 ;
@@ -517,11 +530,13 @@ namespace Pipeline
             oPipeline.ShowForm(oPipelineLine);
         }
 
+        /// <summary>Exits the application.</summary>
         private void btnExit_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
 
+        /// <summary>Opens a .ttkpipeline file and loads its contents into the code editor.</summary>
         private void btnOpen_Click(object sender, EventArgs e)
         {
             if (dlgOpen.ShowDialog() == DialogResult.OK)
@@ -530,6 +545,7 @@ namespace Pipeline
             }
         }
 
+        /// <summary>Saves the current pipeline code to a .ttkpipeline file.</summary>
         private void btnSave_Click(object sender, EventArgs e)
         {
             String[] lines;
@@ -541,14 +557,17 @@ namespace Pipeline
                 lines = rtbCode.Lines;
                 File.WriteAllLines(file, lines);
             }
-            
+
         }
 
+        /// <summary>Handles double-click in the command list to open the parameter editor for that
+        /// operation.</summary>
         private void lstCommands_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             oPipeline.ShowForm(lstCommands.SelectedItem.ToString(), rtbCode.GetLineFromCharIndex(rtbCode.SelectionStart));
         }
 
+        /// <summary>Updates the current line number when the user clicks in the code editor.</summary>
         private void rtbCode_MouseClick(object sender, MouseEventArgs e)
         {
             oPipelineLine = rtbCode.GetLineFromCharIndex(rtbCode.SelectionStart) + 1;

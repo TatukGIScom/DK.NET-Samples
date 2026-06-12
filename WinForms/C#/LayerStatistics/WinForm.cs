@@ -10,9 +10,35 @@ using System.Collections.Generic;
 
 namespace LayerStatistics
 {
-    /// <summary>
-    /// Summary description for WinForm.
-    /// </summary>
+    /*
+    LayerStatistics sample — demonstrates statistical analysis of vector and raster layers (C#/.NET WinForms).
+
+    What the sample shows:
+      - Loading vector, raster, or grid layers
+      - Computing layer statistics: min, max, mean, median, std dev
+      - Selectable statistics metrics: Basic, Standard, All, Custom
+      - Two-stage calculation: basic fast stats vs. full statistics
+      - Bessel correction option for statistical accuracy
+      - Custom statistics definition via checkboxes
+      - Progress monitoring during calculation
+      - Results display in rich text format
+      - Supporting multiple layer types simultaneously
+      - Layer selection via radio buttons
+      - File dialog for layer opening
+      - Configurable aggregation and calculation parameters
+
+    Key TatukGIS API concepts shown here:
+      TGIS_ViewerWnd              - main visual map control
+      TGIS_LayerVector            - vector layer for attribute statistics
+      TGIS_LayerPixel             - raster/pixel layer statistics
+      Layer.Statistics            - statistical data accessor
+      Statistics.Calculate()      - compute layer statistics
+      TGIS_StatisticsInfo         - statistics result container
+      Min/Max/Mean/Median/StdDev  - statistical metrics
+      Bessel correction           - N-1 vs N normalization
+      Progress feedback           - calculation progress bar
+      Custom statistics           - user-selectable metrics
+    */
     public class WinForm : System.Windows.Forms.Form
     {
         private GroupBox gbSelectLayer;

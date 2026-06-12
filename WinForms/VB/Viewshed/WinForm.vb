@@ -9,9 +9,14 @@ Imports TatukGIS.NDK
 Imports TatukGIS.NDK.WinForms
 
 Namespace AddLayer
-    '' <summary>
-    '' Summary description for WinForm.
-    '' </summary>
+    ''' <summary>
+    ''' Viewshed sample — demonstrates line-of-sight terrain analysis using TGIS_Viewshed.
+    ''' Loads a DEM (Digital Elevation Model) for San Bernardino, CA.  The user clicks on the map
+    ''' to place observers; TGIS_Viewshed.Generate computes a viewshed raster (which cells are
+    ''' visible from all observer points) and an AGL (Above-Ground-Level) raster (minimum height
+    ''' needed for non-visible cells to become visible from at least one observer).
+    ''' Radio buttons switch between binary viewshed, frequency viewshed, and AGL display.
+    ''' </summary>
     Public Class WinForm
         Inherits System.Windows.Forms.Form
         '' <summary>
@@ -295,6 +300,8 @@ Namespace AddLayer
         Private lViewshed As TGIS_LayerPixel
         Private lAGL As TGIS_LayerPixel
 
+        ''' <summary>Toggles active state between the viewshed and AGL layers based on the selected
+        ''' radio button, refreshes the color ramp, and updates the hint label.</summary>
         Private Sub setLayerActive()
             GIS.Lock()
             makeViewshedRamp()
@@ -309,6 +316,8 @@ Namespace AddLayer
             showComment()
         End Sub
 
+        ''' <summary>Updates the hint label with a description of the currently active layer's
+        ''' color scheme.</summary>
         Private Sub showComment()
             If rbtnViewshedBinary.Checked Then
                 lblHint.Text = "Green - area of visibility."
@@ -325,6 +334,8 @@ Namespace AddLayer
             End If
         End Sub
 
+        ''' <summary>Applies a binary (green = visible) or frequency (red-to-green gradient) color
+        ''' ramp to the viewshed layer based on the selected radio button.</summary>
         Private Sub makeViewshedRamp()
             If GIS.Get(SAMPLE_VIEWSHED_NAME) Is Nothing Then
                 Return
@@ -360,6 +371,8 @@ Namespace AddLayer
         End Sub
 
 
+        ''' <summary>Opens the DEM raster for San Bernardino, CA; creates an Observers vector layer
+        ''' with a tower symbol; and zooms to the full extent.</summary>
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
             GIS.Lock()
             GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\San Bernardino\NED\w001001.adf")
@@ -386,6 +399,9 @@ Namespace AddLayer
             GIS.FullExtent()
         End Sub
 
+        ''' <summary>In UserDefined mode, adds the clicked point as an observer, runs
+        ''' TGIS_Viewshed.Generate to compute viewshed and AGL rasters, and refreshes the
+        ''' display with the appropriate color ramp.</summary>
         Private Sub GIS_MouseDown(sender As Object, e As MouseEventArgs) Handles GIS.MouseDown
             Dim pt As TGIS_Point
             Dim shp As TGIS_Shape
@@ -476,10 +492,13 @@ Namespace AddLayer
             End If
         End Sub
 
+        ''' <summary>Zooms the viewer to the full extent of all layers.</summary>
         Private Sub btnFullExtent_Click(sender As Object, e As EventArgs) Handles btnFullExtent.Click
             GIS.FullExtent()
         End Sub
 
+        ''' <summary>Removes the viewshed and AGL layers and reverts all observer points to reset
+        ''' the display.</summary>
         Private Sub btnReset_Click(sender As Object, e As EventArgs) Handles btnReset.Click
             GIS.Lock()
             If GIS.Get(SAMPLE_VIEWSHED_NAME) IsNot Nothing Then
@@ -493,26 +512,33 @@ Namespace AddLayer
             GIS.Unlock()
         End Sub
 
+        ''' <summary>Switches the viewer to Zoom mode.</summary>
         Private Sub rbtnZoom_CheckedChanged(sender As Object, e As EventArgs) Handles rbtnZoom.CheckedChanged
             GIS.Mode = TGIS_ViewerMode.Zoom
         End Sub
 
+        ''' <summary>Switches the viewer to UserDefined mode for adding observer points.</summary>
         Private Sub rbtnAddObserver_CheckedChanged(sender As Object, e As EventArgs) Handles rbtnAddObserver.CheckedChanged
             GIS.Mode = TGIS_ViewerMode.UserDefined
         End Sub
 
+        ''' <summary>Refreshes the visible layer when the binary viewshed radio button changes.</summary>
         Private Sub rbtnViewshedBinary_CheckedChanged(sender As Object, e As EventArgs) Handles rbtnViewshedBinary.CheckedChanged
             setLayerActive()
         End Sub
 
+        ''' <summary>Refreshes the visible layer when the frequency viewshed radio button changes.</summary>
         Private Sub rbtnViewshedColor_CheckedChanged(sender As Object, e As EventArgs) Handles rbtnViewshedFreq.CheckedChanged
             setLayerActive()
         End Sub
 
+        ''' <summary>Refreshes the visible layer when the AGL radio button changes.</summary>
         Private Sub rbtnAGL_CheckedChanged(sender As Object, e As EventArgs) Handles rbtnAGL.CheckedChanged
             setLayerActive()
         End Sub
 
+        ''' <summary>Reads viewshed frequency and AGL values at the cursor position and displays
+        ''' them in the status bar.</summary>
         Private Sub GIS_MouseMove(sender As Object, e As MouseEventArgs) Handles GIS.MouseMove
             Dim ptg As TGIS_Point
             Dim cl As TGIS_Color

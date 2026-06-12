@@ -1,3 +1,29 @@
+/*
+  GPSSimple sample — demonstrates reading real-time GPS data from serial port (C#/.NET WinForms).
+
+  What the sample shows:
+    - Connecting to a GPS receiver via serial COM port (selectable port and baud rate)
+    - Reading raw NMEA (National Marine Electronics Association) GPS data sentences
+    - Parsing NMEA $GPRMC (Recommended Minimum Navigation Info) sentences
+    - Extracting latitude, longitude, fix quality, and timestamp from NMEA stream
+    - Creating an in-memory point layer to display current GPS position on the map
+    - Updating map extent to follow the current GPS position in real-time
+    - Displaying raw NMEA data in a text box for debugging/monitoring
+    - Handling serial port connection errors and data parsing failures gracefully
+    - Supporting various COM port configurations (COM1, COM2, etc.)
+    - Configurable baud rates (4800, 9600, 19200, etc.) for different GPS receivers
+
+  Key TatukGIS API concepts shown here:
+    TGIS_ViewerWnd              - main visual map control
+    TGIS_GpsNmea                - GPS/NMEA data reader component
+    TGIS_LayerVector            - in-memory layer for GPS position marker
+    TGIS_Shape                  - point shape representing GPS location
+    SerialPort                  - .NET serial communication
+    NMEA sentences              - GPS data format standard ($GPRMC, etc.)
+    Real-time positioning       - live GPS data integration
+    Coordinate parsing          - latitude/longitude extraction from NMEA
+*/
+
 using System;
 using System.Drawing;
 using System.Collections;

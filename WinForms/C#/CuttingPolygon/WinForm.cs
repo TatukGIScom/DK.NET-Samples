@@ -9,9 +9,28 @@ using TatukGIS.RTL;
 
 namespace AddLayer
 {
-    /// <summary>
-    /// Summary description for WinForm.
-    /// </summary>
+    /* CuttingPolygon sample — demonstrates how to clip a raster (pixel) layer's rendering to
+       within an arbitrary polygon boundary using TGIS_LayerPixel.CuttingPolygon.
+
+       What the sample shows:
+         - Loading a raster image (world map) into the GIS viewer
+         - Creating an in-memory vector layer with a custom polygon
+         - Implementing raster clipping/masking via CuttingPolygon property
+         - Assigning a triangular polygon as the cutting mask
+         - Toggling clipping on/off via button click (Do Cutting)
+         - Raster rendering constrained to polygon boundary
+         - Remaining regions outside polygon are not rendered
+         - Interactive zoom and pan with clipped raster display
+
+       Key TatukGIS API concepts shown here:
+         TGIS_ViewerWnd              - main visual map control
+         TGIS_LayerPixel             - raster/image layer
+         TGIS_LayerVector            - in-memory vector layer
+         TGIS_LayerPixel.CuttingPolygon - masking/clipping property
+         TGIS_Shape                  - polygon geometry for clipping
+         TGIS_ControlLegend          - layer list/legend panel
+         OnLoad event                - initialization workflow
+    */
     public class WinForm : System.Windows.Forms.Form
     {
         private Button btnCutting;
@@ -159,6 +178,8 @@ namespace AddLayer
             Application.Run(new WinForm());
         }
 
+        /// <summary>Opens the world raster image, creates an in-memory vector layer named "shape",
+        /// and adds a triangular polygon shape to it.</summary>
         private void WinForm_Load(object sender, System.EventArgs e)
         {
             TGIS_Shape shp;
@@ -177,11 +198,14 @@ namespace AddLayer
             shp.Unlock();
         }
 
+        /// <summary>Switches the viewer to Zoom mode.</summary>
         private void btnZoom_Click(object sender, EventArgs e)
         {
             GIS.Mode = TGIS_ViewerMode.Zoom;
         }
 
+        /// <summary>Assigns the "shape" layer's first polygon as the raster layer's CuttingPolygon
+        /// (converting to the raster's coordinate system), then hides the vector layer.</summary>
         private void btnCutting_Click(object sender, EventArgs e)
         {
             lp = (TGIS_LayerPixel)(GIS.Items[0]);

@@ -9,9 +9,27 @@ Imports TatukGIS.NDK
 Imports TatukGIS.NDK.WinForms
 
 Namespace Locate
-    ''' <summary>
-    ''' Summary description for WinForm.
-    ''' </summary>
+    ' Locate sample — demonstrates feature identification and location by finding shapes at
+    ' the cursor position using spatial queries and coordinate conversion.
+    '
+    ' What the sample shows:
+    '   - Loading a polygon shapefile (California Counties) into the GIS viewer
+    '   - Feature location: finding which shape is at a given position
+    '   - Screen-to-map coordinate conversion via ScreenToMap
+    '   - Spatial tolerance: pixel screen tolerance for easier feature selection
+    '   - GIS.Locate: queries features at a geographic position
+    '   - Shape attributes: retrieving field values from selected features
+    '   - Shape flashing: visual feedback highlighting the selected shape
+    '   - Dynamic status bar: real-time display of feature attributes
+    '
+    ' Key TatukGIS API concepts shown here:
+    '   TGIS_ViewerWnd              - main visual map control
+    '   TGIS_ViewerWnd.ScreenToMap  - convert screen pixel to geographic coordinate
+    '   TGIS_ViewerWnd.Locate       - find topmost shape at location with tolerance
+    '   TGIS_Shape                  - geographic feature with field access
+    '   TGIS_Shape.Flash()          - briefly highlight shape for visual feedback
+    '   OnMouseMove / OnMouseDown   - user interaction event handling
+    '   TGIS_ControlLegend          - layer list/legend panel
     Public Class WinForm
         Inherits System.Windows.Forms.Form
         ''' <summary>
@@ -157,10 +175,20 @@ Namespace Locate
             Application.Run(New WinForm())
         End Sub
 
+        ''' <summary>
+        ''' Loads the sample data (California counties shapefile) into the viewer on form initialization.
+        ''' The data path is obtained from GisSamplesDataDirDownload() to support both local and
+        ''' downloaded sample data directories.
+        ''' </summary>
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
             GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\Counties.shp")
         End Sub
 
+        ''' <summary>
+        ''' Handles mouse down events to locate and highlight (flash) the shape at the clicked position.
+        ''' Converts screen coordinates to map coordinates, uses GIS.Locate with 5-pixel tolerance
+        ''' to find the underlying shape, and calls Flash() to highlight the selected feature.
+        ''' </summary>
         Private Sub GIS_MouseDown(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles GIS.MouseDown
             Dim ptg As TGIS_Point
             Dim shp As TGIS_Shape
@@ -172,7 +200,6 @@ Namespace Locate
                 Return
             End If
 
-            ' if selected shape found, flash it
             ptg = GIS.ScreenToMap(New Point(e.X, e.Y))
             shp = CType(GIS.Locate(ptg, 5 / GIS.Zoom), TGIS_Shape) ' 5 pixels precision
             If Not shp Is Nothing Then
@@ -180,6 +207,12 @@ Namespace Locate
             End If
         End Sub
 
+        ''' <summary>
+        ''' Handles mouse move events to locate features and display their attributes.
+        ''' Continuously locates the shape at the current cursor position and displays the
+        ''' "name" field value in the status bar. If no shape is found, the status bar is cleared.
+        ''' Skips location during map painting to avoid performance issues.
+        ''' </summary>
         Private Sub GIS_MouseMove(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles GIS.MouseMove
             Dim ptg As TGIS_Point
             Dim shp As TGIS_Shape
@@ -191,7 +224,6 @@ Namespace Locate
                 Return
             End If
 
-            ' locate a position
             ptg = GIS.ScreenToMap(New Point(e.X, e.Y))
             shp = CType(GIS.Locate(ptg, 5 / GIS.Zoom), TGIS_Shape) ' 5 pixels precision
             If shp Is Nothing Then
@@ -201,6 +233,11 @@ Namespace Locate
             End If
         End Sub
 
+        ''' <summary>
+        ''' Handles toolbar button clicks for map navigation and view control.
+        ''' FullExtent button zooms to show all data; ZoomIn button doubles the zoom level;
+        ''' ZoomOut button halves the zoom level. Coordinates are automatically centered on current view.
+        ''' </summary>
         Private Sub toolBar1_ButtonClick(ByVal sender As Object, ByVal e As System.Windows.Forms.ToolStripItemClickedEventArgs) Handles toolBar1.ItemClicked
             Select Case toolBar1.Items.IndexOf(e.ClickedItem)
                 Case 0
@@ -212,6 +249,11 @@ Namespace Locate
             End Select
         End Sub
 
+        ''' <summary>
+        ''' Updates the toolbar cursor based on mouse position. When hovering over toolbar buttons,
+        ''' the cursor changes to a hand pointer; otherwise, it returns to the default cursor.
+        ''' This provides visual feedback that buttons are interactive.
+        ''' </summary>
         Private Sub toolBar1_MouseMove(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles toolBar1.MouseMove
             Dim p As Point = New Point(e.X, e.Y)
 

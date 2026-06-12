@@ -1,3 +1,24 @@
+' Grid sample — demonstrates manipulation of raster/DEM layer presentation.
+'
+' What the sample shows:
+'   - Loading a raster DEM (NED - National Elevation Dataset) in ArcInfo Binary Grid format
+'   - Clearing and redefining altitude colour zones (AltitudeMapZones) for hypsometric tint
+'   - Creating custom colour gradients that map elevation ranges to visual colours
+'   - Loading display parameters from external INI configuration files
+'   - Toggling hill-shading (GridShadow) for 3-D terrain appearance
+'   - Reading raw elevation values at cursor position via Locate
+'   - Displaying elevation values in status bar for interactive queries
+'
+' Key TatukGIS API concepts shown here:
+'   TGIS_ViewerWnd              - main visual map control
+'   TGIS_LayerPixel             - raster/grid layer (DEM, imagery, etc.)
+'   TGIS_LayerPixel.GridShadow  - hillshade/3-D terrain rendering property
+'   TGIS_LayerPixel.Locate()    - query elevation value at coordinates
+'   AltitudeMapZones            - colour gradient mapping elevation to colours
+'   ConfigName / RereadConfig() - INI file-based layer configuration
+'   TGIS_ControlLegend          - layer list / legend panel
+' =============================================================================
+
 Imports Microsoft.VisualBasic
 Imports System
 Imports System.Drawing
@@ -10,32 +31,32 @@ Imports TatukGIS.NDK.WinForms
 
 Namespace Grid
     ''' <summary>
-    ''' Summary description for WinForm.
+    ''' Main form for the Grid sample application.
+    ''' Loads a DEM raster layer and allows the user to experiment with
+    ''' altitude colour zones, hill-shading, and INI-based configuration.
     ''' </summary>
     Public Class WinForm
         Inherits System.Windows.Forms.Form
-        ''' <summary>
-        ''' Required designer variable.
-        ''' </summary>
+        ''' <summary>Required designer variable.</summary>
         Private components As System.ComponentModel.IContainer
         Private panel1 As System.Windows.Forms.Panel
         Private WithEvents toolBar1 As System.Windows.Forms.ToolStrip
         Private imageList1 As System.Windows.Forms.ImageList
-        Private btnFullExtent As System.Windows.Forms.ToolStripButton
+        Private btnFullExtent As System.Windows.Forms.ToolStripButton    ' Zoom to full extent
         Private toolBarButton1 As System.Windows.Forms.ToolStripButton
-        Private btnZoom As System.Windows.Forms.ToolStripButton
-        Private btnDrag As System.Windows.Forms.ToolStripButton
+        Private btnZoom As System.Windows.Forms.ToolStripButton          ' Activate zoom mode
+        Private btnDrag As System.Windows.Forms.ToolStripButton          ' Activate pan/drag mode
         Private toolBarButton2 As System.Windows.Forms.ToolStripButton
-        Private WithEvents button1 As System.Windows.Forms.Button
-        Private WithEvents button2 As System.Windows.Forms.Button
-        Private WithEvents button3 As System.Windows.Forms.Button
+        Private WithEvents button1 As System.Windows.Forms.Button        ' "Clear" - removes custom altitude zones
+        Private WithEvents button2 As System.Windows.Forms.Button        ' "User Defined" - applies hard-coded zones
+        Private WithEvents button3 As System.Windows.Forms.Button        ' "Reload INI" - reloads the layer's own INI file
         Private statusBar1 As System.Windows.Forms.StatusStrip
-        Private statusBarPanel1 As System.Windows.Forms.ToolStripStatusLabel
-        Private statusBarPanel2 As System.Windows.Forms.ToolStripStatusLabel
-        Private GIS_ControlLegend As TatukGIS.NDK.WinForms.TGIS_ControlLegend
-        Friend WithEvents btnUserINI As System.Windows.Forms.Button
-        Friend WithEvents btnShadow As System.Windows.Forms.Button
-        Private WithEvents GIS As TatukGIS.NDK.WinForms.TGIS_ViewerWnd
+        Private statusBarPanel1 As System.Windows.Forms.ToolStripStatusLabel  ' "Altitude:" label
+        Private statusBarPanel2 As System.Windows.Forms.ToolStripStatusLabel  ' Elevation value display
+        Private GIS_ControlLegend As TatukGIS.NDK.WinForms.TGIS_ControlLegend  ' Layer list panel
+        Friend WithEvents btnUserINI As System.Windows.Forms.Button      ' Load a custom sample INI colour config
+        Friend WithEvents btnShadow As System.Windows.Forms.Button       ' Toggle hillshade on/off
+        Private WithEvents GIS As TatukGIS.NDK.WinForms.TGIS_ViewerWnd  ' The main map viewer
 
         Public Sub New()
             '
@@ -88,8 +109,8 @@ Namespace Grid
             Me.GIS_ControlLegend = New TatukGIS.NDK.WinForms.TGIS_ControlLegend()
             Me.GIS = New TatukGIS.NDK.WinForms.TGIS_ViewerWnd()
             Me.panel1.SuspendLayout()
-            
-            
+
+
             Me.SuspendLayout()
             '
             'panel1
@@ -149,11 +170,11 @@ Namespace Grid
             '
             'toolBar1
             '
-            
+
             Me.toolBar1.AutoSize = False
             Me.toolBar1.Items.AddRange(New System.Windows.Forms.ToolStripButton() {Me.btnFullExtent, Me.toolBarButton1, Me.btnZoom, Me.btnDrag, Me.toolBarButton2})
-            
-            
+
+
             Me.toolBar1.ImageList = Me.imageList1
             Me.toolBar1.Location = New System.Drawing.Point(0, 0)
             Me.toolBar1.Name = "toolBar1"
@@ -170,26 +191,26 @@ Namespace Grid
             'toolBarButton1
             '
             Me.toolBarButton1.Name = "toolBarButton1"
-            
+
             '
             'btnZoom
             '
             Me.btnZoom.ImageIndex = 1
             Me.btnZoom.Name = "btnZoom"
-            
+
             Me.btnZoom.ToolTipText = "Zoom Mode"
             '
             'btnDrag
             '
             Me.btnDrag.ImageIndex = 2
             Me.btnDrag.Name = "btnDrag"
-            
+
             Me.btnDrag.ToolTipText = "Drag Mode"
             '
             'toolBarButton2
             '
             Me.toolBarButton2.Name = "toolBarButton2"
-            
+
             '
             'imageList1
             '
@@ -204,7 +225,7 @@ Namespace Grid
             Me.statusBar1.Location = New System.Drawing.Point(0, 447)
             Me.statusBar1.Name = "statusBar1"
             Me.statusBar1.Items.AddRange(New System.Windows.Forms.ToolStripStatusLabel() {Me.statusBarPanel1, Me.statusBarPanel2})
-            
+
             Me.statusBar1.Size = New System.Drawing.Size(592, 19)
             Me.statusBar1.TabIndex = 1
             Me.statusBar1.Text = "statusBar1"
@@ -273,8 +294,8 @@ Namespace Grid
             Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
             Me.Text = "TatukGIS Samples - Grid"
             Me.panel1.ResumeLayout(False)
-            
-            
+
+
             Me.ResumeLayout(False)
 
         End Sub
@@ -293,40 +314,66 @@ Namespace Grid
             Application.Run(New WinForm())
         End Sub
 
+        ''' <summary>
+        ''' Opens the sample NED DEM grid file when the form loads.
+        ''' TGIS_ViewerWnd.Open auto-detects the ArcInfo Binary Grid format,
+        ''' creates a TGIS_LayerPixel and adds it to the viewer's layer list.
+        ''' </summary>
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
             ' open a file
             GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\San Bernardino\NED\w001001.adf")
         End Sub
 
+        ''' <summary>
+        ''' Handles toolbar button clicks for navigation mode switching.
+        ''' Button indices: 0=FullExtent, 2=Zoom, 3=Drag (index 1 is a separator).
+        ''' </summary>
         Private Sub toolBar1_ButtonClick(ByVal sender As Object, ByVal e As System.Windows.Forms.ToolStripItemClickedEventArgs) Handles toolBar1.ItemClicked
             Select Case toolBar1.Items.IndexOf(e.ClickedItem)
                 Case 0
-                    ' show full map
+                    ' Zoom to the combined extent of all loaded layers
                     GIS.FullExtent()
                 Case 2
-                    ' set zoom mode
+                    ' Switch to rubber-band zoom mode
                     GIS.Mode = TGIS_ViewerMode.Zoom
-                    
+
                 Case 3
-                    ' set drag mode
+                    ' Switch to pan/drag mode
                     GIS.Mode = TGIS_ViewerMode.Drag
-                    
+
             End Select
         End Sub
 
+        ''' <summary>
+        ''' Clears all custom altitude colour zones from the pixel layer,
+        ''' reverting to the default greyscale gradient.
+        ''' AltitudeMapZones is the list of elevation-to-colour mappings stored
+        ''' in the layer parameters.
+        ''' </summary>
         Private Sub button1_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles button1.Click
             Dim ll As TGIS_LayerPixel
 
+            ' Items(0) is the first (and only) layer loaded in the viewer
             ll = CType(GIS.Items(0), TGIS_LayerPixel)
+            ' Remove all elevation band colour assignments
             ll.Params.Pixel.AltitudeMapZones.Clear()
+            ' Redraw the viewer to reflect the cleared zones
             GIS.InvalidateWholeMap()
         End Sub
 
+        ''' <summary>
+        ''' Applies a hard-coded hypsometric colour scheme by adding altitude
+        ''' zones programmatically.  Each zone string is in the format:
+        '''   "minElevation, maxElevation, colourName, zoneLabel"
+        ''' Elevation values are in the DEM's native unit (metres for NED).
+        ''' </summary>
         Private Sub button2_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles button2.Click
             Dim ll As TGIS_LayerPixel
 
             ll = CType(GIS.Items(0), TGIS_LayerPixel)
+            ' Clear any existing zones before adding the new scheme
             ll.Params.Pixel.AltitudeMapZones.Clear()
+            ' Six elevation bands from valley floor to high peaks
             ll.Params.Pixel.AltitudeMapZones.Add("200,  400 , OLIVE , VERY LOW")
             ll.Params.Pixel.AltitudeMapZones.Add("400,  700 , OLIVE , LOW")
             ll.Params.Pixel.AltitudeMapZones.Add("700,  900 , GREEN , MID")
@@ -336,15 +383,26 @@ Namespace Grid
             GIS.InvalidateWholeMap()
         End Sub
 
+        ''' <summary>
+        ''' Reloads the layer display configuration from the INI file
+        ''' co-located with the grid data file.  Setting ConfigName to the
+        ''' data file path causes TatukGIS to resolve a matching ".ini" file;
+        ''' RereadConfig parses and applies the stored settings.
+        ''' </summary>
         Private Sub button3_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles button3.Click
             Dim ll As TGIS_LayerPixel
 
             ll = CType(GIS.Items(0), TGIS_LayerPixel)
+            ' Point to the data file; TatukGIS will resolve the matching INI
             ll.ConfigName = TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\San Bernardino\NED\w001001.adf"
             ll.RereadConfig()
             GIS.InvalidateWholeMap()
         End Sub
 
+        ''' <summary>
+        ''' Updates the cursor to a hand when hovering over active toolbar buttons,
+        ''' providing visual affordance that they are clickable.
+        ''' </summary>
         Private Sub toolBar1_MouseMove(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles toolBar1.MouseMove
             Dim p As Point = New Point(e.X, e.Y)
 
@@ -355,39 +413,65 @@ Namespace Grid
             End If
         End Sub
 
+        ''' <summary>
+        ''' Queries the raw DEM elevation value at the map location under the
+        ''' mouse pointer and displays it in the status bar.
+        '''
+        ''' TGIS_LayerPixel.Locate converts the geographic point to a raster cell
+        ''' and returns the native (uncolourised) band values.  For a single-band
+        ''' DEM, natives(0) is the elevation in the DEM's native unit (metres).
+        ''' The InPaint guard prevents re-entrant calls during map redraws.
+        ''' </summary>
         Private Sub GIS_MouseMove(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles GIS.MouseMove
             Dim ptg As TGIS_Point
             Dim ll As TGIS_LayerPixel
-            Dim rgb As TGIS_Color = New TGIS_Color()
-            Dim natives As Double() = Nothing
-            Dim transp As Boolean = False
+            Dim rgb As TGIS_Color = New TGIS_Color()   ' Rendered colour at queried point
+            Dim natives As Double() = Nothing           ' Raw band values; (0) = elevation
+            Dim transp As Boolean = False               ' True if point is outside data area
 
+            ' Avoid querying while the map is being redrawn
             If GIS.InPaint Then
                 Return
             End If
 
+            ' Convert screen pixel position to geographic map coordinates
             ptg = GIS.ScreenToMap(New Point(e.X, e.Y))
             ll = CType(GIS.Items(0), TGIS_LayerPixel)
 
+            ' Locate returns True when the point falls within the raster extent
             If ll.Locate(ptg, rgb, natives, transp) Then
+                ' Display the raw elevation value (e.g. metres above sea level)
                 statusBar1.Items(1).Text = natives(0).ToString()
             Else
                 statusBar1.Items(1).Text = "Unknown"
             End If
         End Sub
 
+        ''' <summary>
+        ''' Toggles the hill-shading (GridShadow) effect on the DEM layer.
+        ''' Hill-shading simulates a directional light source, adding perceived
+        ''' depth and making terrain features much easier to interpret visually.
+        ''' </summary>
         Private Sub btnShadow_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnShadow.Click
             Dim ll As TGIS_LayerPixel
 
             ll = CType(GIS.Items(0), TGIS_LayerPixel)
+            ' Flip the current shadow state
             ll.Params.Pixel.GridShadow = Not ll.Params.Pixel.GridShadow
             GIS.InvalidateWholeMap()
         End Sub
 
+        ''' <summary>
+        ''' Loads a pre-built sample INI file (dem_ned.ini) that ships with the
+        ''' TatukGIS sample data.  This demonstrates that all colour zone and
+        ''' rendering settings can be stored in an external config file and
+        ''' applied at runtime without changing source code.
+        ''' </summary>
         Private Sub btnUserINI_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnUserINI.Click
             Dim ll As TGIS_LayerPixel
 
             ll = CType(GIS.Items(0), TGIS_LayerPixel)
+            ' Point ConfigName to the bundled sample INI file
             ll.ConfigName = TGIS_Utils.GisSamplesDataDirDownload() & "Samples\Projects\dem_ned.ini"
             ll.RereadConfig()
             GIS.InvalidateWholeMap()

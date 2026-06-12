@@ -11,7 +11,21 @@ Imports System
 
 Namespace IsochroneMap
     ''' <summary>
-    ''' Summary description for WinForm.
+    ''' Isochrone Map sample form.
+    '''
+    ''' Demonstrates how to compute travel-time (isochrone) zones from a chosen
+    ''' origin point on a road network using TGIS_IsochroneMap and TGIS_ShortestPath.
+    '''
+    ''' Workflow:
+    '''   1. Load a road-network SHP layer (US TIGER edges for San Bernardino, CA).
+    '''   2. Style the layer to distinguish highways from local roads.
+    '''   3. Create an output TGIS_LayerVector for the isochrone polygons and a
+    '''      separate TGIS_LayerVector for the origin marker.
+    '''   4. Wire up three network-cost callbacks (doLinkCost, doLinkType, doLinkDynamic).
+    '''   5. On each mouse click (in Select mode) the user picks an origin.
+    '''   6. generateIsochrone calls TGIS_IsochroneMap.Generate once per zone,
+    '''      dividing the maximum cost so each successive call covers a wider area.
+    '''   7. The resulting polygons are smoothed and displayed as colour-coded zones.
     ''' </summary>
     Public Class WinForm
         Inherits System.Windows.Forms.Form
@@ -343,6 +357,11 @@ Namespace IsochroneMap
             Application.Run(New WinForm())
         End Sub
 
+        ''' <summary>
+        ''' Initialises the map viewer, loads the road network, configures rendering
+        ''' parameters, creates the isochrone result layer and the origin marker layer,
+        ''' and wires up the TGIS_ShortestPath cost callbacks.
+        ''' </summary>
         Private Sub WinForm_Load(sender As Object, e As System.EventArgs) Handles Me.Load
             GIS.Lock()
             Try
@@ -410,6 +429,12 @@ Namespace IsochroneMap
             End Try
         End Sub
 
+        ''' <summary>
+        ''' Assigns a network link type based on the MTFCC road-class attribute.
+        ''' Links with MTFCC >= "S1400" are classified as local roads (LinkType = 1);
+        ''' all others (primary/secondary highways) are classified as type 0.
+        ''' The type index is used to look up the corresponding CostModifier.
+        ''' </summary>
         Private Sub doLinkType(_sender As [Object], _e As TGIS_LinkTypeEventArgs)
             If Not (_e.Shape.GetField("MTFCC").ToString().CompareTo("S1400") < 0) Then
                 _e.LinkType = 1
@@ -418,6 +443,12 @@ Namespace IsochroneMap
             End If
         End Sub
 
+        ''' <summary>
+        ''' Computes the base traversal cost for a road arc.
+        ''' Uses LengthCS (real-world metres) when a coordinate system is known,
+        ''' or raw geometry Length when the layer has no CS.
+        ''' Both forward and reverse costs are set identically (undirected network).
+        ''' </summary>
         Private Sub doLinkCost(_sender As [Object], _e As TGIS_LinkCostEventArgs)
             If TypeOf _e.Shape.Layer.CS Is TGIS_CSUnknownCoordinateSystem Then
                 _e.Cost = _e.Shape.Length()
@@ -428,6 +459,12 @@ Namespace IsochroneMap
             _e.RevCost = _e.Cost
         End Sub
 
+        ''' <summary>
+        ''' Dynamically blocks highway arcs at traversal time when the Highways
+        ''' track-bar is set to its minimum value (Value = 1).
+        ''' Setting Cost and RevCost to -1 marks the link as impassable, effectively
+        ''' restricting the isochrone to local roads only.
+        ''' </summary>
         Private Sub doLinkDynamic(_sender As [Object], _e As TGIS_LinkDynamicEventArgs)
             Dim shp As TGIS_Shape
 
@@ -445,6 +482,7 @@ Namespace IsochroneMap
             geoObj.Dispose()
         End Sub
 
+        ''' <summary>Resets the visible extent to show all loaded layers.</summary>
         Private Sub btnFullExtent_Click(sender As Object, e As EventArgs) Handles btnFullExtent.Click
             If GIS.IsEmpty Then
                 Return
@@ -452,6 +490,7 @@ Namespace IsochroneMap
             GIS.FullExtent()
         End Sub
 
+        ''' <summary>Doubles the current zoom level.</summary>
         Private Sub btnZoomIn_Click(sender As Object, e As EventArgs) Handles btnZoomIn.Click
             If GIS.IsEmpty Then
                 Return
@@ -459,6 +498,7 @@ Namespace IsochroneMap
             GIS.Zoom = GIS.Zoom * 2
         End Sub
 
+        ''' <summary>Halves the current zoom level.</summary>
         Private Sub btnZoomOut_Click(sender As Object, e As EventArgs) Handles btnZoomOut.Click
             If GIS.IsEmpty Then
                 Return
@@ -466,6 +506,12 @@ Namespace IsochroneMap
             GIS.Zoom = GIS.Zoom / 2
         End Sub
 
+        ''' <summary>
+        ''' Handles a mouse-down event on the map.
+        ''' Converts the screen coordinates to map coordinates, places or moves the
+        ''' origin marker at the clicked location, then triggers isochrone generation.
+        ''' Exits immediately when the viewer is empty or not in Select mode.
+        ''' </summary>
         Private Sub GIS_MouseDown(sender As Object, e As MouseEventArgs) Handles GIS.MouseDown
             Dim ptg As TGIS_Point
 
@@ -492,6 +538,14 @@ Namespace IsochroneMap
             generateIsochrone()
         End Sub
 
+        ''' <summary>
+        ''' Generates the isochrone map from the current origin marker.
+        ''' Reads the maximum cost and zone count from the UI controls, updates the
+        ''' render range on the result layer, applies road-class cost modifiers from
+        ''' the track-bars, and calls TGIS_IsochroneMap.Generate once for each zone,
+        ''' dividing the maximum cost so each successive call covers a wider area.
+        ''' After generation each polygon is smoothed for a cleaner visual result.
+        ''' </summary>
         Private Sub generateIsochrone()
             Dim i As Integer
 

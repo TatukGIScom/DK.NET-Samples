@@ -1,4 +1,27 @@
-﻿Imports System
+﻿' Hydrology - TatukGIS Developer Kernel (DK11) sample (VB.NET / WinForms).
+'
+' A step-by-step tutorial that performs common hydrological analyses on a
+' DEM (Digital Elevation Model) raster grid using TGIS_Hydrology.
+' Each button in the UI unlocks the next step in the pipeline:
+'
+'   1. Identify DEM problems (Sink)     — detects sinks and flat areas.
+'   2. Fill sinks                       — raises depressions to produce a
+'                                         hydrologically conditioned DEM.
+'   3. Flow Direction                   — encodes the steepest-descent direction
+'                                         per cell (D8 method, codes 1..128).
+'   4. Flow Accumulation                — counts upstream cells; reveals streams.
+'   5. Add outlets (pour points)        — places two sample outlet points.
+'   6. Watershed                        — delineates the drainage area upstream
+'                                         of each outlet.
+'   7. Basin                            — partitions the DEM into independent
+'                                         drainage basins.
+'   8. Stream Order (Strahler)          — assigns a Strahler order to each segment.
+'   9. Convert to vector                — converts raster grids to polygon/polyline.
+'  10. View in 3D                       — drapes the stream network over the DEM.
+'
+' Data: Bytowski County DEM, Poland (GeoTIFF).
+
+Imports System
 Imports System.Drawing
 Imports System.ComponentModel
 Imports System.Windows.Forms
@@ -7,7 +30,9 @@ Imports TatukGIS.NDK.WinForms
 
 Namespace AddLayer
     ''' <summary>
-    ''' Summary description for WinForm.
+    ''' Main form for the Hydrology sample.
+    ''' Hosts the GIS viewer, pipeline action buttons, progress bar, and legend.
+    ''' Each button click runs the next hydrological analysis step in sequence.
     ''' </summary>
     Public Class WinForm
         Inherits Form
@@ -366,6 +391,12 @@ Namespace AddLayer
             Call Application.Run(New WinForm())
         End Sub
 
+        ''' <summary>
+        ''' Progress callback for TGIS_Hydrology and TGIS_GridToPolygon operations.
+        ''' _e.Pos = 0: initialises the progress bar (0..100 range).
+        ''' _e.Pos &lt; 0: resets the bar to zero after the operation completes.
+        ''' _e.Pos &gt; 0: advances the bar to the current percentage value.
+        ''' </summary>
         Private Sub doBusyEvent(_sender As [Object], _e As TGIS_BusyEventArgs)
             If _e.Pos < 0 Then
                 progressBar1.Value = 0
@@ -378,7 +409,11 @@ Namespace AddLayer
             End If
         End Sub
 
-        ' Creates a new grid layer with the same parameters as input DEM and a given name
+        ''' <summary>
+        ''' Creates an in-memory TGIS_LayerPixel grid whose extent, coordinate system,
+        ''' and cell dimensions match those of the reference DEM layer.
+        ''' Anti-aliasing and hillshading are disabled so raw cell values remain visible.
+        ''' </summary>
         Public Function CreateLayerPix(ByVal _dem As TGIS_LayerPixel, ByVal _name As String) As TGIS_LayerPixel
             Dim res As TGIS_LayerPixel = New TGIS_LayerPixel()
             res.Build(True, _dem.CS, _dem.Extent, _dem.BitWidth, _dem.BitHeight)
@@ -388,7 +423,10 @@ Namespace AddLayer
             Return res
         End Function
 
-        ' Creates a new vector layer wita a given name, cs and type
+        ''' <summary>
+        ''' Creates an empty in-memory TGIS_LayerVector with the given name, coordinate
+        ''' system, and default shape type. Opens the layer so shapes can be added immediately.
+        ''' </summary>
         Public Function CreateLayerVec(ByVal _name As String, ByVal _cs As TGIS_CSCoordinateSystem, ByVal _type As TGIS_ShapeType) As TGIS_LayerVector
             Dim res As TGIS_LayerVector = New TGIS_LayerVector()
             res.Name = _name
@@ -398,16 +436,21 @@ Namespace AddLayer
             Return res
         End Function
 
-        ' Gets a pixel layer with a given name from GIS
+        ''' <summary>Retrieves a TGIS_LayerPixel from the viewer by name.</summary>
         Public Function GetLayerGrd(ByVal _name As String) As TGIS_LayerPixel
             Return TryCast(GIS.[Get](_name), TGIS_LayerPixel)
         End Function
 
-        ' Gets a vector layer with a given name from GIS
+        ''' <summary>Retrieves a TGIS_LayerVector from the viewer by name.</summary>
         Public Function GetLayerVec(ByVal _name As String) As TGIS_LayerVector
             Return TryCast(GIS.[Get](_name), TGIS_LayerVector)
         End Function
 
+        ''' <summary>
+        ''' Loads the DEM raster (Bytowski County GeoTIFF) into the viewer,
+        ''' stores a reference to the base DEM layer and its spatial extent for
+        ''' subsequent hydrology operations, and creates the TGIS_Hydrology toolset.
+        ''' </summary>
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As EventArgs)
             GIS.Mode = TGIS_ViewerMode.Zoom
             GIS.RestrictedDrag = False
@@ -421,6 +464,12 @@ Namespace AddLayer
             AddHandler Me.hydrologyToolset.BusyEvent, AddressOf doBusyEvent
         End Sub
 
+        ''' <summary>
+        ''' Step 1 — Identify DEM problems.
+        ''' Runs TGIS_Hydrology.Sink on the raw DEM to produce a grid where non-zero
+        ''' cells mark sinks (isolated depressions) and flat areas that would prevent
+        ''' proper flow routing. Colours the result in red for easy identification.
+        ''' </summary>
         Private Sub button1_Click(ByVal sender As Object, ByVal e As EventArgs)
             btnSink.Enabled = False
 
@@ -439,6 +488,13 @@ Namespace AddLayer
             btnFillSinks.Enabled = True
         End Sub
 
+        ''' <summary>
+        ''' Step 2 — Fill sinks.
+        ''' Runs TGIS_Hydrology.Fill on the raw DEM to raise all depressions to the
+        ''' level of their lowest outlet, producing a hydrologically conditioned DEM
+        ''' in which water flows continuously downhill to the grid edge.
+        ''' Applies a YellowGreen colour ramp with hillshading for visualisation.
+        ''' </summary>
         Private Sub btnFillSinks_Click(ByVal sender As Object, ByVal e As EventArgs)
             btnFillSinks.Enabled = False
 
@@ -464,6 +520,13 @@ Namespace AddLayer
             btnFlowDirection.Enabled = True
         End Sub
 
+        ''' <summary>
+        ''' Step 3 — Flow Direction.
+        ''' Runs TGIS_Hydrology.FlowDirection on the conditioned DEM.
+        ''' Each output cell receives a power-of-two code (1, 2, 4, 8, 16, 32, 64, 128)
+        ''' indicating the D8 steepest-descent direction.
+        ''' A turbo colour ramp makes the eight directions visually distinct.
+        ''' </summary>
         Private Sub btnFlowDirection_Click(ByVal sender As Object, ByVal e As EventArgs)
             btnFlowDirection.Enabled = False
             Dim hydro_dem As TGIS_LayerPixel = GetLayerGrd(HYDRO_LAYER_DEM)
@@ -490,6 +553,13 @@ Namespace AddLayer
             btnFlowAccumulation.Enabled = True
         End Sub
 
+        ''' <summary>
+        ''' Step 4 — Flow Accumulation.
+        ''' Runs TGIS_Hydrology.FlowAccumulation using the flow direction grid.
+        ''' Each output cell value equals the number of upstream cells that drain into it;
+        ''' high values reveal the stream network. A geometric-interval classification
+        ''' on the Bathymetry2 ramp improves visualisation.
+        ''' </summary>
         Private Sub btnFlowAccumulation_Click(ByVal sender As Object, ByVal e As EventArgs)
             btnFlowAccumulation.Enabled = False
             Dim flowdir As TGIS_LayerPixel = GetLayerGrd(HYDRO_LAYER_DIRECTION)
@@ -521,6 +591,12 @@ Namespace AddLayer
             btnAddOutlets.Enabled = True
         End Sub
 
+        ''' <summary>
+        ''' Step 5 — Add outlets (pour points).
+        ''' Creates a vector point layer and places two hardcoded sample outlet points
+        ''' at map coordinates known to lie on high-accumulation stream cells.
+        ''' These outlets define the downstream boundary for the Watershed step.
+        ''' </summary>
         Private Sub btnAddOutlets_Click(ByVal sender As Object, ByVal e As EventArgs)
             btnAddOutlets.Enabled = False
 
@@ -548,6 +624,12 @@ Namespace AddLayer
             btnWatershed.Enabled = True
         End Sub
 
+        ''' <summary>
+        ''' Step 6 — Watershed.
+        ''' Runs TGIS_Hydrology.Watershed using the flow direction grid and the outlet
+        ''' points layer. Each output cell is labelled with the ID of the outlet whose
+        ''' catchment it belongs to, delineating the drainage area upstream of each outlet.
+        ''' </summary>
         Private Sub btnWatershed_Click(ByVal sender As Object, ByVal e As EventArgs)
             btnWatershed.Enabled = False
             Dim flowdir As TGIS_LayerPixel = GetLayerGrd(HYDRO_LAYER_DIRECTION)
@@ -570,6 +652,13 @@ Namespace AddLayer
             btnBasin.Enabled = True
         End Sub
 
+        ''' <summary>
+        ''' Step 7 — Basin.
+        ''' Runs TGIS_Hydrology.Basin to partition the entire DEM into independent
+        ''' drainage basins. The minimum accumulation threshold is set to 1% of the
+        ''' maximum accumulation value to filter out minor basins.
+        ''' A unique-value classifier on the UniquePastel ramp colours each basin.
+        ''' </summary>
         Private Sub btnBasin_Click(ByVal sender As Object, ByVal e As EventArgs)
             btnBasin.Enabled = False
             Dim flowdir As TGIS_LayerPixel = GetLayerGrd(HYDRO_LAYER_DIRECTION)
@@ -604,6 +693,12 @@ Namespace AddLayer
             btnStreamOrderStrahler.Enabled = True
         End Sub
 
+        ''' <summary>
+        ''' Step 8 — Stream Order (Strahler).
+        ''' Runs TGIS_Hydrology.StreamOrder using the flow direction and accumulation grids.
+        ''' Each stream cell receives a Strahler order (1 = headwater, higher = larger river).
+        ''' A Blues colour ramp shows the order hierarchy.
+        ''' </summary>
         Private Sub btnStreamOrderStrahler_Click(ByVal sender As Object, ByVal e As EventArgs)
             btnStreamOrderStrahler.Enabled = False
             Dim flowdir As TGIS_LayerPixel = GetLayerGrd(HYDRO_LAYER_DIRECTION)
@@ -626,6 +721,13 @@ Namespace AddLayer
             btnVectorize.Enabled = True
         End Sub
 
+        ''' <summary>
+        ''' Step 9 — Convert to vector.
+        ''' Converts the raster basin grid to a polygon layer (TGIS_GridToPolygon)
+        ''' and the raster stream-order grid to a polyline layer (StreamToPolyline).
+        ''' Line width is driven by the ORDER field via the renderer, so wider rivers
+        ''' draw thicker. Labels follow the polyline curves.
+        ''' </summary>
         Private Sub btnVectorize_Click(ByVal sender As Object, ByVal e As EventArgs)
             btnVectorize.Enabled = False
             Dim flowdir As TGIS_LayerPixel = GetLayerGrd(HYDRO_LAYER_DIRECTION)
@@ -692,6 +794,12 @@ Namespace AddLayer
             btn3D.Enabled = True
         End Sub
 
+        ''' <summary>
+        ''' Step 10 — View in 3D / return to 2D.
+        ''' Toggles the viewer between 2D and 3D mode. In 3D mode the conditioned DEM
+        ''' is used as the elevation surface (ScaleZ = 1, NormalizedZ = Range) with
+        ''' lighting and shadows enabled. Stream labels are hidden in 3D to reduce clutter.
+        ''' </summary>
         Private Sub btn3D_Click(ByVal sender As Object, ByVal e As EventArgs)
             If GIS.View3D Then
                 btn3D.Text = "View in 3D"

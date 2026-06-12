@@ -9,7 +9,12 @@ using TatukGIS.NDK;
 namespace RasterAlgebra
 {
     /// <summary>
-    /// Summary description for WinForm.
+    /// RasterAlgebra sample - demonstrates how to apply mathematical expressions
+    /// to raster layers using TGIS_RasterAlgebra to produce derived pixel or grid
+    /// outputs.
+    /// The sample loads a pixel image, a grid (DEM), or a vector layer into the
+    /// viewer, then evaluates a user-supplied formula cell-by-cell to build a new
+    /// result layer.
     /// </summary>
     public class WinForm : System.Windows.Forms.Form
     {
@@ -259,6 +264,10 @@ namespace RasterAlgebra
             Application.Run(new WinForm());
         }
 
+        /// <summary>
+        /// Applies a blue-lime-red colour ramp to grid layer <paramref name="lp"/>,
+        /// mapping its full value range to the ramp and disabling the default grid shadow.
+        /// </summary>
         private void applyRamp(TGIS_LayerPixel lp)
         {
             lp.GenerateRamp(
@@ -274,6 +283,10 @@ namespace RasterAlgebra
             lp.Params.Pixel.GridShadow = false;
         }
 
+        /// <summary>
+        /// Closes the viewer, loads a JPEG aerial photo as a pixel layer, and sets
+        /// a default colour-inversion formula for the raster algebra expression field.
+        /// </summary>
         private void btnPixel_Click(object sender, EventArgs e)
         {
             TGIS_LayerPixel lp;
@@ -292,6 +305,10 @@ namespace RasterAlgebra
             tbFormula.Text = "RGB(255 - pixel.R, 255 - pixel.G, 255 - pixel.B)";
         }
 
+        /// <summary>
+        /// Closes the viewer, loads an ADF elevation grid, applies a colour ramp,
+        /// and sets a default threshold formula that clamps values to MIN or MAX.
+        /// </summary>
         private void btnGrid_Click(object sender, EventArgs e)
         {
             TGIS_LayerPixel lp;
@@ -312,6 +329,11 @@ namespace RasterAlgebra
             tbFormula.Text = "IF(grid < AVG(grid), MIN(grid), MAX(grid))";
         }
 
+        /// <summary>
+        /// Closes the viewer, loads a TIGER shapefile as a vector layer, and sets
+        /// a default formula that rasterizes features green where data exists and
+        /// red where no data is present.
+        /// </summary>
         private void btnVector_Click(object sender, EventArgs e)
         {
             TGIS_LayerVector lv;
@@ -331,6 +353,13 @@ namespace RasterAlgebra
             tbFormula.Text = "IF(NODATA(vector.GIS_UID), RGB(0,255,0), RGB(255,0,0))";
         }
 
+        /// <summary>
+        /// Builds an output pixel or grid layer whose dimensions match the highest-
+        /// resolution source layer, registers all viewer layers with a
+        /// TGIS_RasterAlgebra engine, and evaluates the formula in tbFormula.
+        /// The result layer "Result" replaces any previous run.  A colour ramp is
+        /// applied automatically when the output is a grid.
+        /// </summary>
         private void btnExecute_Click(object sender, EventArgs e)
         {
             TGIS_LayerPixel src;
@@ -411,6 +440,10 @@ namespace RasterAlgebra
             }
         }
 
+        /// <summary>
+        /// Reports raster algebra execution progress on the progress bar.
+        /// Pos = 0 initializes the bar; negative Pos resets it after completion.
+        /// </summary>
         private void doBusyEvent(object _sender, TGIS_BusyEventArgs _e)
         {
             if(_e.Pos < 0)

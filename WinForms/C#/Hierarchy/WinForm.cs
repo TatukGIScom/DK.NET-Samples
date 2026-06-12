@@ -1,4 +1,27 @@
-﻿using System;
+﻿/*
+ * Hierarchy sample — demonstrates layer organization and grouping using TGIS_Hierarchy.
+ * Creates a hierarchical layer structure (nested groups of layers) on a map, organizing
+ * related layers (e.g., Poland/Waters/Lakes, Poland/Areas/city).
+ *
+ * What the sample shows:
+ *   - Creating a TGIS_Hierarchy to organize layers into logical groups
+ *   - CreateGroup() — creates a named group to logically organize layers
+ *   - AddLayer() / DeleteLayer() — associates or removes layers from groups
+ *   - Nested groups — groups can contain sub-groups for multi-level hierarchies
+ *   - MoveGroup() — reparents a group to another group
+ *   - ParseHierarchy() — deserializes a hierarchy from INI text format
+ *   - TGIS_ControlLegend display — visualizes the hierarchy in a tree control
+ *   - Loading layers from a .ttkproject file with pre-configured hierarchy
+ *
+ * Key TatukGIS API concepts shown here:
+ *   TGIS_Hierarchy              - layer group structure and organization
+ *   TGIS_ControlLegend         - hierarchical layer list/legend panel
+ *   CreateGroup / AddLayer      - group creation and layer association
+ *   TGIS_ViewerWnd              - main visual map control
+ *   GIS.Open()                  - loads a project with pre-configured layers
+ */
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -133,6 +156,12 @@ namespace Hierarchy
         }
     }
 
+    /// <summary>
+    /// Hierarchy sample — demonstrates layer organization and grouping using TGIS_Hierarchy.
+    /// Creates a hierarchical layer structure (nested groups of layers) on a map, organizing related
+    /// layers (e.g., Poland/Waters/Lakes, Poland/Areas/city). Supports group creation, layer assignment,
+    /// group nesting, and parsing hierarchy from INI format strings. Displays the hierarchy in a legend control.
+    /// </summary>
     public partial class frmMain : Form
     {
         public frmMain()

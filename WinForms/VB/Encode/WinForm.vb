@@ -8,10 +8,33 @@ Imports System.Data
 Imports TatukGIS.NDK
 Imports TatukGIS.NDK.WinForms
 
+' Encode sample — demonstrates transparent layer encoding using read/write callbacks (VB.NET).
+'
+' What the sample shows:
+'   - Loading a world shapefile into the GIS viewer with labels
+'   - Creating a separate vector layer and exporting to new file with encryption applied
+'   - Using TGIS_LayerSHP ReadEvent and WriteEvent callbacks for cipher operations
+'   - Implementing XOR cipher encoding byte-by-byte keyed on file position
+'   - Encoding shapefile while preserving structure and attributes
+'   - Re-opening encoded file from disk transparently
+'   - Decoding data on-the-fly using same callback in read path
+'   - Rendering encoded layer with distinct colour for visual distinction
+'   - Round-trip persistence: save encoded, load with decoding, render
+'   - Pluggable encryption approach for custom cipher algorithms
+'
+' Key TatukGIS API concepts shown here:
+'   TGIS_ViewerWnd              - main visual map control
+'   TGIS_LayerSHP              - ESRI Shapefile layer (source and destination)
+'   TGIS_LayerVector            - base class for vector layers
+'   TGIS_Layer.ImportLayer()    - export/convert layer with transformation
+'   ReadEvent (callback)        - intercept layer read to decode data
+'   WriteEvent (callback)       - intercept layer write to encode data
+'   TGIS_Params                 - layer styling (colour, etc.)
+'   TGIS_Color                  - colour constants for layer visualization
+'   GIS.Add()                   - add layer to the viewer
+'   Custom cipher algorithm     - XOR encryption (example approach)
+
 Namespace Encode
-    ''' <summary>
-    ''' Summary description for WinForm.
-    ''' </summary>
     Public Class WinForm
         Inherits System.Windows.Forms.Form
         ''' <summary>
@@ -175,10 +198,12 @@ Namespace Encode
             Application.Run(New WinForm())
         End Sub
 
+        ''' <summary>Closes all loaded layers.</summary>
         Private Sub btnCloseAll_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnCloseAll.Click
             GIS.Close()
         End Sub
 
+        ''' <summary>Opens the base world shapefile (WorldDCW) with country name labels.</summary>
         Private Sub btnOpenBase_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnOpenBase.Click
             Dim ll As TGIS_LayerSHP
 
@@ -193,6 +218,10 @@ Namespace Encode
             GIS.FullExtent()
         End Sub
 
+        ''' <summary>
+        ''' Exports the loaded base layer to encoded.shp via ImportLayer.
+        ''' The WriteEvent callback applies an incrementing-XOR cipher to every byte as it is written.
+        ''' </summary>
         Private Sub btnEncode_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnEncode.Click
             Dim ls As TGIS_LayerVector
             Dim ld As TGIS_LayerSHP
@@ -216,6 +245,10 @@ Namespace Encode
             ld.ImportLayer(ls, GIS.Extent, TGIS_ShapeType.Polygon, "", False)
         End Sub
 
+        ''' <summary>
+        ''' Opens the previously encoded shapefile with the ReadEvent callback wired, so the
+        ''' XOR cipher is reversed transparently on every read.  The layer is tinted green.
+        ''' </summary>
         Private Sub btnOpenEncoded_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnOpenEncoded.Click
             Dim ll As TGIS_LayerSHP
 
@@ -233,7 +266,7 @@ Namespace Encode
             GIS.FullExtent()
         End Sub
 
-        ' do decoding with incrementing XOR value
+        ''' <summary>Decodes each byte by XOR-ing it with (position + index) mod 256, reversing the encoding.</summary>
         Private Sub doRead(ByVal _sender As Object, ByVal _e As TGIS_ReadWriteEventArgs)
             Dim i As Integer = 0
             Do While i < _e.Count
@@ -242,7 +275,7 @@ Namespace Encode
             Loop
         End Sub
 
-        ' do encoding with incrementing XOR value
+        ''' <summary>Encodes each byte by XOR-ing it with (position + index) mod 256.</summary>
         Private Sub doWrite(ByVal _sender As Object, ByVal _e As TGIS_ReadWriteEventArgs)
             Dim i As Integer = 0
             Do While i < _e.Count

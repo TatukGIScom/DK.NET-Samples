@@ -1,3 +1,39 @@
+'=============================================================================
+' This source code is a part of TatukGIS Developer Kernel.
+'=============================================================================
+'
+' LayerStatistics Sample - VB.NET WinForms (TatukGIS NDK)
+' ========================================================
+' Demonstrates statistical analysis of vector and raster layers.
+'
+' What the sample shows:
+'   - Loading vector (polygon, polyline, point) and raster (grid, pixel) layers
+'   - Calculating basic statistics (min, max, mean, median, std dev, variance)
+'   - Computing advanced statistics (quantiles, percentiles, modes)
+'   - Generating custom statistical summaries via formula expressions
+'   - Using TGIS_Statistics API for efficient bulk calculations
+'   - Separating vector and raster data statistics workflows
+'   - Handling multi-band raster data (R, G, B, A channels, grid value)
+'   - Fast statistics mode for large datasets (TGIS_FastStatistics)
+'   - Bessel correction for sample variance / standard deviation
+'   - Progress feedback during long-running calculations (TGIS_BusyEvent)
+'   - Exporting statistics results to text display
+'   - Attribute-based filtering before statistics computation
+'
+' Key TatukGIS API concepts shown here:
+'   TGIS_ViewerWnd              - main visual map control
+'   TGIS_LayerVector            - vector (polygon, polyline, point) layer
+'   TGIS_LayerPixel             - raster (pixel) layer with multi-band data
+'   TGIS_LayerGrid              - grid (digital elevation model) layer
+'   TGIS_Statistics             - statistical analysis engine
+'   TGIS_FastStatistics         - accelerated statistics for large data
+'   TGIS_BusyEvent              - progress callback during computation
+'   Band selection              - R, G, B, A channels, grid value field
+'   Custom field definitions    - formula-based statistics
+'   Result aggregation          - min, max, mean, median, quartiles
+'   Sample vs population stats  - Bessel correction option
+'
+
 Imports System
 Imports System.Drawing
 Imports System.Collections
@@ -10,6 +46,12 @@ Imports System.Collections.Generic
 Imports System.Runtime.InteropServices
 
 Namespace LayerStatistics
+    ''' <summary>
+    ''' LayerStatistics sample — demonstrates statistical analysis of vector and raster layers.
+    ''' Loads various layer types, calculates basic and advanced statistics (min, max, mean,
+    ''' standard deviation, quantiles, etc.), supports custom formula-based statistics, and
+    ''' provides fast computation mode for large datasets with progress feedback.
+    ''' </summary>
     Public Class WinForm
         Inherits System.Windows.Forms.Form
 

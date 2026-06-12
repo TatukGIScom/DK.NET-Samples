@@ -11,7 +11,10 @@ using TatukGIS.NDK.WinForms;
 namespace Legend
 {
     /// <summary>
-    /// Summary description for WinForm.
+    /// PrintPdf sample — demonstrates map printing to PDF format with customizable page layout and scaling.
+    /// Loads vector and raster data, allows users to configure print settings (paper size, orientation, margins),
+    /// and exports the map to a PDF file via the GIS.Print() API. Supports scaling to fit page and preserving
+    /// spatial reference systems during export.
     /// </summary>
     public class WinForm : System.Windows.Forms.Form
     {

@@ -9,9 +9,33 @@ using TatukGIS.NDK.WinForms;
 
 namespace GridToVector
 {
-    /// <summary>
-    /// Summary description for WinForm.
-    /// </summary>
+    /* GridToVector sample — demonstrates raster-to-vector conversion.
+
+       What the sample shows:
+         - Loading raster data: Land Cover TIFF (Corine CLC2018) and DEM elevation grid
+         - Converting raster grids to vector polygons using TGIS_GridToPolygon
+         - Converting raster grids to vector points using TGIS_GridToPoint
+         - Controlling polygon simplification via tolerance parameter
+         - Ignoring NoData cells during vectorization
+         - Point spacing control for point-based vectorization
+         - Colorizing DEM grid with blue-lime-red colour ramp before vectorization
+         - Interactive shape selection to display attributes
+         - Polygon splitting options for complex raster regions
+         - Progress feedback during vectorization operations
+
+       Key TatukGIS API concepts shown here:
+         TGIS_ViewerWnd              - main visual map control
+         TGIS_LayerPixel             - raster layer (source data)
+         TGIS_LayerVector            - vector layer (output format)
+         TGIS_GridToPolygon          - raster-to-polygon converter
+         TGIS_GridToPoint            - raster-to-point converter
+         TGIS_Topology               - spatial operations (used during conversion)
+         Tolerance parameter         - polygon simplification control
+         NoData handling             - ignore empty/missing raster cells
+         Point spacing               - vertex density for point conversion
+         TGIS_ControlAttributes      - attribute panel for feature inspection
+    */
+
     public class WinForm : System.Windows.Forms.Form
     {
         private Panel panel1;
@@ -326,12 +350,14 @@ namespace GridToVector
             Application.Run(new WinForm());
         }
 
+        /// <summary>Loads the Land Cover dataset by default and sets the viewer to select mode on startup.</summary>
         private void WinForm_Load(object sender, System.EventArgs e)
         {
             btnLoadLand.PerformClick();
             GIS.Mode = TGIS_ViewerMode.Select;
         }
 
+        /// <summary>Loads the Corine Land Cover 2018 TIFF for Luxembourg and sets default tolerance/spacing values.</summary>
         private void btnLoadLand_Click(object sender, EventArgs e)
         {
             GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\Luxembourg\CLC2018_CLC2018_V2018_20_Luxembourg.tif");
@@ -339,6 +365,10 @@ namespace GridToVector
             tbPointSpacing.Text = "1000";
         }
 
+        /// <summary>
+        /// Loads an elevation grid, applies a blue-lime-red HSL colour ramp across the
+        /// full elevation range, and sets default tolerance/spacing values.
+        /// </summary>
         private void btnLoadDEM_Click(object sender, EventArgs e)
         {
             TGIS_LayerPixel lp;
@@ -365,6 +395,10 @@ namespace GridToVector
         }
 
 
+        /// <summary>
+        /// Reports rasterisation progress on the progress bar.
+        /// Pos == 0 initialises the bar; Pos == -1 resets it; otherwise the bar is updated.
+        /// </summary>
         private void doBusyEvent(Object sender, TGIS_BusyEventArgs e)
         {
             switch (e.Pos)
@@ -385,6 +419,10 @@ namespace GridToVector
 
         }
 
+        /// <summary>
+        /// Locates the shape under the mouse cursor on click, selects it, and shows
+        /// its attributes in the <see cref="TGIS_ControlAttributes"/> panel.
+        /// </summary>
         private void GIS_MouseDown(object sender, MouseEventArgs e)
         {
             TGIS_Shape shp;
@@ -407,6 +445,7 @@ namespace GridToVector
             GIS_Attr.ShowShape(shp);
         }
 
+        /// <summary>Zooms in or out centred on the cursor position in response to mouse-wheel events.</summary>
         private void GIS_MouseWheel(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             if (GIS.IsEmpty) return;
@@ -417,6 +456,12 @@ namespace GridToVector
                 GIS.ZoomBy(1 / 2.0, e.X, e.Y);
         }
 
+        /// <summary>
+        /// Converts the source raster layer to a polygon vector layer using
+        /// <see cref="TGIS_GridToPolygon"/> with the tolerance and split-shapes settings.
+        /// Any existing result layer is removed first.  The output is added to the viewer
+        /// with 50% transparency and a black outline.
+        /// </summary>
         private void btnGridToPolygon_Click(object sender, EventArgs e)
         {
             TGIS_LayerPixel lp;
@@ -449,6 +494,12 @@ namespace GridToVector
             GIS.InvalidateWholeMap();
         }
 
+        /// <summary>
+        /// Converts the source raster layer to a point vector layer using
+        /// <see cref="TGIS_GridToPoint"/> with the tolerance, point-spacing, and ignore-NoData settings.
+        /// Any existing result layer is removed first.  Points are styled as small black circles
+        /// with 75% transparency.
+        /// </summary>
         private void btnGridToPoint_Click(object sender, EventArgs e)
         {
             TGIS_LayerPixel lp = GIS.Items[0] as TGIS_LayerPixel;

@@ -1,3 +1,30 @@
+/* Encode sample — demonstrates transparent layer encoding using read/write callbacks (C# .NET).
+
+   What the sample shows:
+     - Loading a world shapefile into the GIS viewer with labels
+     - Creating a separate vector layer and exporting to new file with encryption applied
+     - Using TGIS_LayerSHP ReadEvent and WriteEvent callbacks for cipher operations
+     - Implementing XOR cipher encoding byte-by-byte keyed on file position
+     - Encoding shapefile while preserving structure and attributes
+     - Re-opening encoded file from disk transparently
+     - Decoding data on-the-fly using same callback in read path
+     - Rendering encoded layer with distinct colour for visual distinction
+     - Round-trip persistence: save encoded, load with decoding, render
+     - Pluggable encryption approach for custom cipher algorithms
+
+   Key TatukGIS API concepts shown here:
+     TGIS_ViewerWnd              - main visual map control
+     TGIS_LayerSHP              - ESRI Shapefile layer (source and destination)
+     TGIS_LayerVector            - base class for vector layers
+     TGIS_Layer.ImportLayer()    - export/convert layer with transformation
+     ReadEvent (callback)        - intercept layer read to decode data
+     WriteEvent (callback)       - intercept layer write to encode data
+     TGIS_Params                 - layer styling (colour, etc.)
+     TGIS_Color                  - colour constants for layer visualization
+     GIS.Add()                   - add layer to the viewer
+     Custom cipher algorithm     - XOR encryption (example approach)
+*/
+
 using System;
 using System.Drawing;
 using System.Collections;
@@ -8,9 +35,6 @@ using TatukGIS.NDK;
 
 namespace Encode
 {
-    /// <summary>
-    /// Summary description for WinForm.
-    /// </summary>
     public class WinForm : System.Windows.Forms.Form
     {
         /// <summary>
@@ -183,11 +207,13 @@ namespace Encode
             Application.Run(new WinForm());
         }
 
+        /// <summary>Closes all loaded layers.</summary>
         private void btnCloseAll_Click(object sender, System.EventArgs e)
         {
             GIS.Close();
         }
 
+        /// <summary>Opens the base world shapefile (WorldDCW) with country name labels.</summary>
         private void btnOpenBase_Click(object sender, System.EventArgs e)
         {
             TGIS_LayerSHP ll;
@@ -203,6 +229,11 @@ namespace Encode
             GIS.FullExtent();
         }
 
+        /// <summary>
+        /// Exports the loaded base layer to a new shapefile (encoded.shp) using
+        /// <see cref="TGIS_LayerSHP.ImportLayer"/>.  The WriteEvent callback applies an
+        /// incrementing-XOR cipher to every byte as it is written.
+        /// </summary>
         private void btnEncode_Click(object sender, System.EventArgs e)
         {
             TGIS_LayerVector ls;
@@ -231,6 +262,10 @@ namespace Encode
                                         );
         }
 
+        /// <summary>
+        /// Opens the previously encoded shapefile with the ReadEvent callback wired, so the
+        /// XOR cipher is reversed transparently on every read.  The layer is tinted green.
+        /// </summary>
         private void btnOpenEncoded_Click(object sender, System.EventArgs e)
         {
             TGIS_LayerSHP ll;
@@ -249,14 +284,14 @@ namespace Encode
             GIS.FullExtent();
         }
 
-        // do decoding with incrementing XOR value
+        /// <summary>Decodes each byte by XOR-ing it with (position + index) mod 256, reversing the encoding.</summary>
         private void doRead(object _sender, TGIS_ReadWriteEventArgs _e)
         {
             for (int i = 0; i < _e.Count; i++)
                 _e.Buffer[i] = (byte)(_e.Buffer[i] ^ ((_e.Pos + i) % 256));
         }
 
-        // do encoding with incrementing XOR value
+        /// <summary>Encodes each byte by XOR-ing it with (position + index) mod 256.</summary>
         private void doWrite(object _sender, TGIS_ReadWriteEventArgs _e)
         {
             for (int i = 0; i < _e.Count; i++)

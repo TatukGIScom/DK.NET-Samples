@@ -1,3 +1,39 @@
+'=============================================================================
+' This source code is a part of TatukGIS Developer Kernel.
+'=============================================================================
+'
+' GPSTracker Sample - VB.NET WinForms (TatukGIS NDK)
+' ===================================================
+' Demonstrates real-time GPS tracking from a serial port (NMEA stream)
+' and visualization of the GPS track on a TatukGIS map viewer.
+'
+' What the sample shows:
+'   - Opening a TGIS_GpsNmea component connected to a serial port
+'   - Reading NMEA 0183 GPS sentences from a serial stream
+'   - Parsing raw GPS data to extract position, altitude, and quality info
+'   - Creating point and polyline shapes to mark GPS positions on the map
+'   - Storing GPS waypoints in an in-memory TGIS_LayerVector
+'   - Displaying the track as a continuous polyline connecting all waypoints
+'   - Recording GPS data to a shapefile for later analysis
+'   - Handling variable baud rates (1200 to 19200 baud)
+'   - Selecting serial port (COM 1 through COM 10)
+'   - Adding manual waypoint marks with user-defined labels
+'   - Real-time map updates as new GPS points arrive
+'
+' Key TatukGIS API concepts shown here:
+'   TGIS_GpsNmea                - GPS receiver component for serial NMEA data
+'   TGIS_ViewerWnd              - main visual map control
+'   TGIS_LayerVector            - in-memory vector layer for waypoints and track
+'   TGIS_Shape (point)          - point geometry for GPS position markers
+'   TGIS_Shape (polyline)       - polyline geometry for GPS track visualization
+'   GPS.FIFOEvent               - callback fired when new position data arrives
+'   NMEA 0183                   - standard GPS sentence format (GGA, RMC, GSA, etc.)
+'   Serial port configuration   - baud rate, COM port selection
+'   Waypoint storage            - GPS point attributes (lat, lon, altitude, time)
+'   Track recording             - saving GPS data to shapefile (.shp)
+'   Map zooming                 - fitting extent to track bounds
+'
+
 Imports Microsoft.VisualBasic
 Imports System
 Imports System.Drawing
@@ -12,7 +48,10 @@ Imports TatukGIS.NDK.WinForms
 
 Namespace GPSTracker
     ''' <summary>
-    ''' Summary description for WinForm.
+    ''' GPSTracker sample — demonstrates real-time GPS tracking from a serial port (NMEA stream)
+    ''' and visualization of the GPS track on a TatukGIS map viewer. Connects to a GPS receiver
+    ''' via serial port, parses NMEA sentences, creates waypoint and track layers, records data
+    ''' to shapefile, and provides real-time map updates as new GPS positions arrive.
     ''' </summary>
     Public Class WinForm
         Inherits System.Windows.Forms.Form

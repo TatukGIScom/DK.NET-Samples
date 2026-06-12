@@ -10,9 +10,34 @@ using TatukGIS.NDK.WinForms;
 
 namespace CGMViewer
 {
-    /// <summary>
-    /// Summary description for WinForm.
-    /// </summary>
+    /*
+    CGMViewer sample — demonstrates rendering CGM (Computer Graphics Metafile) symbol files (C#/.NET WinForms).
+
+    What the sample shows:
+      - Loading CGM (Computer Graphics Metafile) symbol files
+      - Displaying available symbols from TatukGIS symbol library
+      - Rendering CGM symbols as point markers on the map
+      - Using TGIS_Utils.SymbolList to enumerate symbol resources
+      - Creating point shapes with symbol markers
+      - Rotating symbols programmatically (90° increments)
+      - Scaling symbols to fit viewer extents
+      - Interactive symbol selection via listbox
+      - Displaying symbols centered on crosshair layer
+      - Symbol preview and visualization
+      - Supporting multiple symbol size and rotation parameters
+
+    Key TatukGIS API concepts shown here:
+      TGIS_ViewerWnd              - main visual map control
+      TGIS_Utils.SymbolList       - enumerate CGM symbol resources
+      TGIS_LayerVector            - vector layer for symbol markers
+      TGIS_Shape (point)          - point geometry for symbol placement
+      TGIS_Params.Marker          - point symbol rendering parameters
+      CGM symbols                 - Computer Graphics Metafile vector symbols
+      Symbol rotation             - angle-based marker orientation
+      Symbol scaling              - size adjustment for display
+      Symbol library              - TatukGIS built-in symbol collection
+      Interactive selection       - listbox-based symbol picking
+    */
     public class WinForm : System.Windows.Forms.Form
     {
         /// <summary>
@@ -172,6 +197,10 @@ namespace CGMViewer
             Application.Run(new WinForm());
         }
 
+        /// <summary>
+        /// Populates the list box with *.cgm filenames and creates the crosshair vector layer
+        /// (horizontal line, vertical line, and centre point shape) that displays the selected symbol.
+        /// </summary>
         private void WinForm_Load(object sender, System.EventArgs e)
         {
             DirectoryInfo dir;
@@ -208,11 +237,17 @@ namespace CGMViewer
             shp.AddPoint(new TGIS_Point(0, 0));
         }
 
+        /// <summary>Redraws the symbol at the new size whenever the form is resized.</summary>
         private void WinForm_Resize(object sender, System.EventArgs e)
         {
             drawSymbol();
         }
 
+        /// <summary>
+        /// Loads the selected CGM file into <see cref="TGIS_Utils.SymbolList"/>, sizes it to fit
+        /// two-thirds of the smaller viewer dimension, and invalidates the map.
+        /// Aspect ratio is preserved by scaling the size down if the symbol is taller than it is wide.
+        /// </summary>
         private void drawSymbol()
         {
             int w, h;
@@ -253,6 +288,7 @@ namespace CGMViewer
             GIS.InvalidateWholeMap();
         }
 
+        /// <summary>Rotates the displayed symbol by 90° (π/2 radians) each click.</summary>
         private void button1_Click(object sender, System.EventArgs e)
         {
             // rotate symbol
@@ -260,6 +296,7 @@ namespace CGMViewer
             shp.Invalidate();
         }
 
+        /// <summary>Redraws the symbol when a different CGM file is selected in the list box.</summary>
         private void listBox1_SelectedIndexChanged(object sender, System.EventArgs e)
         {
             //statusStrip1.Items[0].Text = TGIS_Utils.GisSamplesDataDirDownload() + listBox1.Items[listBox1.SelectedIndex];

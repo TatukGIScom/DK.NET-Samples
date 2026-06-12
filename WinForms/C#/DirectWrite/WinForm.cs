@@ -10,9 +10,33 @@ using System.IO;
 
 namespace DirectWrite
 {
-    /// <summary>
-    /// Summary description for WinForm.
-    /// </summary>
+    /* DirectWrite sample — demonstrates multiple low-level vector data write techniques.
+
+       What the sample shows:
+         - Building a shapefile using AddShape loop with SaveData persistence
+         - Importing layer with spatial CONTAINS filter for data subsetting
+         - Merging layers with DISJOINT filter to exclude overlapping regions
+         - Sequential high-performance write via TGIS_LayerVectorDirectWriteHelper
+         - Batch-commit write via TGIS_LayerVectorMergeHelper for atomic operations
+         - Five sequential techniques with progressive complexity/performance
+         - Button unlock pattern showing workflow progression
+         - Output files organized into numbered Shapes{n} directories
+         - Spatial filtering during data import and merge operations
+         - Performance comparison between different write strategies
+
+       Key TatukGIS API concepts shown here:
+         TGIS_ViewerWnd                  - main visual map control
+         TGIS_LayerSHP                   - ESRI Shapefile layer
+         TGIS_LayerVector                - base class for vector layers
+         TGIS_LayerVector.AddShape()     - add individual shape to layer
+         TGIS_LayerVector.SaveData()     - save layer to file
+         TGIS_LayerVector.ImportLayerEx() - import with spatial filtering
+         TGIS_LayerVector.MergeLayerEx() - merge with spatial filtering
+         TGIS_LayerVectorDirectWriteHelper - sequential high-performance writer
+         TGIS_LayerVectorMergeHelper     - batch-commit writer
+         Spatial DE-9IM predicates       - CONTAINS, DISJOINT, etc.
+    */
+
     public class WinForm : System.Windows.Forms.Form
     {
         private Button btnBuild;
@@ -173,6 +197,7 @@ namespace DirectWrite
             Application.Run(new WinForm());
         }
 
+        /// <summary>Finds the next unused Shapes{n} directory number and creates it as the output destination.</summary>
         private void WinForm_Load(object sender, System.EventArgs e)
         {
             GIS.Mode = TGIS_ViewerMode.Zoom;
@@ -194,6 +219,8 @@ namespace DirectWrite
             Directory.CreateDirectory("Shapes" + number);
         }
 
+        /// <summary>Creates a new SHP layer via Build(), opens the cities source, copies structure and
+        /// coordinate system, loops all shapes with AddShape, then saves data.</summary>
         private void btnBuild_Click(object sender, EventArgs e)
         {
             TGIS_LayerSHP lv;
@@ -238,6 +265,8 @@ namespace DirectWrite
             GIS.InvalidateWholeMap();
         }
 
+        /// <summary>Imports a spatially filtered subset of cities using ImportLayerEx with a CONTAINS
+        /// WKT polygon (European bounding box); the imported layer is displayed in green.</summary>
         private void btnImport_Click(object sender, EventArgs e)
         {
             TGIS_LayerSHP ll;
@@ -267,6 +296,8 @@ namespace DirectWrite
 
         }
 
+        /// <summary>Merges cities outside the European polygon using MergeLayerEx with a DISJOINT
+        /// relation; the merged layer is displayed in green.</summary>
         private void btnMergeLayer_Click(object sender, EventArgs e)
         {
             TGIS_LayerSHP ll;
@@ -296,6 +327,8 @@ namespace DirectWrite
             GIS.InvalidateWholeMap();
         }
 
+        /// <summary>Writes all cities to a new SHP using TGIS_LayerVectorDirectWriteHelper
+        /// (Build → AddShape loop → Close) for high-performance sequential writing.</summary>
         private void btnWrite_Click(object sender, EventArgs e)
         {
             TGIS_LayerSHP lv;
@@ -328,6 +361,8 @@ namespace DirectWrite
             GIS.FullExtent();
         }
 
+        /// <summary>Writes all cities to a new SHP using TGIS_LayerVectorMergeHelper with Commit()
+        /// per shape for batch-commit writing; resets all buttons on completion.</summary>
         private void btnMergeHelper_Click(object sender, EventArgs e)
         {
             TGIS_LayerSHP lv;

@@ -9,9 +9,33 @@ Imports TatukGIS.NDK
 Imports TatukGIS.NDK.WinForms
 
 Namespace TwoWindows
-    ''' <summary>
-    ''' Summary description for WinForm.
-    ''' </summary>
+    ' TwoWindows sample — demonstrates synchronizing two independent GIS viewers of the same data (VB.NET/.NET WinForms).
+    '
+    ' What the sample shows:
+    '   - Creating two TGIS_ViewerWnd controls side-by-side
+    '   - Loading the same layers into both viewers
+    '   - Synchronizing extent between viewers: panning in one updates the other
+    '   - Synchronizing zoom level: zooming in one zooms the other
+    '   - Handling OnExtentChanged event to update linked viewer
+    '   - Creating split-pane layout with splitter control
+    '   - Comparing different views of same data (side-by-side comparison)
+    '   - Overview + detail pattern (one zoomed in, one zoomed out)
+    '   - Controlling synchronization with checkbox toggle
+    '   - Preventing feedback loops during synchronization
+    '   - Supporting independent navigation modes (one can be Select, other Edit)
+    '   - Sharing layer objects between viewers
+    '   - Coordinate system consistency between viewers
+    '
+    ' Key TatukGIS API concepts shown here:
+    '   TGIS_ViewerWnd              - main visual map control (two instances)
+    '   TGIS_LayerVector            - shared layer in both viewers
+    '   OnExtentChanged             - event for synchronization
+    '   VisibleExtent / SetExtent   - reading and setting viewer bounds
+    '   Splitter control            - layout management for split pane
+    '   Event synchronization       - coordinating viewer updates
+    '   Extent binding              - keeping viewports in sync
+    '   Sentinel flag               - preventing feedback loops
+    '   Dual viewport               - comparison and overview+detail patterns
     Public Class WinForm
         Inherits System.Windows.Forms.Form
         ''' <summary>

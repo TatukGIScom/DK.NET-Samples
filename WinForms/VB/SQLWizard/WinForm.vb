@@ -1,3 +1,30 @@
+' SQLWizard sample — demonstrates wizard interface for SQL layer creation and query (VB.NET/.NET WinForms).
+'
+' What the sample shows:
+'   - Creating a wizard dialog to guide users through SQL layer setup
+'   - Connecting to a database (PostGIS, SQL Server, MySQL, etc.)
+'   - Selecting source table from database schema
+'   - Defining geometry column (for spatial data extraction)
+'   - Writing SQL WHERE clause filters for spatial query
+'   - Previewing query results before applying layer
+'   - Adding SQL-based layer to viewer
+'   - Handling database connection errors and validation
+'   - Supporting multiple database vendors and drivers
+'   - Interactive layer creation workflow with step-by-step validation
+'   - Previewing feature count and extent from query results
+'
+' Key TatukGIS API concepts shown here:
+'   TGIS_ViewerWnd              - main visual map control
+'   TGIS_LayerSQLLayer          - SQL query-based vector layer
+'   TGIS_SQLConnectionString    - database connection parameters
+'   SQL SELECT statement        - query definition for data extraction
+'   WHERE clause                - spatial/attribute filtering
+'   Geometry column             - identifies spatial data column
+'   Database connection         - PostGIS, SQL Server, MySQL drivers
+'   Feature preview             - extent and count validation
+'   Layer styling               - rendering the SQL query results
+'   Wizard interface            - step-by-step layer creation workflow
+
 Imports System
 Imports System.Drawing
 Imports System.Collections

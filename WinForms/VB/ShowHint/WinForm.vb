@@ -1,3 +1,29 @@
+' ShowHint sample — demonstrates interactive feature identification and hint tooltips (VB.NET/.NET WinForms).
+'
+' What the sample shows:
+'   - Loading a map dataset (world countries shapefile) into the viewer
+'   - Implementing real-time feature identification as mouse moves over the map
+'   - Displaying custom hint/tooltip text for features under the cursor
+'   - Configuring which layer and field to use for hint display
+'   - Customizing hint appearance (text colour, background colour, font)
+'   - Handling OnMouseMove event to track cursor position
+'   - Querying layer features at a point using spatial search
+'   - Displaying feature attribute values in a dynamic tooltip
+'   - Toggle hint display on/off via button control
+'   - Handling multiple overlapping features at cursor location
+'   - Using TGIS_ViewerWnd mouse event integration
+'
+' Key TatukGIS API concepts shown here:
+'   TGIS_ViewerWnd              - main visual map control with mouse events
+'   TGIS_LayerVector            - vector layer to query for features
+'   TGIS_Shape                  - returned feature at cursor location
+'   OnMouseMove                 - event for real-time cursor tracking
+'   FindFirst / FindNext        - spatial search for features at point
+'   GetField                    - read attribute values from feature
+'   ToolTip                     - .NET hint/tooltip display component
+'   Cursor position             - geographic coordinate under mouse pointer
+'   Feature identification      - point-in-polygon / point-in-geometry tests
+
 Imports Microsoft.VisualBasic
 Imports System
 Imports System.Drawing

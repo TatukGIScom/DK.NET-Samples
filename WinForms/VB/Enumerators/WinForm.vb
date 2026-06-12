@@ -4,6 +4,32 @@ Imports System.Drawing
 Imports TatukGIS.NDK
 Imports TatukGIS.NDK.WinForms
 
+' Enumerators sample — demonstrates spatial iteration using TGIS_LayerVector.Loop() enumerators.
+'
+' What the sample shows:
+'   - Loading a polygon shapefile (California Counties) into the GIS viewer
+'   - Using nested Loop() enumerators to iterate through all shapes
+'   - Outer Loop() visits every county polygon in the layer
+'   - Inner Loop(extent, "", shape, "****T", True) counts topologically adjacent neighbors
+'   - DE-9IM spatial relationship filter "****T" identifies touching/intersecting boundaries
+'   - Creating a new COUNT field for storing neighbor count results
+'   - Using MakeEditable to modify feature attributes during enumeration
+'   - Rendering layer as 5-zone white-to-red color ramp keyed on COUNT field value
+'   - Displaying COUNT values as labels on each county polygon
+'   - Spatial indexing enabling efficient neighbor searches
+'
+' Key TatukGIS API concepts shown here:
+'   TGIS_ViewerWnd              - main visual map control
+'   TGIS_LayerVector            - vector layer with spatial indexing and enumeration
+'   TGIS_LayerVector.Loop()     - returns enumerator for spatial iteration
+'   TGIS_LayerVectorEnumerator  - iterator supporting MoveNext and Current access
+'   TGIS_Shape                  - individual geographic feature (county polygon)
+'   TGIS_Shape.ProjectedExtent  - bounding box for spatial queries
+'   TGIS_LayerVector.AddField() - create new attribute field in layer schema
+'   TGIS_Shape.MakeEditable()   - enter edit mode to modify shape attributes
+'   Params.Render.Expression    - value expression for color ramp rendering
+'   DE-9IM relationships        - spatial topology predicates (T = touching/intersection)
+
 Namespace Enumerators
 
     Public Class frmMain
@@ -179,6 +205,10 @@ Namespace Enumerators
             Application.Run(New frmMain())
         End Sub
 
+        ''' <summary>
+        ''' Counts topological neighbors for every county and visualizes the result as a
+        ''' 5-zone white-to-red color ramp.  The COUNT field is added if it does not yet exist.
+        ''' </summary>
         Private Sub actNeighbors()
             Dim shp As TGIS_Shape
             Dim shpNbr As TGIS_Shape
@@ -234,12 +264,14 @@ Namespace Enumerators
 
         End Sub
 
+        ''' <summary>Loads the California Counties shapefile and fits the viewer to its full extent.</summary>
         Private Sub frmMain_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
             ' add states layer
             GIS.Add(TGIS_Utils.GisCreateLayer("world", TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\USA\States\California\tl_2008_06_county.shp"))
             GIS.FullExtent()
         End Sub
 
+        ''' <summary>Dispatches toolbar button clicks: Full Extent, Zoom In/Out, Drag toggle, Count Neighbors.</summary>
         Private Sub tlbr1_ButtonClick(ByVal sender As System.Object, ByVal e As System.Windows.Forms.ToolStripItemClickedEventArgs) Handles tlbr1.ItemClicked
             Select Case tlbr1.Items.IndexOf(e.ClickedItem)
                 Case 0

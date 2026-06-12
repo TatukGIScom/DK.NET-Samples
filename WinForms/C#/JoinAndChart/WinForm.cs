@@ -10,9 +10,35 @@ using TatukGIS.NDK.WinForms;
 
 namespace JoinAndChart
 {
-    /// <summary>
-    /// Summary description for WinForm.
-    /// </summary>
+    /* JoinAndChart sample — demonstrates attribute joining and proportional symbol charting.
+
+       What the sample shows:
+         - Joining vector layer attributes with external OleDb database table
+         - Loading data from external SQL database into memory
+         - Matching features with database records via common attribute key
+         - Rendering pie charts at feature locations with proportional sizing
+         - Rendering bar charts at feature locations with proportional sizing
+         - Rendering column charts at feature locations with proportional sizing
+         - Controlling chart size based on selected attribute field value
+         - Displaying chart data based on selected value field
+         - Switching between different chart types via combo box selector
+         - Switching between different value fields for chart data
+         - Interactive database joins for real-time visualization updates
+         - Multi-field data representation at geographic locations
+
+       Key TatukGIS API concepts shown here:
+         TGIS_ViewerWnd              - main visual map control
+         TGIS_LayerVector            - vector layer with attributes
+         TGIS_Params                 - feature styling and rendering
+         TGIS_Chart                  - proportional symbol chart rendering
+         OleDbConnection             - external database connection
+         OleDbDataAdapter            - database query and data loading
+         Attribute join              - match records by common key
+         TGIS_LayerVector.Params.Render.Expression - data-driven field selection
+         Chart types                 - pie, bar, column chart styles
+         Feature location rendering  - place charts at shape geometry
+    */
+
     public class WinForm : System.Windows.Forms.Form
     {
         /// <summary>

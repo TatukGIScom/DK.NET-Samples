@@ -9,9 +9,36 @@ Imports TatukGIS.NDK
 Imports TatukGIS.NDK.WinForms
 
 Namespace SimpleEdit
-  ''' <summary>
-  ''' Summary description for WinForm.
-  ''' </summary>
+  ' SimpleEdit sample — demonstrates vector shape editing and undo/redo functionality (VB.NET/.NET WinForms).
+  '
+  ' What the sample shows:
+  '   - Loading vector shapefiles into editor
+  '   - Selecting features via click or drag rectangle
+  '   - Editing shape vertices (move, add, delete points)
+  '   - Creating new shapes programmatically
+  '   - Deleting selected features
+  '   - Viewing and editing feature attributes
+  '   - Modifying layer styles and rendering parameters
+  '   - Undo/redo for editing operations
+  '   - Saving edited layers back to file
+  '   - Printing edited maps
+  '   - Full extent zoom and pan navigation
+  '   - Zoom and drag viewing modes
+  '   - Winding order control for polygon rings
+  '   - Multi-feature selection
+  '   - Attribute grid showing selected feature properties
+  '
+  ' Key TatukGIS API concepts shown here:
+  '   TGIS_ViewerWnd              - main visual map control
+  '   TGIS_LayerVector            - editable vector layer
+  '   TGIS_Shape                  - individual feature being edited
+  '   Shape editing               - vertex manipulation and creation
+  '   Undo/redo                   - operation history management
+  '   Feature selection           - single and multi-feature picking
+  '   Attribute editing           - field value modification
+  '   Layer styling               - appearance customization
+  '   File I/O                    - save/load operations
+  '   Interaction modes           - select, edit, zoom, drag
   Public Class MainForm
     Inherits System.Windows.Forms.Form
     ''' <summary>

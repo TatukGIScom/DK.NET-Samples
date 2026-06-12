@@ -1,3 +1,26 @@
+' =============================================================================
+' This source code is a part of TatukGIS Developer Kernel.
+' =============================================================================
+'
+' Legend Sample - VB.NET WinForms (.NET)
+'
+' Demonstrates how to use the TGIS_ControlLegend panel alongside a map viewer.
+' The legend control provides an interactive, dockable layer list that lets the
+' user toggle layer visibility, reorder layers, expand/collapse layer symbology,
+' and open layer property dialogs - all without writing any extra code.
+'
+' Key concepts shown:
+'   - Placing TGIS_ControlLegend next to TGIS_ViewerWnd and linking them via
+'     GIS_Viewer so the legend reflects the loaded map automatically.
+'   - Switching between two display modes at runtime:
+'       * TGIS_ControlLegendMode.Layers - flat list of every individual layer
+'       * TGIS_ControlLegendMode.Groups - tree grouped by layer group membership
+'   - Opening a .ttkproject file that bundles multiple SHP layers together.
+'   - Controlling the viewer interaction mode (Zoom / Drag).
+'   - Persisting any layer-style changes back to the project file with SaveAll.
+'   - Reflecting the current map scale in the status bar after each repaint.
+' =============================================================================
+
 Imports Microsoft.VisualBasic
 Imports System
 Imports System.Drawing
@@ -9,50 +32,89 @@ Imports TatukGIS.NDK
 Imports TatukGIS.NDK.WinForms
 
 Namespace Legend
+    ' Legend sample — demonstrates interactive layer list and legend management.
+    '
+    ' What the sample shows:
+    '   - Placing TGIS_ControlLegend next to TGIS_ViewerWnd with legend-to-viewer linking
+    '   - Interactive layer visibility toggling via legend checkboxes
+    '   - Reordering layers via drag-and-drop in legend panel
+    '   - Expanding/collapsing layer symbology details
+    '   - Opening layer property dialogs for advanced configuration
+    '   - Switching between two display modes at runtime (Layers vs. Groups)
+    '   - Loading .ttkproject files with multiple pre-configured layers
+    '   - Persisting layer-style changes back to project file via SaveAll
+    '   - Real-time status bar updates showing current map scale
+    '
+    ' Key TatukGIS API concepts shown here:
+    '   TGIS_ViewerWnd              - main visual map control
+    '   TGIS_ControlLegend          - interactive legend/layer list panel
+    '   TGIS_ControlLegendMode      - display modes (Layers, Groups, etc.)
+    '   GIS.Items                   - layer collection (get count, access by index)
+    '   TGIS_Params                 - layer styling and rendering parameters
+    '   GIS.VisibleExtent           - geographic extent of loaded layers
+    '   GIS.Scale                   - map scale for display in status bar
     ''' <summary>
-    ''' Summary description for WinForm.
+    ''' Main application form for the Legend sample.
+    ''' Hosts a TGIS_ViewerWnd (map canvas) and a TGIS_ControlLegend panel
+    ''' side-by-side, separated by a resizable splitter.
     ''' </summary>
     Public Class WinForm
         Inherits System.Windows.Forms.Form
-        ''' <summary>
-        ''' Required designer variable.
-        ''' </summary>
+
+        ''' <summary>Required designer variable.</summary>
         Private components As System.ComponentModel.IContainer
-        Private WithEvents toolBar1 As System.Windows.Forms.ToolStrip
-        Private btnFullExtent As System.Windows.Forms.ToolStripButton
-        Private toolBarButton1 As System.Windows.Forms.ToolStripButton
-        Private toolBarButton2 As System.Windows.Forms.ToolStripButton
-        Private panel3 As System.Windows.Forms.Panel
-        Private WithEvents toolBar2 As System.Windows.Forms.ToolStrip
-        Private btnZoom As System.Windows.Forms.ToolStripButton
-        Private btnDrag As System.Windows.Forms.ToolStripButton
-        Private imageList1 As System.Windows.Forms.ImageList
-        Private statusBar1 As System.Windows.Forms.StatusStrip
-        Private statusBarPanel1 As System.Windows.Forms.ToolStripStatusLabel
-        Private statusBarPanel2 As System.Windows.Forms.ToolStripStatusLabel
-        Private panel1 As System.Windows.Forms.Panel
-        Private panel2 As System.Windows.Forms.Panel
-        Private toolBarButton3 As System.Windows.Forms.ToolStripButton
+
+        ' --- UI controls (wired in InitializeComponent) ---
+        Private WithEvents toolBar1 As System.Windows.Forms.ToolStrip   ' Primary toolbar
+        Private btnFullExtent As System.Windows.Forms.ToolStripButton   ' Zooms to full extent of all loaded layers
+        Private toolBarButton1 As System.Windows.Forms.ToolStripButton  ' Separator
+        Private toolBarButton2 As System.Windows.Forms.ToolStripButton  ' Separator
+        Private panel3 As System.Windows.Forms.Panel                    ' Container for the save toolbar
+        Private WithEvents toolBar2 As System.Windows.Forms.ToolStrip   ' Secondary toolbar (Save config)
+        Private btnZoom As System.Windows.Forms.ToolStripButton         ' Switches viewer to Zoom interaction mode
+        Private btnDrag As System.Windows.Forms.ToolStripButton         ' Switches viewer to Drag/Pan interaction mode
+        Private imageList1 As System.Windows.Forms.ImageList            ' Toolbar button icons
+        Private statusBar1 As System.Windows.Forms.StatusStrip          ' Status bar at the bottom
+        Private statusBarPanel1 As System.Windows.Forms.ToolStripStatusLabel  ' "Scale :" caption
+        Private statusBarPanel2 As System.Windows.Forms.ToolStripStatusLabel  ' Current scale value
+        Private panel1 As System.Windows.Forms.Panel                    ' Top toolbar container panel
+        Private panel2 As System.Windows.Forms.Panel                    ' Left sub-panel for navigation toolbar
+        Private toolBarButton3 As System.Windows.Forms.ToolStripButton  ' Save configuration button
+
+        ''' <summary>
+        ''' The interactive legend panel.
+        ''' Linked to the GIS viewer via GIS_Viewer so it automatically lists all
+        ''' layers loaded in the map. Users can toggle visibility, drag layers to
+        ''' reorder them, expand nodes to inspect symbology, and double-click a
+        ''' layer to open its properties dialog.
+        ''' </summary>
         Private GIS_ControlLegend1 As TatukGIS.NDK.WinForms.TGIS_ControlLegend
-        Private splitter1 As System.Windows.Forms.Splitter
-        Friend WithEvents btnGroups As System.Windows.Forms.Button
-        Friend WithEvents btnLayers As System.Windows.Forms.Button
+
+        Private splitter1 As System.Windows.Forms.Splitter  ' Resizable divider between legend and map
+        Friend WithEvents btnGroups As System.Windows.Forms.Button   ' Switches legend to Groups display mode
+        Friend WithEvents btnLayers As System.Windows.Forms.Button   ' Switches legend to Layers display mode
+
+        ''' <summary>
+        ''' The main interactive map canvas (TGIS_ViewerWnd).
+        ''' Renders all loaded layers, handles mouse-driven zooming and panning,
+        ''' and fires AfterPaintEvent on each completed repaint.
+        ''' </summary>
         Private WithEvents GIS As TatukGIS.NDK.WinForms.TGIS_ViewerWnd
 
+        ''' <summary>
+        ''' Initialises the form, runs the designer-generated component wiring,
+        ''' and ensures the map canvas receives keyboard focus on startup.
+        ''' </summary>
         Public Sub New()
-            '
-            ' Required for Windows Form Designer support
-            '
+            ' Set up all controls, layouts and event subscriptions defined by the designer
             InitializeComponent()
 
-            '
-            ' TODO: Add any constructor code after InitializeComponent call
-            '
+            ' Give the map canvas initial keyboard focus so arrow-key panning works immediately
             Me.ActiveControl = GIS
         End Sub
 
         ''' <summary>
-        ''' Clean up any resources being used.
+        ''' Releases managed resources when the form is closed.
         ''' </summary>
         Protected Overloads Overrides Sub Dispose(ByVal disposing As Boolean)
             If disposing Then
@@ -92,8 +154,8 @@ Namespace Legend
             Me.splitter1 = New System.Windows.Forms.Splitter()
             Me.btnLayers = New System.Windows.Forms.Button()
             Me.btnGroups = New System.Windows.Forms.Button()
-            
-  
+
+
             Me.panel1.SuspendLayout()
             Me.panel3.SuspendLayout()
             Me.panel2.SuspendLayout()
@@ -101,7 +163,7 @@ Namespace Legend
             '
             'toolBar1
             '
-            
+
             Me.toolBar1.AutoSize = False
             Me.toolBar1.Items.AddRange(New System.Windows.Forms.ToolStripButton() {Me.btnFullExtent, Me.toolBarButton1, Me.btnZoom, Me.btnDrag, Me.toolBarButton2})
 
@@ -237,10 +299,17 @@ Namespace Legend
             Me.GIS_ControlLegend1.Location = New System.Drawing.Point(0, 28)
             Me.GIS_ControlLegend1.Mode = TatukGIS.NDK.TGIS_ControlLegendMode.Layers
             Me.GIS_ControlLegend1.Name = "GIS_ControlLegend1"
+            ' AllowMove: user can drag layers to reorder them in the legend
+            ' AllowActive: clicking a layer makes it the active (editable) layer
+            ' AllowExpand: layer nodes can be expanded to show symbology classes
+            ' AllowParams: double-clicking opens the layer properties dialog
+            ' AllowSelect: layers can be selected (highlighted) in the legend
             Me.GIS_ControlLegend1.Options = CType(((((TatukGIS.NDK.TGIS_ControlLegendOption.AllowMove Or TatukGIS.NDK.TGIS_ControlLegendOption.AllowActive) _
             Or TatukGIS.NDK.TGIS_ControlLegendOption.AllowExpand) _
             Or TatukGIS.NDK.TGIS_ControlLegendOption.AllowParams) _
             Or TatukGIS.NDK.TGIS_ControlLegendOption.AllowSelect), TatukGIS.NDK.TGIS_ControlLegendOption)
+            ' ReverseOrder=True so the top layer in the legend matches the top
+            ' rendering layer (visually topmost on the map)
             Me.GIS_ControlLegend1.ReverseOrder = True
             Me.GIS_ControlLegend1.Size = New System.Drawing.Size(145, 419)
             Me.GIS_ControlLegend1.TabIndex = 6
@@ -304,8 +373,8 @@ Namespace Legend
             Me.Name = "WinForm"
             Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
             Me.Text = "TatukGIS Samples - Legend"
-            
-         
+
+
             Me.panel1.ResumeLayout(False)
             Me.panel3.ResumeLayout(False)
             Me.panel2.ResumeLayout(False)
@@ -315,7 +384,8 @@ Namespace Legend
 #End Region
 
         ''' <summary>
-        ''' The main entry point for the application.
+        ''' Application entry point.
+        ''' Configures high-DPI and visual styles before launching the form.
         ''' </summary>
         <STAThread()>
         Shared Sub Main()
@@ -327,27 +397,44 @@ Namespace Legend
             Application.Run(New WinForm())
         End Sub
 
+        ''' <summary>
+        ''' Loads the sample Poland multi-layer project when the form first appears.
+        ''' Opening a .ttkproject causes TGIS_ViewerWnd to load all referenced layer
+        ''' files. Because GIS_ControlLegend1.GIS_Viewer is already set to GIS, the
+        ''' legend populates itself automatically as each layer is registered.
+        ''' </summary>
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
-            ' open a file
+            ' GisSamplesDataDirDownload() resolves the path to the shared sample data
+            ' directory (configurable via the TatukGIS environment or registry).
             GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\Poland\DCW\poland.ttkproject")
         End Sub
 
+        ''' <summary>
+        ''' Handles clicks on the primary navigation toolbar.
+        ''' Uses the index of the clicked item to determine the requested action.
+        ''' Index 0 = Full Extent, 2 = Zoom mode, 3 = Drag mode
+        ''' (Index 1 is a separator and is never clicked.)
+        ''' </summary>
         Private Sub toolBar1_ButtonClick(ByVal sender As Object, ByVal e As System.Windows.Forms.ToolStripItemClickedEventArgs) Handles toolBar1.ItemClicked
             Select Case toolBar1.Items.IndexOf(e.ClickedItem)
                 Case 0
-                    ' show full map
+                    ' Zoom out to fit the complete bounding box of all visible layers
                     GIS.FullExtent()
                 Case 2
-                    ' set zoom mode
+                    ' TGIS_ViewerMode.Zoom: left-drag to zoom in, right-click to zoom out
                     GIS.Mode = TGIS_ViewerMode.Zoom
 
                 Case 3
-                    ' set drag mode
+                    ' TGIS_ViewerMode.Drag: click-drag to pan the visible map extent
                     GIS.Mode = TGIS_ViewerMode.Drag
 
             End Select
         End Sub
 
+        ''' <summary>
+        ''' Changes the primary toolbar cursor to a hand pointer when hovering over
+        ''' active buttons, providing visual affordance feedback.
+        ''' </summary>
         Private Sub toolBar1_MouseMove(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles toolBar1.MouseMove
             Dim p As Point = New Point(e.X, e.Y)
 
@@ -358,13 +445,24 @@ Namespace Legend
             End If
         End Sub
 
+        ''' <summary>
+        ''' Saves all layer configuration changes (symbology, visibility, order) back
+        ''' to the originating project or layer files when the "Save config" button
+        ''' is clicked. Guards against calling SaveAll on an empty viewer.
+        ''' </summary>
         Private Sub toolBar2_ButtonClick(ByVal sender As Object, ByVal e As System.Windows.Forms.ToolStripItemClickedEventArgs) Handles toolBar2.ItemClicked
-            If GIS.IsEmpty Then
+            If GIS.IsEmpty Then   ' Nothing loaded - nothing to save
                 Return
             End If
+            ' Persist any legend changes (visibility flags, symbology edits, layer order)
+            ' back to the .ttkproject file and its referenced layer files.
             GIS.SaveAll()
         End Sub
 
+        ''' <summary>
+        ''' Changes the secondary toolbar cursor to a hand pointer when hovering
+        ''' over the save button, providing visual affordance feedback.
+        ''' </summary>
         Private Sub toolBar2_MouseMove(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles toolBar2.MouseMove
             Dim p As Point = New Point(e.X, e.Y)
 
@@ -375,14 +473,30 @@ Namespace Legend
             End If
         End Sub
 
+        ''' <summary>
+        ''' Fired by TGIS_ViewerWnd after every completed map repaint.
+        ''' Updates the status bar with the human-readable map scale string
+        ''' (e.g. "1 : 250 000") so the user always knows the current zoom level.
+        ''' </summary>
         Private Sub GIS_AfterPaint(ByVal sender As Object, ByVal e As TGIS_PaintEventArgs) Handles GIS.AfterPaintEvent
+            ' ScaleAsText returns a formatted "1 : N" string for the current viewport
             statusBar1.Items(1).Text = GIS.ScaleAsText
         End Sub
 
+        ''' <summary>
+        ''' Switches the legend to flat Layers mode.
+        ''' In Layers mode every individual layer appears as a separate top-level
+        ''' item in the legend list, regardless of any group hierarchy.
+        ''' </summary>
         Private Sub btnLayers_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnLayers.Click
             GIS_ControlLegend1.Mode = TGIS_ControlLegendMode.Layers
         End Sub
 
+        ''' <summary>
+        ''' Switches the legend to Groups mode.
+        ''' In Groups mode layers are nested inside their parent group nodes,
+        ''' matching the logical structure defined in the project file.
+        ''' </summary>
         Private Sub btnGroups_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnGroups.Click
             GIS_ControlLegend1.Mode = TGIS_ControlLegendMode.Groups
         End Sub

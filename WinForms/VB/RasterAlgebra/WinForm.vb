@@ -7,6 +7,14 @@ Imports System.Data
 Imports TatukGIS.NDK
 
 Namespace RasterAlgebra
+    ''' <summary>
+    ''' RasterAlgebra sample - demonstrates how to apply mathematical expressions
+    ''' to raster layers using TGIS_RasterAlgebra to produce derived pixel or grid
+    ''' outputs.
+    ''' The sample loads a pixel image, a grid (DEM), or a vector layer into the
+    ''' viewer, then evaluates a user-supplied formula cell-by-cell to build a new
+    ''' result layer.
+    ''' </summary>
     Public Class WinForm
         Inherits System.Windows.Forms.Form
 
@@ -227,11 +235,19 @@ Namespace RasterAlgebra
         Private Sub WinFormlpoad(ByVal sender As Object, ByVal e As System.EventArgs)
         End Sub
 
+        ''' <summary>
+        ''' Applies a blue-lime-red colour ramp to grid layer <paramref name="lp"/>,
+        ''' mapping its full value range to the ramp and disabling the default grid shadow.
+        ''' </summary>
         Private Sub applyRamp(ByVal lp As TGIS_LayerPixel)
             lp.GenerateRamp(TGIS_Color.Blue, TGIS_Color.Lime, TGIS_Color.Red, 1.0 * Math.Floor(lp.MinHeight), (lp.MaxHeight + lp.MinHeight) / 2.0, 1.0 * Math.Ceiling(lp.MaxHeight), True, (lp.MaxHeight - lp.MinHeight) / 100.0, (lp.MaxHeight - lp.MinHeight) / 10.0, Nothing, False)
             lp.Params.Pixel.GridShadow = False
         End Sub
 
+        ''' <summary>
+        ''' Closes the viewer, loads a JPEG aerial photo as a pixel layer, and sets
+        ''' a default colour-inversion formula for the raster algebra expression field.
+        ''' </summary>
         Private Sub btnPixel_Click(ByVal sender As Object, ByVal e As EventArgs)
             Dim lp As TGIS_LayerPixel
             Dim path As String
@@ -244,6 +260,10 @@ Namespace RasterAlgebra
             tbFormula.Text = "RGB(255 - Pixel.R, 255 - Pixel.G, 255 - Pixel.B)"
         End Sub
 
+        ''' <summary>
+        ''' Closes the viewer, loads an ADF elevation grid, applies a colour ramp,
+        ''' and sets a default threshold formula that clamps values to MIN or MAX.
+        ''' </summary>
         Private Sub btnGrid_Click(ByVal sender As Object, ByVal e As EventArgs)
             Dim lp As TGIS_LayerPixel
             Dim path As String
@@ -258,6 +278,11 @@ Namespace RasterAlgebra
             tbFormula.Text = "IF(Grid < AVG(Grid), MIN(Grid), MAX(Grid))"
         End Sub
 
+        ''' <summary>
+        ''' Closes the viewer, loads a TIGER shapefile as a vector layer, and sets
+        ''' a default formula that rasterizes features green where data exists and
+        ''' red where no data is present.
+        ''' </summary>
         Private Sub btnVector_Click(ByVal sender As Object, ByVal e As EventArgs)
             Dim lv As TGIS_LayerVector
             Dim path As String
@@ -271,6 +296,13 @@ Namespace RasterAlgebra
             tbFormula.Text = "IF(NODATA(Vector.GIS_UID), RGB(0,255,0), RGB(255,0,0))"
         End Sub
 
+        ''' <summary>
+        ''' Builds an output pixel or grid layer whose dimensions match the highest-
+        ''' resolution source layer, registers all viewer layers with a
+        ''' TGIS_RasterAlgebra engine, and evaluates the formula in tbFormula.
+        ''' The result layer "Result" replaces any previous run.  A colour ramp is
+        ''' applied automatically when the output is a grid.
+        ''' </summary>
         Private Sub btnExecute_Click(ByVal sender As Object, ByVal e As EventArgs)
             Dim src As TGIS_LayerPixel
             Dim dst As TGIS_LayerPixel
@@ -336,6 +368,10 @@ Namespace RasterAlgebra
             Next
         End Sub
 
+        ''' <summary>
+        ''' Reports raster algebra execution progress on the progress bar.
+        ''' Pos = 0 initializes the bar; negative Pos resets it after completion.
+        ''' </summary>
         Private Sub doBusyEvent(ByVal _sender As Object, ByVal _e As TGIS_BusyEventArgs)
             If _e.Pos < 0 Then
                 pbProgress.Value = pbProgress.Maximum

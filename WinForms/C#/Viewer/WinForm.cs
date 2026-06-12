@@ -10,9 +10,37 @@ using TatukGIS.NDK.WinForms;
 
 namespace Viewer
 {
-    /// <summary>
-    /// Summary description for WinForm.
-    /// </summary>
+    /*
+    Viewer sample — demonstrates basic GIS map viewing functionality (C#/.NET WinForms).
+
+    What the sample shows:
+      - Loading vector and raster data files from disk
+      - Appending additional layers to an existing map
+      - Managing multiple layers with TGIS_ControlLegend
+      - Zoom navigation: full extent, zoom mode, zoom in/out
+      - Pan/drag mode for moving around the map
+      - Selection mode for identifying features
+      - Printing maps with TGIS_ControlPrintPreview
+      - Exporting map view to image file
+      - Searching/querying layer features
+      - Editing layer data (adding/modifying features)
+      - Saving modified layers back to file
+      - Switching between different interaction modes
+      - Displaying layer properties and metadata
+      - File dialogs for open, append, save operations
+
+    Key TatukGIS API concepts shown here:
+      TGIS_ViewerWnd              - main visual map control
+      TGIS_ControlLegend          - layer tree and legend management
+      TGIS_LayerVector            - vector layer (shapefile, etc.)
+      TGIS_LayerPixel             - raster layer (image, grid)
+      File I/O                    - loading/saving layers
+      Zoom/pan navigation         - viewer extent control
+      Layer management            - add, remove, reorder layers
+      Feature selection           - interactive feature picking
+      Print and export            - output generation
+      Interaction modes           - zoom, drag, select, edit
+    */
     public class WinForm : System.Windows.Forms.Form
     {
         /// <summary>

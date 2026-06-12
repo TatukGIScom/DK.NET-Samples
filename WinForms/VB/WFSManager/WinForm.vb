@@ -1,3 +1,39 @@
+'=============================================================================
+' This source code is a part of TatukGIS Developer Kernel.
+'=============================================================================
+'
+' WFSManager Sample - VB.NET WinForms (TatukGIS NDK)
+' ==================================================
+' Demonstrates connection to and management of Web Feature Service (WFS) layers.
+'
+' What the sample shows:
+'   - Creating connections to WFS servers via TGIS_LayerWFS
+'   - Retrieving feature data from remote WFS endpoints
+'   - Adding multiple WFS layers to the map viewer
+'   - Managing WFS layer properties and configuration
+'   - Displaying feature data in a legend control (TGIS_ControlLegend)
+'   - Interactive map navigation (zoom, pan, select) with WFS data
+'   - Layer visibility toggling and on-demand data loading
+'   - Handling WFS GetCapabilities requests to enumerate available layers
+'   - Feature attribute display and filtering
+'   - Spatial query on remote WFS features
+'   - WFS layer caching and configuration management
+'   - Real-time WFS data synchronization on the map
+'
+' Key TatukGIS API concepts shown here:
+'   TGIS_ViewerWnd              - main visual map control
+'   TGIS_LayerWFS               - Web Feature Service layer implementation
+'   TGIS_ControlLegend          - legend panel for layer management
+'   TGIS_ViewerMode             - Zoom, Drag, Select interaction modes
+'   WFS GetCapabilities         - discover available layers from server
+'   WFS GetFeature              - retrieve feature geometries and attributes
+'   TGIS_Layer                  - abstract layer base class
+'   Layer addition/removal       - dynamic layer management
+'   Extent fitting              - FullExtent to zoom to all layers
+'   Feature attribute access    - read feature properties from WFS
+'   WFS server URLs             - connection strings to WFS endpoints
+'
+
 Imports System
 Imports System.Drawing
 Imports System.Collections
@@ -12,7 +48,9 @@ Imports System.Diagnostics
 Namespace WFSManager
 
     ''' <summary>
-    ''' Summary description for WinForm.
+    ''' WFSManager sample — demonstrates connection to and management of Web Feature Service (WFS) layers.
+    ''' Handles WFS server connections, retrieves feature data from remote endpoints, displays features
+    ''' in the map viewer with legend control, and provides interactive navigation and layer management.
     ''' </summary>
     Public Class WinForm
         Inherits System.Windows.Forms.Form

@@ -11,7 +11,21 @@ using TatukGIS.NDK.WinForms;
 namespace IsochroneMap
 {
     /// <summary>
-    /// Summary description for WinForm.
+    /// Isochrone Map sample form.
+    ///
+    /// Demonstrates how to compute travel-time (isochrone) zones from a chosen
+    /// origin point on a road network using TGIS_IsochroneMap and TGIS_ShortestPath.
+    ///
+    /// Workflow:
+    ///   1. Load a road-network SHP layer (US TIGER edges for San Bernardino, CA).
+    ///   2. Style the layer to distinguish highways from local roads.
+    ///   3. Create an output TGIS_LayerVector for the isochrone polygons and a
+    ///      separate TGIS_LayerVector for the origin marker.
+    ///   4. Wire up three network-cost callbacks (doLinkCost, doLinkType, doLinkDynamic).
+    ///   5. On each mouse click (in Select mode) the user picks an origin.
+    ///   6. generateIsochrone calls TGIS_IsochroneMap.Generate once per zone,
+    ///      dividing the maximum cost so each successive call covers a wider area.
+    ///   7. The resulting polygons are smoothed and displayed as colour-coded zones.
     /// </summary>
     public class WinForm : System.Windows.Forms.Form
     {
@@ -356,6 +370,11 @@ namespace IsochroneMap
             Application.Run(new WinForm());
         }
 
+        /// <summary>
+        /// Initialises the map viewer, loads the road network, configures rendering
+        /// parameters, creates the isochrone result layer and the origin marker layer,
+        /// and wires up the TGIS_ShortestPath cost callbacks.
+        /// </summary>
         private void WinForm_Load(object sender, System.EventArgs e)
         {
             GIS.Lock();
@@ -423,6 +442,12 @@ namespace IsochroneMap
             }
         }
 
+        /// <summary>
+        /// Assigns a network link type based on the MTFCC road-class attribute.
+        /// Links with MTFCC >= "S1400" are classified as local roads (LinkType = 1);
+        /// all others (primary/secondary highways) are classified as type 0.
+        /// The type index is used to look up the corresponding CostModifier.
+        /// </summary>
         private void doLinkType(
             Object _sender,
             TGIS_LinkTypeEventArgs _e
@@ -434,6 +459,12 @@ namespace IsochroneMap
                 _e.LinkType = 0;
         }
 
+        /// <summary>
+        /// Computes the base traversal cost for a road arc.
+        /// Uses LengthCS (real-world metres) when a coordinate system is known,
+        /// or raw geometry Length when the layer has no CS.
+        /// Both forward and reverse costs are set identically (undirected network).
+        /// </summary>
         private void doLinkCost(
             Object _sender,
             TGIS_LinkCostEventArgs _e
@@ -447,6 +478,12 @@ namespace IsochroneMap
             _e.RevCost = _e.Cost;
         }
 
+        /// <summary>
+        /// Dynamically blocks highway arcs at traversal time when the Highways
+        /// track-bar is set to its minimum value (Value = 1).
+        /// Setting Cost and RevCost to -1 marks the link as impassable, effectively
+        /// restricting the isochrone to local roads only.
+        /// </summary>
         private void doLinkDynamic(
             Object _sender,
             TGIS_LinkDynamicEventArgs _e
@@ -472,24 +509,33 @@ namespace IsochroneMap
             /*rtrObj.Dispose();*/
         }
 
+        /// <summary>Resets the visible extent to show all loaded layers.</summary>
         private void btnFullExtent_Click(object sender, EventArgs e)
         {
             if (GIS.IsEmpty) return;
             GIS.FullExtent();
         }
 
+        /// <summary>Doubles the current zoom level.</summary>
         private void btnZoomIn_Click(object sender, EventArgs e)
         {
             if (GIS.IsEmpty) return;
             GIS.Zoom = GIS.Zoom * 2;
         }
 
+        /// <summary>Halves the current zoom level.</summary>
         private void btnZoomOut_Click(object sender, EventArgs e)
         {
             if (GIS.IsEmpty) return;
             GIS.Zoom = GIS.Zoom / 2;
         }
 
+        /// <summary>
+        /// Handles a mouse-down event on the map.
+        /// Converts the screen coordinates to map coordinates, places or moves the
+        /// origin marker at the clicked location, then triggers isochrone generation.
+        /// Exits immediately when the viewer is empty or not in Select mode.
+        /// </summary>
         private void GIS_MouseDown(object sender, MouseEventArgs e)
         {
             TGIS_Point ptg;
@@ -516,6 +562,14 @@ namespace IsochroneMap
             generateIsochrone();
         }
 
+        /// <summary>
+        /// Generates the isochrone map from the current origin marker.
+        /// Reads the maximum cost and zone count from the UI controls, updates the
+        /// render range on the result layer, applies road-class cost modifiers from
+        /// the track-bars, and calls TGIS_IsochroneMap.Generate once for each zone,
+        /// dividing the maximum cost so each successive call covers a wider area.
+        /// After generation each polygon is smoothed for a cleaner visual result.
+        /// </summary>
         private void generateIsochrone()
         {
             int i;
