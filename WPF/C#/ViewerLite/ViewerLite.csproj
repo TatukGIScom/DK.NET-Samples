@@ -34,6 +34,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-    <PackageReference Include="TatukGIS.DK.NET.Windows" Version="118.0.42766" />
+    <PackageReference Include="TatukGIS.DK.NET.Windows" Version="119.0.43340" />
   </ItemGroup>
 </Project>

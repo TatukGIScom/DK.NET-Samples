@@ -65,7 +65,7 @@ Namespace PrintPreview
         Private WithEvents dlgFontTitle As System.Windows.Forms.FontDialog
         Private WithEvents dlgFontSubtitle As System.Windows.Forms.FontDialog
         Private toolTip2 As System.Windows.Forms.ToolTip
-        Private printManager As TGIS_PrintManager
+        Private printManager As TGIS_PrintManagerUniversal
 
         Public Sub New()
             MyBase.New
@@ -342,7 +342,7 @@ Namespace PrintPreview
 
         Private Sub WinForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
             GIS.Open((TGIS_Utils.GisSamplesDataDirDownload() & "World\Countries\Poland\DCW\poland.ttkproject"))
-            printManager = New TGIS_PrintManager
+            printManager = New TGIS_PrintManagerUniversal
             printManager.Title = edPrintTitle.Text
             printManager.Subtitle = edPrintSubTitle.Text
             printManager.Footer = "Footer"
@@ -358,7 +358,7 @@ Namespace PrintPreview
             printManager.FooterFont.Size = 10
             printManager.FooterFont.Style = to_gis_fontstyle(FontStyle.Regular)
             printManager.FooterFont.Color = to_gis_color(SystemColors.WindowText)
-            printManager.PrintPageEvent = New TGIS_PrintPageEvent(AddressOf GIS_PrintPage)
+            printManager.PrintPageEvent = New TGIS_PrintPageUniversalEvent(AddressOf GIS_PrintPage)
             GIS_ControlPrintPreview1.Preview(1, New PrintDocument, printManager)
         End Sub
 
@@ -428,31 +428,33 @@ Namespace PrintPreview
             Return Math.Round((_value * _factor))
         End Function
 
-        Private Sub GIS_PrintPage(ByVal _sender As Object, ByVal _e As TatukGIS.NDK.WinForms.TGIS_PrintPageEventArgs)
+        Private Sub GIS_PrintPage(ByVal _sender As Object, ByVal _e As TatukGIS.NDK.TGIS_PrintPageUniversalEventArgs)
             Dim scale As Double
             Dim r As Rectangle
             Dim fr As Rectangle
             Dim mr As Rectangle
+            Dim rt As Rectangle
             Dim y2 As Integer
             Dim x1 As Integer
             Dim y1 As Integer
             Dim x2 As Integer
             Dim h As Integer
-            Dim sz As SizeF
-            Dim canvas As Graphics = _e.Canvas
-            Dim pm As TGIS_PrintManager
-            Dim pr As TGIS_Printer
+            Dim sz As Point
+            'Dim canvas As Graphics = _e.Canvas
+            Dim pm As TGIS_PrintManagerAbstract
+            Dim pr As TGIS_PrinterAbstract
+            Dim rdr As TGIS_RendererAbstract
             Dim dpi As Integer
             Dim fy As Double
             Dim fx As Double
-            Dim br As Brush
-            Dim pn As Pen
-            Dim ft As Font
+            Dim s As String
             pm = _e.PrintManager
             pr = pm.Printer
-            dpi = pr.PpiX
+            dpi = pr.PPI
             fx = pr.PrintArea.Width / pr.PageWidth
             fy = pr.PrintArea.Height / pr.PageHeight
+
+            rdr = pr.Renderer
 
             ' left panel
             x1 = xy(inch(0.1, dpi), fx)
@@ -463,20 +465,21 @@ Namespace PrintPreview
             ' left panel: gray rectangle
             x2 = (x2 - (xy(pr.TwipsToX((2 * 1440)), fx) + xy(inch(0.2, dpi), fx)))
             r = New Rectangle(x1, y1, (x2 - x1), (y2 - y1))
-            br = New SolidBrush(Color.Gray)
-            canvas.FillRectangle(br, r)
-            br.Dispose()
-            pn = New Pen(Color.Gray)
-            canvas.DrawRectangle(pn, r)
-            pn.Dispose()
+            rdr.CanvasBrush.Color = TGIS_Color.Gray
+            rdr.CanvasBrush.Style = TGIS_BrushStyle.Solid
+            rdr.CanvasPen.Color = TGIS_Color.Gray
+            rdr.CanvasPen.Style = TGIS_PenStyle.Solid
+            rdr.CanvasDrawRectangle(r)
 
-            ' left panel: white rectangle
+            ' left panel: white rectangle, black frame
             r = New Rectangle((r.Left - xy(inch(0.1, dpi), fx)),
                               (r.Top - xy(inch(0.1, dpi), fy)),
                               r.Width, r.Height)
-            br = New SolidBrush(Color.White)
-            canvas.FillRectangle(br, r)
-            br.Dispose()
+            rdr.CanvasBrush.Color = TGIS_Color.White
+            rdr.CanvasBrush.Style = TGIS_BrushStyle.Solid
+            rdr.CanvasPen.Color = TGIS_Color.Black
+            rdr.CanvasPen.Style = TGIS_PenStyle.Solid
+            rdr.CanvasDrawRectangle(r)
             fr = r
 
             ' left panel: map
@@ -497,11 +500,6 @@ Namespace PrintPreview
             pm.DrawMap(GIS, GIS.Extent, r, scale)
             mr = r
 
-            ' left panel: black frame
-            pn = New Pen(Color.Black)
-            canvas.DrawRectangle(pn, fr)
-            pn.Dispose()
-
             ' right panel
             x1 = 0
             y1 = xy(inch(0.5, dpi), fy)
@@ -511,20 +509,21 @@ Namespace PrintPreview
             ' right panel: gray rectangle
             x1 = (x2 - xy(pr.TwipsToX((2 * 1440)), fx))
             r = New Rectangle(x1, y1, (x2 - x1), (y2 - y1))
-            br = New SolidBrush(Color.Gray)
-            canvas.FillRectangle(br, r)
-            br.Dispose()
-            pn = New Pen(Color.Gray)
-            canvas.DrawRectangle(pn, r)
-            pn.Dispose()
+            rdr.CanvasBrush.Color = TGIS_Color.Gray
+            rdr.CanvasBrush.Style = TGIS_BrushStyle.Solid
+            rdr.CanvasPen.Color = TGIS_Color.Gray
+            rdr.CanvasPen.Style = TGIS_PenStyle.Solid
+            rdr.CanvasDrawRectangle(r)
 
-            ' right panel: white rectangle
+            ' right panel: white rectangle, black frame
             r = New Rectangle((r.Left - xy(inch(0.1, dpi), fx)),
                               (r.Top - xy(inch(0.1, dpi), fy)),
                               r.Width, r.Height)
-            br = New SolidBrush(Color.White)
-            canvas.FillRectangle(br, r)
-            br.Dispose()
+            rdr.CanvasBrush.Color = TGIS_Color.White
+            rdr.CanvasBrush.Style = TGIS_BrushStyle.Solid
+            rdr.CanvasPen.Color = TGIS_Color.Black
+            rdr.CanvasPen.Style = TGIS_PenStyle.Solid
+            rdr.CanvasDrawRectangle(r)
             fr = r
 
             ' right panel: legend
@@ -535,33 +534,40 @@ Namespace PrintPreview
             r = New Rectangle(x1, y1, (x2 - x1), (y2 - y1))
             pm.DrawControl(GIS_ControlLegend1, r, scale)
 
-            ' right panel: black frame
-            pn = New Pen(Color.Black)
-            canvas.DrawRectangle(pn, fr)
-            pn.Dispose()
-
             ' page number
-            ft = New Font("Arial", 12)
-            br = New SolidBrush(Color.Black)
-            canvas.DrawString(String.Format("Page {0}", pr.PageNumber), ft, br, xy(pr.TwipsToX(720), fx), xy(pr.TwipsToY(720), fy))
-            br.Dispose()
-            ft.Dispose()
+            s = String.Format("Page {0}", pr.PageNumber)
+            rdr.CanvasFont.Name = "Arial"
+            rdr.CanvasFont.Size = 12
+            rdr.CanvasFont.Color = TGIS_Color.Black
+            sz = rdr.CanvasTextExtent(s)
+            rt = New Rectangle(xy(pr.TwipsToX(720), fx), xy(pr.TwipsToY(720), fy), sz.X, sz.Y)
+            rdr.CanvasDrawText(rt, s)
 
             r = mr
             ' title
-            ft = New Font(pm.TitleFont.Name, pm.TitleFont.Size, to_native_fontstyle(pm.TitleFont.Style))
-            br = New SolidBrush(to_native_color(pm.TitleFont.Color))
-            sz = canvas.MeasureString(pm.Title, ft)
-            canvas.DrawString(pm.Title, ft, br, CSng((Math.Round((r.Right - r.Left) / 2) - Math.Round(sz.Width / 2))), xy(pr.TwipsToY(720), fy))
-            br.Dispose()
-            ft.Dispose()
-            ' subtitle
-            h = Math.Round(sz.Height)
-            ft = New Font(pm.SubtitleFont.Name, pm.SubtitleFont.Size, to_native_fontstyle(pm.SubtitleFont.Style))
-            br = New SolidBrush(to_native_color(pm.SubtitleFont.Color))
-            canvas.DrawString(pm.Subtitle, ft, br, CSng((Math.Round((r.Right - r.Left) / 2) - Math.Round(canvas.MeasureString(pm.Subtitle, ft).Width / 2))), (xy(pr.TwipsToY((720 + 200)), fy) + h))
-            _e.LastPage = True
+            s = pm.Title
+            rdr.CanvasFont.Name = pm.TitleFont.Name
+            rdr.CanvasFont.Size = pm.TitleFont.Size
+            rdr.CanvasFont.Style = pm.TitleFont.Style
+            rdr.CanvasFont.Color = pm.TitleFont.Color
+            sz = rdr.CanvasTextExtent(s)
+            rt = New Rectangle(CSng((Math.Round((r.Right - r.Left) / 2) - Math.Round(sz.X / 2))),
+                               xy(pr.TwipsToY(720), fy), sz.X, sz.Y)
+            rdr.CanvasDrawText(rt, s)
 
+            ' subtitle
+            h = Math.Round(sz.Y)
+            s = pm.Subtitle
+            rdr.CanvasFont.Name = pm.SubtitleFont.Name
+            rdr.CanvasFont.Size = pm.SubtitleFont.Size
+            rdr.CanvasFont.Style = pm.SubtitleFont.Style
+            rdr.CanvasFont.Color = pm.SubtitleFont.Color
+            sz = rdr.CanvasTextExtent(s)
+            rt = New Rectangle(CSng((Math.Round((r.Right - r.Left) / 2) - Math.Round(sz.X / 2))),
+                               xy(pr.TwipsToY(720 + 200), fy) + h, sz.X, sz.Y)
+            rdr.CanvasDrawText(rt, s)
+
+            _e.LastPage = True
 
         End Sub
 
@@ -615,7 +621,7 @@ Namespace PrintPreview
             If chkStandardPrint.Checked Then
                 printManager.PrintPageEvent = Nothing
             Else
-                printManager.PrintPageEvent = New TatukGIS.NDK.WinForms.TGIS_PrintPageEvent(AddressOf GIS_PrintPage)
+                printManager.PrintPageEvent = New TatukGIS.NDK.TGIS_PrintPageUniversalEvent(AddressOf GIS_PrintPage)
             End If
 
             GIS_ControlPrintPreview1.Preview(1, New PrintDocument, printManager)

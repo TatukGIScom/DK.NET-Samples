@@ -498,7 +498,7 @@ namespace Legend
             TGIS_RendererAbstract rd;
 
             pm = _e.PrintManager;
-            pr = pm.Printer;
+            pr = (TGIS_Printer)pm.Printer;
             rd = pr.Renderer;
 
             rd.CanvasBrush.Color = TGIS_Color.Black;
@@ -606,7 +606,7 @@ namespace Legend
         private void BeforePrintPage(object _sender, TGIS_PrintPageEventArgs _e)
         {
             TGIS_PrintManager pm = _e.PrintManager;
-            TGIS_Printer pr = pm.Printer;
+            TGIS_Printer pr = (TGIS_Printer)pm.Printer;
             TGIS_TemplatePrint tp;
 
             if (pr.PageNumber == 1)

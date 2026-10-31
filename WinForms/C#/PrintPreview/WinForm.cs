@@ -67,7 +67,7 @@ namespace PrintPreview
         private System.Windows.Forms.FontDialog dlgFontTitle;
         private System.Windows.Forms.FontDialog dlgFontSubtitle;
         private System.Windows.Forms.ToolTip toolTip2;
-        private TGIS_PrintManager printManager;
+        private TGIS_PrintManagerUniversal printManager;
 
         public WinForm()
         {
@@ -372,7 +372,7 @@ namespace PrintPreview
         {
             GIS.Open(TGIS_Utils.GisSamplesDataDirDownload() + @"World\Countries\Poland\DCW\poland.ttkproject");
 
-            printManager = new TGIS_PrintManager();
+            printManager = new TGIS_PrintManagerUniversal();
             printManager.Title = edPrintTitle.Text;
             printManager.Subtitle = edPrintSubTitle.Text;
             printManager.Footer = "Footer";
@@ -392,7 +392,7 @@ namespace PrintPreview
             printManager.FooterFont.Style = to_gis_fontstyle(FontStyle.Regular);
             printManager.FooterFont.Color = to_gis_color(SystemColors.WindowText);
 
-            printManager.PrintPageEvent += new TGIS_PrintPageEvent(GIS_PrintPage);
+            printManager.PrintPageEvent += new TGIS_PrintPageUniversalEvent(GIS_PrintPage);
             GIS_ControlPrintPreview1.Preview(1, new PrintDocument(), printManager);
         }
 
@@ -444,28 +444,29 @@ namespace PrintPreview
             return (int)Math.Round(_value * _factor);
         }
 
-        private void GIS_PrintPage(object _sender, TatukGIS.NDK.WinForms.TGIS_PrintPageEventArgs _e)
+        private void GIS_PrintPage(object _sender, TatukGIS.NDK.TGIS_PrintPageUniversalEventArgs _e)
         {
             double scale;
             Rectangle r;
             Rectangle fr;
             Rectangle mr;
+            Rectangle rt;
             int x1, y1, x2, y2;
             int h;
-            SizeF sz;
-            Graphics canvas = _e.Canvas;
-            TGIS_PrintManager pm;
-            TGIS_Printer pr;
+            Point sz;
+            TGIS_RendererAbstract rdr;
+            TGIS_PrintManagerAbstract pm;
+            TGIS_PrinterAbstract pr;
             int dpi;
             double fx, fy;
-            Brush br;
-            Pen pn;
-            Font ft;
+            string s;
 
             pm = _e.PrintManager;
             pr = pm.Printer;
-            dpi = pr.PpiX;
+            dpi = pr.PPI;
 
+            rdr = pr.Renderer;
+            
             fx = (double)pr.PrintArea.Width / pr.PageWidth;
             fy = (double)pr.PrintArea.Height / pr.PageHeight;
 
@@ -478,21 +479,22 @@ namespace PrintPreview
             // left panel: gray rectangle
             x2 = x2 - xy(pr.TwipsToX(2 * 1440), fx) - xy(inch(0.2, dpi), fx);
             r = new Rectangle(x1, y1, x2 - x1, y2 - y1);
-            br = new SolidBrush(Color.Gray);
-            canvas.FillRectangle(br, r);
-            br.Dispose();
-            pn = new Pen(Color.Gray);
-            canvas.DrawRectangle(pn, r);
-            pn.Dispose();
+            rdr.CanvasBrush.Color = TGIS_Color.Gray;
+            rdr.CanvasBrush.Style = TGIS_BrushStyle.Solid;
+            rdr.CanvasPen.Color = TGIS_Color.Gray;
+            rdr.CanvasPen.Style = TGIS_PenStyle.Solid;
+            rdr.CanvasDrawRectangle(r);
 
-            // left panel: white rectangle
+            // left panel: white rectangle; black frame
             r = new Rectangle(r.Left - xy(inch(0.1, dpi), fx),
                               r.Top  - xy(inch(0.1, dpi), fy),
                               r.Width, r.Height
                              );
-            br = new SolidBrush(Color.White);
-            canvas.FillRectangle(br, r);
-            br.Dispose();
+            rdr.CanvasBrush.Color = TGIS_Color.White;
+            rdr.CanvasBrush.Style = TGIS_BrushStyle.Solid;
+            rdr.CanvasPen.Color = TGIS_Color.Black;
+            rdr.CanvasPen.Style = TGIS_PenStyle.Solid;
+            rdr.CanvasDrawRectangle(r);
             fr = r;
 
             // left panel: map
@@ -513,11 +515,6 @@ namespace PrintPreview
             pm.DrawMap(GIS, GIS.Extent, r, ref scale);
             mr = r ;
 
-            // left panel: black frame
-            pn = new Pen(Color.Black);
-            canvas.DrawRectangle(pn, fr);
-            pn.Dispose();
-
             // right panel
             x1 = 0;
             y1 = xy(inch(0.5, dpi), fy);
@@ -527,21 +524,22 @@ namespace PrintPreview
             // right panel: gray rectangle
             x1 = x2 - xy(pr.TwipsToX(2 * 1440), fx);
             r = new Rectangle(x1, y1, x2 - x1, y2 - y1);
-            br = new SolidBrush(Color.Gray);
-            canvas.FillRectangle(br, r);
-            br.Dispose();
-            pn = new Pen(Color.Gray);
-            canvas.DrawRectangle(pn, r);
-            pn.Dispose();
+            rdr.CanvasBrush.Color = TGIS_Color.Gray;
+            rdr.CanvasBrush.Style = TGIS_BrushStyle.Solid;
+            rdr.CanvasPen.Color = TGIS_Color.Gray;
+            rdr.CanvasPen.Style = TGIS_PenStyle.Solid;
+            rdr.CanvasDrawRectangle(r);
 
-            // right panel: white rectangle
+            // right panel: white rectangle; black frame
             r = new Rectangle(r.Left - xy(inch(0.1, dpi), fx),
                               r.Top  - xy(inch(0.1, dpi), fy),
                               r.Width, r.Height
                              );
-            br = new SolidBrush(Color.White);
-            canvas.FillRectangle(br, r);
-            br.Dispose();
+            rdr.CanvasBrush.Color = TGIS_Color.White;
+            rdr.CanvasBrush.Style = TGIS_BrushStyle.Solid;
+            rdr.CanvasPen.Color = TGIS_Color.Black;
+            rdr.CanvasPen.Style = TGIS_PenStyle.Solid;
+            rdr.CanvasDrawRectangle(r);
             fr = r;
 
             // right panel: legend
@@ -552,47 +550,44 @@ namespace PrintPreview
             r = new Rectangle(x1, y1, x2 - x1, y2 - y1);
             pm.DrawControl(GIS_ControlLegend1, r, scale);
 
-            // right panel: black frame
-            pn = new Pen(Color.Black);
-            canvas.DrawRectangle(pn, fr);
-            pn.Dispose();
-
-
             // page number
-            ft = new Font("Arial", 12);
-            br = new SolidBrush(Color.Black);
-            canvas.DrawString(String.Format("Page {0}", pr.PageNumber),
-                               ft, br,
-                               xy(pr.TwipsToX(720), fx),
-                               xy(pr.TwipsToY(720), fy)
-                             );
-            br.Dispose();
-            ft.Dispose();
+            s = String.Format("Page {0}", pr.PageNumber);
+            rdr.CanvasFont.Name = "Arial";
+            rdr.CanvasFont.Size = 12;
+            rdr.CanvasFont.Color = TGIS_Color.Black;
+            sz = rdr.CanvasTextExtent(s);
+            rt = new Rectangle(xy(pr.TwipsToX(720), fx),
+                               xy(pr.TwipsToY(720), fy),
+                               sz.X, sz.Y);
+            rdr.CanvasDrawText(rt, s);
 
-            r = mr ; 
+            r = mr ;
             // title
-            ft = new Font(pm.TitleFont.Name, pm.TitleFont.Size,
-                           to_native_fontstyle(pm.TitleFont.Style));
-            br = new SolidBrush(to_native_color(pm.TitleFont.Color));
-            sz = canvas.MeasureString(pm.Title, ft);
-            canvas.DrawString(pm.Title, ft, br,
-                               (int)(Math.Round((double)(r.Right - r.Left) / 2) -
-                                     Math.Round(sz.Width / 2)),
-                               xy(pr.TwipsToY(720), fy)
-                             );
-            br.Dispose();
-            ft.Dispose();
+            s = pm.Title;
+            rdr.CanvasFont.Name = pm.TitleFont.Name;
+            rdr.CanvasFont.Size = pm.TitleFont.Size;
+            rdr.CanvasFont.Style = pm.TitleFont.Style;
+            rdr.CanvasFont.Color = pm.TitleFont.Color;
+            sz = rdr.CanvasTextExtent(s);
+            rt = new Rectangle((int)(Math.Round((double)(r.Right - r.Left) / 2) -
+                                     Math.Round((double)(sz.X / 2))),
+                               xy(pr.TwipsToY(720), fy),
+                               sz.X, sz.Y);
+            rdr.CanvasDrawText(rt, s);
 
             // subtitle
-            h = (int)Math.Round(sz.Height);
-            ft = new Font(pm.SubtitleFont.Name, pm.SubtitleFont.Size,
-                          to_native_fontstyle(pm.SubtitleFont.Style));
-            br = new SolidBrush(to_native_color(pm.SubtitleFont.Color));
-            canvas.DrawString(pm.Subtitle, ft, br,
-                               (int)(Math.Round((double)(r.Right - r.Left) / 2) -
-                                     Math.Round(canvas.MeasureString(pm.Subtitle, ft).Width / 2)),
-                               xy(pr.TwipsToY(720 + 200), fy) + h
-                             );
+            h = (int)Math.Round((double)(sz.Y));
+            s = pm.Subtitle;
+            rdr.CanvasFont.Name = pm.SubtitleFont.Name;
+            rdr.CanvasFont.Size = pm.SubtitleFont.Size;
+            rdr.CanvasFont.Style = pm.SubtitleFont.Style;
+            rdr.CanvasFont.Color = pm.SubtitleFont.Color;
+            sz = rdr.CanvasTextExtent(s);
+            rt = new Rectangle((int)(Math.Round((double)(r.Right - r.Left) / 2) -
+                                     Math.Round((double)(sz.X / 2))),
+                               xy(pr.TwipsToY(720+200), fy) + h,
+                               sz.X, sz.Y);
+            rdr.CanvasDrawText(rt, s);
 
             _e.LastPage = true;
 
@@ -647,9 +642,9 @@ namespace PrintPreview
         private void chkStandardPrint_CheckedChanged(object sender, System.EventArgs e)
         {
             if (chkStandardPrint.Checked)
-                printManager.PrintPageEvent -= new TatukGIS.NDK.WinForms.TGIS_PrintPageEvent(this.GIS_PrintPage);
+                printManager.PrintPageEvent -= new TatukGIS.NDK.TGIS_PrintPageUniversalEvent(this.GIS_PrintPage);
             else
-                printManager.PrintPageEvent += new TatukGIS.NDK.WinForms.TGIS_PrintPageEvent(this.GIS_PrintPage);
+                printManager.PrintPageEvent += new TatukGIS.NDK.TGIS_PrintPageUniversalEvent(this.GIS_PrintPage);
 
             GIS_ControlPrintPreview1.Preview(1, new PrintDocument(), printManager);
         }

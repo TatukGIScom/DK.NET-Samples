@@ -71,7 +71,7 @@ namespace TemplatePrint
         private TGIS_ControlNorthArrow GIS_ControlNorthArrow;
         private TatukGIS.NDK.WinForms.TGIS_ControlPrintPreviewSimple GIS_ControlPrintPreviewSimple;
         private TatukGIS.NDK.TGIS_TemplatePrint template;
-        private TatukGIS.NDK.WinForms.TGIS_PrintManager manager;
+        private TatukGIS.NDK.TGIS_PrintManagerUniversal manager;
 
         public WinForm()
         {
@@ -400,7 +400,7 @@ namespace TemplatePrint
             template.set_Text(2, "Copyright");
 
             // prepare print manager
-            manager = new TGIS_PrintManager();
+            manager = new TGIS_PrintManagerUniversal();
             manager.Template = template;
 
             stripBar1.Items[2].Text = System.IO.Path.GetFileName(tpl_path);

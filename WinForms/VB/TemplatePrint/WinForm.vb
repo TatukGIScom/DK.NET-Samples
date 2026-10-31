@@ -69,7 +69,7 @@ Namespace TemplatePrint
         Friend WithEvents GIS_ControlNorthArrow As TGIS_ControlNorthArrow
         Private GIS_ControlPrintPreviewSimple As TatukGIS.NDK.WinForms.TGIS_ControlPrintPreviewSimple
         Private template As TGIS_TemplatePrint
-        Private manager As TGIS_PrintManager
+        Private manager As TGIS_PrintManagerUniversal
 
         Public Sub New()
             '
@@ -389,7 +389,7 @@ Namespace TemplatePrint
             template.Text(2) = "Copyright"
 
             ' prepare print manager
-            manager = New TGIS_PrintManager()
+            manager = New TGIS_PrintManagerUniversal()
             manager.Template = template
 
             statusBar1.Items(2).Text = System.IO.Path.GetFileName(tpl_path)

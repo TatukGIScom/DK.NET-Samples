@@ -489,7 +489,7 @@ Namespace PrintPdf
             Dim rd As TGIS_RendererAbstract
 
             pm = _e.PrintManager
-            pr = pm.Printer
+            pr = CType(pm.Printer, TGIS_Printer)
             rd = pr.Renderer
 
             rd.CanvasBrush.Color = TGIS_Color.Black
@@ -599,7 +599,7 @@ Namespace PrintPdf
 
         Private Sub BeforePrintPage(ByVal _sender As Object, ByVal _e As TatukGIS.NDK.WinForms.TGIS_PrintPageEventArgs)
             Dim pm As TGIS_PrintManager = _e.PrintManager
-            Dim pr As TGIS_Printer = pm.Printer
+            Dim pr As TGIS_Printer = CType(pm.Printer, TGIS_Printer)
 
             If pr.PageNumber = 1 Then
                 ' prepare first page: PrintPage event

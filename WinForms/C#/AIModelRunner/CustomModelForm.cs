@@ -11,8 +11,7 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
-using GisAIModelCustom;
-using GisAIPythonManager;
+using TatukGIS.NDK;
 
 namespace AIModelRunner_New
 {
